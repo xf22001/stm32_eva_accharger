@@ -57,7 +57,7 @@ void MX_GPIO_Init(void)
                           |kn2_Pin|rey2_Pin|rey1_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, ledeth_Pin|spi3_cs_Pin|rey5_Pin|rey6_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, ledeth_Pin|spi1_cs_Pin|rey5_Pin|rey6_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, rey4_Pin|rey3_Pin|con1_485_Pin, GPIO_PIN_RESET);
@@ -68,8 +68,8 @@ void MX_GPIO_Init(void)
 
   /*Configure GPIO pins : PEPin PEPin PEPin PEPin
                            PEPin */
-  GPIO_InitStruct.Pin = b_trip_Pin|b_tripE5_Pin|trip_out_Pin|pe_Pin
-                          |stop_Pin;
+  GPIO_InitStruct.Pin = b_trip_Pin|a_trip_Pin|trip_out_Pin|pe_dete_Pin
+                          |esb_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
@@ -86,7 +86,7 @@ void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PCPin PCPin PCPin PCPin */
-  GPIO_InitStruct.Pin = adhe1_Pin|adhe2_Pin|adhe_e_1_Pin|adhe_e_4_Pin;
+  GPIO_InitStruct.Pin = adhe_1_Pin|adhe_2_Pin|adhe_1e_Pin|adhe_2e_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
@@ -98,7 +98,7 @@ void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PAPin PAPin PAPin PAPin */
-  GPIO_InitStruct.Pin = ledeth_Pin|spi3_cs_Pin|rey5_Pin|rey6_Pin;
+  GPIO_InitStruct.Pin = ledeth_Pin|spi1_cs_Pin|rey5_Pin|rey6_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
