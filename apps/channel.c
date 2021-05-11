@@ -6,7 +6,7 @@
  *   文件名称：channel.c
  *   创 建 者：肖飞
  *   创建日期：2021年04月08日 星期四 09时51分12秒
- *   修改日期：2021年04月13日 星期二 14时25分01秒
+ *   修改日期：2021年05月11日 星期二 10时50分44秒
  *   描    述：
  *
  *================================================================*/
@@ -45,6 +45,7 @@ static int channel_init(channel_info_t *channel_info)
 	int ret = 0;
 	channel_config_t *channel_config = channel_info->channel_config;
 
+	debug("channel %d init charger %s", channel_info->channel_id, get_channel_config_channel_type(channel_config->channel_type));
 	channel_info->channel_handler = get_channel_handler(channel_config->channel_type);
 
 	if((channel_info->channel_handler != NULL) && (channel_info->channel_handler->init != NULL)) {

@@ -6,7 +6,7 @@
  *   文件名称：charger.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月19日 星期二 12时32分21秒
- *   修改日期：2021年04月10日 星期六 21时42分02秒
+ *   修改日期：2021年05月11日 星期二 11时23分35秒
  *   描    述：
  *
  *================================================================*/
@@ -14,7 +14,7 @@
 
 #include <string.h>
 
-#include "charger_handler_native.h"
+#include "charger_handler_bms_native.h"
 #include "channels.h"
 #include "os_utils.h"
 #include "can_data_task.h"
@@ -22,7 +22,7 @@
 #include "log.h"
 
 charger_handler_t *charger_handler_sz[] = {
-	&charger_handler_native,
+	&charger_handler_bms_native,
 };
 
 static charger_handler_t *get_charger_handler(channel_charger_type_t charger_type)

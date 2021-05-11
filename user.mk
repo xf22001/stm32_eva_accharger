@@ -6,7 +6,7 @@
 #   文件名称：user.mk
 #   创 建 者：肖飞
 #   创建日期：2019年10月25日 星期五 13时04分38秒
-#   修改日期：2021年05月11日 星期二 13时40分32秒
+#   修改日期：2021年05月11日 星期二 15时43分04秒
 #   描    述：
 #
 #================================================================
@@ -51,13 +51,13 @@ USER_C_SOURCES += apps/channel.c
 USER_C_SOURCES += apps/channel_handler_dc.c
 USER_C_SOURCES += apps/channel_handler_ac.c
 USER_C_SOURCES += apps/charger.c
-USER_C_SOURCES += apps/charger_handler_native.c
+USER_C_SOURCES += apps/charger_handler_bms_native.c
 USER_C_SOURCES += apps/charger_bms.c
 USER_C_SOURCES += apps/charger_bms_gb.c
 USER_C_SOURCES += apps/channels_power_module.c
 USER_C_SOURCES += apps/channels_power_module_native.c
 USER_C_SOURCES += apps/energy_meter.c
-USER_C_SOURCES += apps/energy_meter_handler_native.c
+USER_C_SOURCES += apps/energy_meter_handler_dc_native.c
 
 USER_C_SOURCES += apps/modules/app/eeprom_config.c
 #USER_C_SOURCES += apps/modules/app/poll_loop.c

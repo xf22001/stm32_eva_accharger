@@ -1,16 +1,17 @@
 
 
 /*================================================================
- *
- *
- *   文件名称：charger_handler_native.c
+ *   
+ *   
+ *   文件名称：charger_handler_bms_native.c
  *   创 建 者：肖飞
- *   创建日期：2021年01月19日 星期二 14时10分52秒
- *   修改日期：2021年04月11日 星期日 09时09分39秒
+ *   创建日期：2021年05月11日 星期二 11时18分08秒
+ *   修改日期：2021年05月11日 星期二 11时18分48秒
  *   描    述：
  *
  *================================================================*/
-#include "charger_handler_native.h"
+#include "charger_handler_bms_native.h"
+
 #include "bms_spec.h"
 #include "os_utils.h"
 #include "can_data_task.h"
@@ -130,7 +131,7 @@ static int init(void *_charger_info)
 	return ret;
 }
 
-charger_handler_t charger_handler_native = {
-	.charger_type = CHANNEL_CHARGER_TYPE_NATIVE,
+charger_handler_t charger_handler_bms_native = {
+	.charger_type = CHANNEL_CHARGER_TYPE_BMS_NATIVE,
 	.init = init,
 };

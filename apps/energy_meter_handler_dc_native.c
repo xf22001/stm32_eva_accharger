@@ -1,16 +1,17 @@
 
 
 /*================================================================
- *
- *
- *   文件名称：energy_meter_handler_native.c
+ *   
+ *   
+ *   文件名称：energy_meter_handler_dc_native.c
  *   创 建 者：肖飞
- *   创建日期：2021年04月13日 星期二 14时08分09秒
- *   修改日期：2021年04月13日 星期二 14时52分36秒
+ *   创建日期：2021年05月11日 星期二 11时25分44秒
+ *   修改日期：2021年05月11日 星期二 11时26分29秒
  *   描    述：
  *
  *================================================================*/
-#include "energy_meter_handler_native.h"
+#include "energy_meter_handler_dc_native.h"
+
 #include "uart_data_task.h"
 #include "dlt_645_master_txrx.h"
 
@@ -44,7 +45,7 @@ static int init(void *_energy_meter_info)
 	return ret;
 }
 
-energy_meter_handler_t energy_meter_handler_native = {
-	.energy_meter_type = CHANNEL_ENERGY_METER_TYPE_NATIVE,
+energy_meter_handler_t energy_meter_handler_dc_native = {
+	.energy_meter_type = CHANNEL_ENERGY_METER_TYPE_DC_NATIVE,
 	.init = init,
 };

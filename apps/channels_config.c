@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2021年05月11日 星期二 09时12分11秒
+ *   修改日期：2021年05月11日 星期二 15时55分06秒
  *   描    述：
  *
  *================================================================*/
@@ -18,14 +18,35 @@ extern CAN_HandleTypeDef hcan1;
 extern UART_HandleTypeDef huart3;
 extern UART_HandleTypeDef huart6;
 
+char *get_channel_config_channel_type(channel_type_t type)
+{
+	char *des = "unknow";
+
+	switch(type) {
+			add_des_case(CHANNEL_TYPE_NONE);
+			add_des_case(CHANNEL_TYPE_DC);
+			add_des_case(CHANNEL_TYPE_AC);
+
+		default: {
+		}
+		break;
+	}
+
+	return des;
+}
+
 char *get_channel_config_charger_type(channel_charger_type_t type)
 {
 	char *des = "unknow";
 
 	switch(type) {
 			add_des_case(CHANNEL_CHARGER_TYPE_NONE);
-			add_des_case(CHANNEL_CHARGER_TYPE_NATIVE);
-			add_des_case(CHANNEL_CHARGER_TYPE_PROXY);
+			add_des_case(CHANNEL_CHARGER_TYPE_BMS_NATIVE);
+			add_des_case(CHANNEL_CHARGER_TYPE_BMS_PROXY);
+			add_des_case(CHANNEL_CHARGER_TYPE_BMS_PROXY_AND_NATIVE);
+			add_des_case(CHANNEL_CHARGER_TYPE_AC_NATIVE);
+			add_des_case(CHANNEL_CHARGER_TYPE_AC_PROXY);
+			add_des_case(CHANNEL_CHARGER_TYPE_AC_PROXY_AND_NATIVE);
 
 		default: {
 		}
@@ -41,9 +62,12 @@ char *get_channel_config_energy_meter_type(channel_energy_meter_type_t type)
 
 	switch(type) {
 			add_des_case(CHANNEL_ENERGY_METER_TYPE_NONE);
-			add_des_case(CHANNEL_ENERGY_METER_TYPE_NATIVE);
-			add_des_case(CHANNEL_ENERGY_METER_TYPE_PROXY);
-			add_des_case(CHANNEL_ENERGY_METER_TYPE_PROXY_AND_NATIVE);
+			add_des_case(CHANNEL_ENERGY_METER_TYPE_DC_NATIVE);
+			add_des_case(CHANNEL_ENERGY_METER_TYPE_DC_PROXY);
+			add_des_case(CHANNEL_ENERGY_METER_TYPE_DC_PROXY_AND_NATIVE);
+			add_des_case(CHANNEL_ENERGY_METER_TYPE_AC_NATIVE);
+			add_des_case(CHANNEL_ENERGY_METER_TYPE_AC_PROXY);
+			add_des_case(CHANNEL_ENERGY_METER_TYPE_AC_PROXY_AND_NATIVE);
 
 		default: {
 		}
@@ -56,12 +80,12 @@ char *get_channel_config_energy_meter_type(channel_energy_meter_type_t type)
 static channel_config_t channel0_config = {
 	.channel_type = CHANNEL_TYPE_AC,
 	.charger_config = {
-		.charger_type = CHANNEL_CHARGER_TYPE_NATIVE,
-		.charger_bms_type = CHANNEL_CHARGER_BMS_TYPE_AC,
+		.charger_type = CHANNEL_CHARGER_TYPE_AC_NATIVE,
+		.charger_bms_type = CHANNEL_CHARGER_BMS_TYPE_NONE,
 		.hcan_bms = NULL,
 	},
 	.energy_meter_config = {
-		.energy_meter_type = CHANNEL_ENERGY_METER_TYPE_NATIVE,
+		.energy_meter_type = CHANNEL_ENERGY_METER_TYPE_AC_NATIVE,
 		.huart_energy_meter = &huart3,
 	},
 };
@@ -69,12 +93,12 @@ static channel_config_t channel0_config = {
 static channel_config_t channel1_config = {
 	.channel_type = CHANNEL_TYPE_AC,
 	.charger_config = {
-		.charger_type = CHANNEL_CHARGER_TYPE_NATIVE,
-		.charger_bms_type = CHANNEL_CHARGER_BMS_TYPE_AC,
+		.charger_type = CHANNEL_CHARGER_TYPE_AC_NATIVE,
+		.charger_bms_type = CHANNEL_CHARGER_BMS_TYPE_NONE,
 		.hcan_bms = NULL,
 	},
 	.energy_meter_config = {
-		.energy_meter_type = CHANNEL_ENERGY_METER_TYPE_NATIVE,
+		.energy_meter_type = CHANNEL_ENERGY_METER_TYPE_AC_NATIVE,
 		.huart_energy_meter = &huart6,
 	},
 };

@@ -6,7 +6,7 @@
  *   文件名称：channels_power_module.c
  *   创 建 者：肖飞
  *   创建日期：2021年03月26日 星期五 17时18分33秒
- *   修改日期：2021年04月12日 星期一 09时57分07秒
+ *   修改日期：2021年05月11日 星期二 11时37分30秒
  *   描    述：
  *
  *================================================================*/
@@ -54,7 +54,6 @@ static int channels_power_module_init(channels_power_module_t *channels_power_mo
 	OS_ASSERT(register_callback(channels_info->common_periodic_chain, &channels_power_module->periodic_callback_item) == 0);
 
 	channels_power_module->channels_power_module_callback = get_channels_power_module_callback(type);
-	OS_ASSERT(channels_power_module->channels_power_module_callback != NULL);
 
 	if((channels_power_module->channels_power_module_callback != NULL) && (channels_power_module->channels_power_module_callback->init != NULL)) {
 		channels_power_module->channels_power_module_callback->init(channels_power_module);
