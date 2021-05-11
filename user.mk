@@ -6,7 +6,7 @@
 #   文件名称：user.mk
 #   创 建 者：肖飞
 #   创建日期：2019年10月25日 星期五 13时04分38秒
-#   修改日期：2021年05月11日 星期二 10时32分15秒
+#   修改日期：2021年05月11日 星期二 13时40分32秒
 #   描    述：
 #
 #================================================================
@@ -60,7 +60,7 @@ USER_C_SOURCES += apps/energy_meter.c
 USER_C_SOURCES += apps/energy_meter_handler_native.c
 
 USER_C_SOURCES += apps/modules/app/eeprom_config.c
-USER_C_SOURCES += apps/modules/app/poll_loop.c
+#USER_C_SOURCES += apps/modules/app/poll_loop.c
 USER_C_SOURCES += apps/modules/app/uart_debug.c
 USER_C_SOURCES += apps/modules/app/file_log.c
 USER_C_SOURCES += apps/modules/app/request.c

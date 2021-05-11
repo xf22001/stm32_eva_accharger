@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年05月11日 星期二 10时33分14秒
+ *   修改日期：2021年05月11日 星期二 13时41分54秒
  *   描    述：
  *
  *================================================================*/
@@ -82,7 +82,7 @@ void send_app_event(app_event_t event)
 void app(void const *argument)
 {
 
-	poll_loop_t *poll_loop;
+	//poll_loop_t *poll_loop;
 	add_log_handler((log_fn_t)log_uart_data);
 	add_log_handler((log_fn_t)log_file_data);
 
@@ -114,12 +114,6 @@ void app(void const *argument)
 	netdev_init();
 	wiz_init();
 
-	poll_loop = get_or_alloc_poll_loop(0);
-
-	if(poll_loop == NULL) {
-		app_panic();
-	}
-
 	debug("===========================================start app============================================");
 
 	app_info = (app_info_t *)os_calloc(1, sizeof(app_info_t));
@@ -149,6 +143,9 @@ void app(void const *argument)
 		app_save_config();
 		app_info->available = 1;
 	}
+
+	//poll_loop = get_or_alloc_poll_loop(0);
+	//OS_ASSERT(poll_loop != NULL);
 
 	//net_client_add_poll_loop(poll_loop);
 	//ftp_client_add_poll_loop(poll_loop);
