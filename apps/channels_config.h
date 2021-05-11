@@ -6,7 +6,7 @@
  *   文件名称：channels_config.h
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 11时00分11秒
- *   修改日期：2021年05月10日 星期一 15时01分10秒
+ *   修改日期：2021年05月11日 星期二 09时10分47秒
  *   描    述：
  *
  *================================================================*/
@@ -23,6 +23,12 @@ extern "C"
 #ifdef __cplusplus
 }
 #endif
+
+typedef enum {
+	CHANNEL_TYPE_NONE = 0,
+	CHANNEL_TYPE_DC,
+	CHANNEL_TYPE_AC,
+} channel_type_t;
 
 typedef enum {
 	CHANNEL_CHARGER_TYPE_NONE = 0,
@@ -56,6 +62,7 @@ typedef struct {
 } channel_energy_meter_config_t;
 
 typedef struct {
+	channel_type_t channel_type;
 	channel_charger_config_t charger_config;
 	channel_energy_meter_config_t energy_meter_config;
 } channel_config_t;

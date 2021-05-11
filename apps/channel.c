@@ -12,26 +12,44 @@
  *================================================================*/
 #include "channel.h"
 
+#include "channel_handler_dc.h"
+#include "channel_handler_ac.h"
 #include "charger.h"
 #include "energy_meter.h"
 
 #include "log.h"
 
-static void periodic(void *_channel_info, void *_channels_info)
+static channel_handler_t *channel_handler_sz[] = {
+	&channel_handler_dc,
+	&channel_handler_ac,
+};
+
+static channel_handler_t *get_channel_handler(channel_type_t channel_type)
 {
-	//debug("channel_id %d periodic!", ((channel_info_t *)_channel_info)->channel_id);
+	int i;
+	channel_handler_t *channel_handler = NULL;
+
+	for(i = 0; i < ARRAY_SIZE(channel_handler_sz); i++) {
+		channel_handler_t *channel_handler_item = channel_handler_sz[i];
+
+		if(channel_handler_item->channel_type == channel_type) {
+			channel_handler = channel_handler_item;
+		}
+	}
+
+	return channel_handler;
 }
 
 static int channel_init(channel_info_t *channel_info)
 {
 	int ret = 0;
-	channels_info_t *channels_info = (channels_info_t *)channel_info->channels_info;
 	channel_config_t *channel_config = channel_info->channel_config;
 
-	channel_info->periodic_callback_item.fn = periodic;
-	channel_info->periodic_callback_item.fn_ctx = channel_info;
+	channel_info->channel_handler = get_channel_handler(channel_config->channel_type);
 
-	OS_ASSERT(register_callback(channels_info->common_periodic_chain, &channel_info->periodic_callback_item) == 0);
+	if((channel_info->channel_handler != NULL) && (channel_info->channel_handler->init != NULL)) {
+		OS_ASSERT(channel_info->channel_handler->init(channel_info) == 0);
+	}
 
 	debug("channel %d alloc charger %s", channel_info->channel_id, get_channel_config_charger_type(channel_config->charger_config.charger_type));
 	channel_info->charger_info = alloc_charger_info(channel_info);

@@ -26,7 +26,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "app.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -46,6 +46,8 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
+
+osThreadId idleTaskHandle;
 
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
@@ -164,6 +166,8 @@ void MX_FREERTOS_Init(void) {
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
+  osThreadDef(idleTask, idle, osPriorityNormal, 0, 128);
+  idleTaskHandle = osThreadCreate(osThread(idleTask), NULL);
   /* USER CODE END RTOS_THREADS */
 
 }
@@ -180,6 +184,8 @@ void StartDefaultTask(void const * argument)
   /* init code for USB_HOST */
   MX_USB_HOST_Init();
   /* USER CODE BEGIN StartDefaultTask */
+  osThreadDef(app, app, osPriorityNormal, 0, 128 * 2 * 2);
+  osThreadCreate(osThread(app), NULL);
   /* Infinite loop */
   for(;;)
   {

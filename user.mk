@@ -6,7 +6,7 @@
 #   文件名称：user.mk
 #   创 建 者：肖飞
 #   创建日期：2019年10月25日 星期五 13时04分38秒
-#   修改日期：2021年05月10日 星期一 15时15分17秒
+#   修改日期：2021年05月11日 星期二 10时32分15秒
 #   描    述：
 #
 #================================================================
@@ -48,6 +48,8 @@ USER_C_SOURCES += apps/channels_config.c
 USER_C_SOURCES += apps/can_config.c
 USER_C_SOURCES += apps/channels.c
 USER_C_SOURCES += apps/channel.c
+USER_C_SOURCES += apps/channel_handler_dc.c
+USER_C_SOURCES += apps/channel_handler_ac.c
 USER_C_SOURCES += apps/charger.c
 USER_C_SOURCES += apps/charger_handler_native.c
 USER_C_SOURCES += apps/charger_bms.c
@@ -104,8 +106,12 @@ USER_C_SOURCES += apps/modules/os/net_utils.c
 USER_C_SOURCES += apps/modules/os/cpu_utils.c
 USER_C_SOURCES += apps/modules/os/log.c
 USER_C_SOURCES += apps/modules/os/object_class.c
+USER_C_SOURCES += apps/modules/os/soft_timer.c
 USER_C_SOURCES += apps/modules/tests/test_serial.c
 USER_C_SOURCES += apps/modules/tests/test_event.c
+
+USER_C_SOURCES += Middlewares/Third_Party/LwIP/src/core/def.c
+USER_C_SOURCES += Middlewares/Third_Party/LwIP/src/core/ipv4/ip4_addr.c
 
 USER_CFLAGS += -DtraceTASK_SWITCHED_IN=StartIdleMonitor -DtraceTASK_SWITCHED_OUT=EndIdleMonitor
 

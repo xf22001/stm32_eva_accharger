@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年05月10日 星期一 15时23分13秒
+ *   修改日期：2021年05月11日 星期二 10时33分14秒
  *   描    述：
  *
  *================================================================*/
@@ -38,8 +38,15 @@
 #include "channels.h"
 #include "duty_cycle_pattern.h"
 
+#include "sal_socket.h"
+#include "sal_netdev.h"
+#include "sal_netdev.h"
+#include "wiz_ethernet.h"
+
+#include "usb_upgrade.h"
+
 extern IWDG_HandleTypeDef hiwdg;
-extern TIM_HandleTypeDef htim4;
+//extern TIM_HandleTypeDef htim4;
 extern UART_HandleTypeDef huart1;
 extern SPI_HandleTypeDef hspi3;
 
@@ -103,18 +110,15 @@ void app(void const *argument)
 	//	osThreadCreate(osThread(task_test_serial), uart_info);
 	//}
 
+	sal_init();
+	netdev_init();
+	wiz_init();
+
 	poll_loop = get_or_alloc_poll_loop(0);
 
 	if(poll_loop == NULL) {
 		app_panic();
 	}
-
-	probe_broadcast_add_poll_loop(poll_loop);
-	probe_server_add_poll_loop(poll_loop);
-
-	//while(is_log_server_valid() == 0) {
-	//	osDelay(1);
-	//}
 
 	debug("===========================================start app============================================");
 
@@ -173,11 +177,6 @@ void app(void const *argument)
 		osThreadCreate(osThread(channels), channels_info);
 	}
 
-	sal_init();
-	netdev_init();
-
-	wiz_init();
-
 	while(1) {
 		uint32_t event;
 		int ret = signal_wait(app_event, &event, 1000);
@@ -209,13 +208,13 @@ static void update_work_led(void)
 {
 	//计数值小于duty_cycle,输出1;大于duty_cycle输出0
 	uint16_t duty_cycle = get_duty_cycle_pattern(&work_pattern_state, 1000, 0, 20);
-	__HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_3, duty_cycle);
+	//__HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_3, duty_cycle);
 }
 
 void idle(void const *argument)
 {
 	MX_IWDG_Init();
-	HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
+	//HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
 
 	while(1) {
 		HAL_IWDG_Refresh(&hiwdg);

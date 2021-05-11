@@ -6,7 +6,7 @@
  *   文件名称：channels.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分31秒
- *   修改日期：2021年04月13日 星期二 15时36分20秒
+ *   修改日期：2021年05月11日 星期二 09时53分23秒
  *   描    述：
  *
  *================================================================*/
@@ -47,37 +47,6 @@ static void free_channels_info(channels_info_t *channels_info)
 	app_panic();
 }
 
-static void handle_channels_info_channels_event(void *_channels_info, void *_channels_event)
-{
-	int i;
-	channels_info_t *channels_info = (channels_info_t *)_channels_info;
-	channels_event_t *channels_event = (channels_event_t *)_channels_event;
-	channel_info_t *channel_info = NULL;
-	channel_event_t *channel_event;
-
-	debug("");
-
-	if(channels_event->type != CHANNELS_EVENT_CHANNEL_EVENT) {
-		return;
-	}
-
-	channel_event = &channels_event->event.channel_event;
-
-	if(channel_event->channel_id == 0xff) { //broadcast
-		for(i = 0; i < channels_info->channel_number; i++) {
-			channel_info = channels_info->channel_info + i;
-			handle_channel_event(channel_info, channel_event);
-		}
-	} else {
-		if(channel_event->channel_id < channels_info->channel_number) {
-			channel_info = channels_info->channel_info + channel_event->channel_id;
-			handle_channel_event(channel_info, channel_event);
-		} else { //channel_id error
-			debug("channel_event->channel_id:%d", channel_event->channel_id);
-		}
-	}
-}
-
 static int channels_info_set_channels_config(channels_info_t *channels_info, channels_config_t *channels_config)
 {
 	int ret = 0;
@@ -90,10 +59,6 @@ static int channels_info_set_channels_config(channels_info_t *channels_info, cha
 	channels_info->channel_info = alloc_channels_channel_info(channels_info);
 
 	channels_info->channels_power_module = alloc_channels_power_module(channels_info);
-
-	channels_info->channels_channel_callback_item.fn = handle_channels_info_channels_event;
-	channels_info->channels_channel_callback_item.fn_ctx = channels_info;
-	OS_ASSERT(register_callback(channels_info->common_event_chain, &channels_info->channels_channel_callback_item) == 0);
 
 	channels_info->configed = 1;
 
