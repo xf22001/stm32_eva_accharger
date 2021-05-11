@@ -116,6 +116,14 @@ void Error_Handler(void);
 #define rey4_GPIO_Port GPIOB
 #define rey3_Pin GPIO_PIN_11
 #define rey3_GPIO_Port GPIOB
+#define e2cs_Pin GPIO_PIN_12
+#define e2cs_GPIO_Port GPIOB
+#define e2sck_Pin GPIO_PIN_13
+#define e2sck_GPIO_Port GPIOB
+#define e2miso_Pin GPIO_PIN_14
+#define e2miso_GPIO_Port GPIOB
+#define e2mosi_Pin GPIO_PIN_15
+#define e2mosi_GPIO_Port GPIOB
 #define ledR1_Pin GPIO_PIN_10
 #define ledR1_GPIO_Port GPIOD
 #define ledR2_Pin GPIO_PIN_11

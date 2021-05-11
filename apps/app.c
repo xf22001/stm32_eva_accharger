@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年05月11日 星期二 13时41分54秒
+ *   修改日期：2021年05月11日 星期二 14时26分32秒
  *   描    述：
  *
  *================================================================*/
@@ -46,9 +46,9 @@
 #include "usb_upgrade.h"
 
 extern IWDG_HandleTypeDef hiwdg;
-//extern TIM_HandleTypeDef htim4;
-extern UART_HandleTypeDef huart1;
-extern SPI_HandleTypeDef hspi3;
+extern TIM_HandleTypeDef htim2;
+extern UART_HandleTypeDef huart4;
+extern SPI_HandleTypeDef hspi2;
 
 static app_info_t *app_info = NULL;
 static eeprom_info_t *eeprom_info = NULL;
@@ -87,7 +87,7 @@ void app(void const *argument)
 	add_log_handler((log_fn_t)log_file_data);
 
 	{
-		uart_info_t *uart_info = get_or_alloc_uart_info(&huart1);
+		uart_info_t *uart_info = get_or_alloc_uart_info(&huart4);
 
 		if(uart_info == NULL) {
 			app_panic();
@@ -100,7 +100,7 @@ void app(void const *argument)
 	}
 
 	//{
-	//	uart_info_t *uart_info = get_or_alloc_uart_info(&huart1);
+	//	uart_info_t *uart_info = get_or_alloc_uart_info(&huart4);
 
 	//	if(uart_info == NULL) {
 	//		app_panic();
@@ -120,13 +120,13 @@ void app(void const *argument)
 
 	OS_ASSERT(app_info != NULL);
 
-	//eeprom_info = get_or_alloc_eeprom_info(get_or_alloc_spi_info(&hspi3),
-	//                                       spi3_cs_GPIO_Port,
-	//                                       spi3_cs_Pin,
-	//                                       spi3_wp_GPIO_Port,
-	//                                       spi3_wp_Pin);
+	eeprom_info = get_or_alloc_eeprom_info(get_or_alloc_spi_info(&hspi2),
+	                                       e2cs_GPIO_Port,
+	                                       e2cs_Pin,
+	                                       NULL,
+	                                       0);
 
-	//OS_ASSERT(eeprom_info != NULL);
+	OS_ASSERT(eeprom_info != NULL);
 
 	if(app_load_config() == 0) {
 		debug("app_load_config successful!");
@@ -205,13 +205,13 @@ static void update_work_led(void)
 {
 	//计数值小于duty_cycle,输出1;大于duty_cycle输出0
 	uint16_t duty_cycle = get_duty_cycle_pattern(&work_pattern_state, 1000, 0, 20);
-	//__HAL_TIM_SET_COMPARE(&htim4, TIM_CHANNEL_3, duty_cycle);
+	__HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, duty_cycle);
 }
 
 void idle(void const *argument)
 {
 	MX_IWDG_Init();
-	//HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_3);
+	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
 
 	while(1) {
 		HAL_IWDG_Refresh(&hiwdg);
