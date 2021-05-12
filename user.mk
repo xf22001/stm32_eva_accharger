@@ -6,7 +6,7 @@
 #   文件名称：user.mk
 #   创 建 者：肖飞
 #   创建日期：2019年10月25日 星期五 13时04分38秒
-#   修改日期：2021年05月11日 星期二 17时35分25秒
+#   修改日期：2021年05月12日 星期三 16时08分26秒
 #   描    述：
 #
 #================================================================
@@ -95,6 +95,7 @@ USER_C_SOURCES += apps/modules/app/voice.c
 USER_C_SOURCES += apps/modules/hardware/flash.c
 USER_C_SOURCES += apps/modules/hardware/eeprom.c
 USER_C_SOURCES += apps/modules/hardware/dlt_645_master_txrx.c
+USER_C_SOURCES += apps/modules/hardware/rtc.c
 USER_C_SOURCES += apps/modules/drivers/spi_txrx.c
 USER_C_SOURCES += apps/modules/drivers/can_txrx.c
 USER_C_SOURCES += apps/modules/drivers/usart_txrx.c
