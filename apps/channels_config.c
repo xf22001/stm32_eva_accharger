@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2021年05月11日 星期二 15时55分06秒
+ *   修改日期：2021年05月15日 星期六 15时00分57秒
  *   描    述：
  *
  *================================================================*/
@@ -117,7 +117,7 @@ static channels_config_t channels_config_0 = {
 	.power_module_config = {
 		.channels_power_module_number = 0,
 		.hcan_power = NULL,
-		.channels_power_module_type = CHANNELS_POWER_MODULE_TYPE_NATIVE,
+		.channels_power_module_type = CHANNELS_POWER_MODULE_TYPE_NONE,
 	},
 };
 

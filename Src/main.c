@@ -36,6 +36,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
+#include "iap.h"
+#include "early_sys_callback.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -78,6 +81,15 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
+  if(is_app() == 1)
+  {
+    SCB->VTOR = USER_FLASH_FIRST_PAGE_ADDRESS; /* Vector Table Relocation in Internal FLASH */
+  }
+  else
+  {
+    jump_to_app();
+  }
+
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -93,6 +105,8 @@ int main(void)
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
+
+  early_sys_callback();
 
   /* USER CODE END SysInit */
 

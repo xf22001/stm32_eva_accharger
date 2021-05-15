@@ -27,6 +27,8 @@
 
 /* USER CODE BEGIN Includes */
 
+#include "usbh_user_callback.h"
+
 /* USER CODE END Includes */
 
 /* USER CODE BEGIN PV */
@@ -96,6 +98,7 @@ void MX_USB_HOST_Init(void)
 static void USBH_UserProcess  (USBH_HandleTypeDef *phost, uint8_t id)
 {
   /* USER CODE BEGIN CALL_BACK_1 */
+  usbh_user_callback(phost, id);
   switch(id)
   {
   case HOST_USER_SELECT_CONFIGURATION:
