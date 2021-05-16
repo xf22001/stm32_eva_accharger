@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年05月15日 星期六 17时23分20秒
+ *   修改日期：2021年05月16日 星期日 16时32分50秒
  *   描    述：
  *
  *================================================================*/
@@ -201,38 +201,38 @@ void app(void const *argument)
 #include "hw_rtc.h"
 #include "hw_adc.h"
 #include "ntc_temperature.h"
-			extern ADC_HandleTypeDef hadc1;
-			adc_info_t *adc_info = get_or_alloc_adc_info(&hadc1);
-			static int set = 0;
-			struct tm *tm = rtc_get_datetime();
-			debug("tm %04d-%02d-%02d %02d:%02d:%02d",
-			      tm->tm_year + 1900,
-			      tm->tm_mon + 1,
-			      tm->tm_mday,
-			      tm->tm_hour,
-			      tm->tm_min,
-			      tm->tm_sec);
+			//extern ADC_HandleTypeDef hadc1;
+			//adc_info_t *adc_info = get_or_alloc_adc_info(&hadc1);
+			//static int set = 0;
+			//struct tm *tm = rtc_get_datetime();
+			//debug("tm %04d-%02d-%02d %02d:%02d:%02d",
+			//      tm->tm_year + 1900,
+			//      tm->tm_mon + 1,
+			//      tm->tm_mday,
+			//      tm->tm_hour,
+			//      tm->tm_min,
+			//      tm->tm_sec);
 
-			if(tm->tm_sec == 30) {
-				if(set == 0) {
-					set = 1;
-				}
+			//if(tm->tm_sec == 30) {
+			//	if(set == 0) {
+			//		set = 1;
+			//	}
 
-				debug("set rtc ...");
-				tm->tm_year = 2021 - 1900;
-				tm->tm_mon  = 5 - 1;
-				tm->tm_mday = 15;
-				tm->tm_hour = 15;
-				tm->tm_min = 52;
-				tm->tm_sec = 0;
-				debug("rtc_set_datetime(tm):%d", rtc_set_datetime(tm));
-			}
+			//	debug("set rtc ...");
+			//	tm->tm_year = 2021 - 1900;
+			//	tm->tm_mon  = 5 - 1;
+			//	tm->tm_mday = 15;
+			//	tm->tm_hour = 15;
+			//	tm->tm_min = 52;
+			//	tm->tm_sec = 0;
+			//	debug("rtc_set_datetime(tm):%d", rtc_set_datetime(tm));
+			//}
 
-			OS_ASSERT(adc_info != NULL);
-			debug("adc[0]:%d, temperature:%d", get_adc_value(adc_info, 0), get_ntc_temperature(10000, get_adc_value(adc_info, 0), 4095));
-			debug("adc[1]:%d", get_adc_value(adc_info, 1));
-			debug("adc[2]:%d", get_adc_value(adc_info, 2));
-			debug("adc[3]:%d", get_adc_value(adc_info, 3));
+			//OS_ASSERT(adc_info != NULL);
+			//debug("adc[0]:%d, temperature:%d", get_adc_value(adc_info, 0), get_ntc_temperature(10000, get_adc_value(adc_info, 0), 4095));
+			//debug("adc[1]:%d", get_adc_value(adc_info, 1));
+			//debug("adc[2]:%d", get_adc_value(adc_info, 2));
+			//debug("adc[3]:%d", get_adc_value(adc_info, 3));
 		}
 	}
 }
