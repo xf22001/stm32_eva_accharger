@@ -6,7 +6,7 @@
 #   文件名称：user.mk
 #   创 建 者：肖飞
 #   创建日期：2019年10月25日 星期五 13时04分38秒
-#   修改日期：2021年05月15日 星期六 16时45分56秒
+#   修改日期：2021年05月19日 星期三 08时49分41秒
 #   描    述：
 #
 #================================================================
@@ -60,7 +60,7 @@ USER_C_SOURCES += apps/energy_meter.c
 USER_C_SOURCES += apps/energy_meter_handler_dc_native.c
 
 USER_C_SOURCES += apps/modules/app/eeprom_config.c
-#USER_C_SOURCES += apps/modules/app/poll_loop.c
+USER_C_SOURCES += apps/modules/app/poll_loop.c
 USER_C_SOURCES += apps/modules/app/uart_debug.c
 USER_C_SOURCES += apps/modules/app/file_log.c
 USER_C_SOURCES += apps/modules/app/request.c
@@ -118,6 +118,7 @@ USER_C_SOURCES += Middlewares/Third_Party/LwIP/src/core/def.c
 USER_C_SOURCES += Middlewares/Third_Party/LwIP/src/core/ipv4/ip4_addr.c
 
 USER_CFLAGS += -DtraceTASK_SWITCHED_IN=StartIdleMonitor -DtraceTASK_SWITCHED_OUT=EndIdleMonitor
+USER_CFLAGS += -DSAL_HOOK
 
 C_SOURCES += $(USER_C_SOURCES)
 
