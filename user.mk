@@ -6,7 +6,7 @@
 #   文件名称：user.mk
 #   创 建 者：肖飞
 #   创建日期：2019年10月25日 星期五 13时04分38秒
-#   修改日期：2021年05月19日 星期三 09时59分48秒
+#   修改日期：2021年05月19日 星期三 19时08分34秒
 #   描    述：
 #
 #================================================================
@@ -44,6 +44,7 @@ USER_C_SOURCES += apps/early_sys_callback.c
 USER_C_SOURCES += apps/usbh_user_callback.c
 USER_C_SOURCES += apps/app.c
 USER_C_SOURCES += apps/uart_debug_handler.c
+USER_C_SOURCES += apps/probe_tool_handler.c
 USER_C_SOURCES += apps/channels_config.c
 USER_C_SOURCES += apps/can_config.c
 USER_C_SOURCES += apps/channels.c
@@ -64,6 +65,7 @@ USER_C_SOURCES += apps/modules/app/eeprom_config.c
 USER_C_SOURCES += apps/modules/app/poll_loop.c
 USER_C_SOURCES += apps/modules/app/uart_debug.c
 USER_C_SOURCES += apps/modules/app/file_log.c
+USER_C_SOURCES += apps/modules/app/probe_tool.c
 USER_C_SOURCES += apps/modules/app/request.c
 USER_C_SOURCES += apps/modules/app/net_client.c
 USER_C_SOURCES += apps/modules/app/net_protocol_udp.c

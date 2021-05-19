@@ -6,7 +6,7 @@
  *   文件名称：probe_tool_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年03月20日 星期五 12时48分07秒
- *   修改日期：2021年05月10日 星期一 14时31分40秒
+ *   修改日期：2021年05月19日 星期三 19时15分26秒
  *   描    述：
  *
  *================================================================*/
@@ -23,10 +23,10 @@
 #include "app.h"
 #include "ftp_client.h"
 
+#include "sal_hook.h"
+
 #define LOG_UDP
 #include "log.h"
-
-extern struct netif gnetif;
 
 static void fn1(request_t *request)
 {
@@ -178,8 +178,6 @@ static void get_host_by_name(char *content, uint32_t size)
 
 static void fn4(request_t *request)
 {
-	_printf("local host ip:%s\n", inet_ntoa(gnetif.ip_addr));
-
 	get_host_by_name((char *)(request + 1), request->header.data_size);
 	memset(request, 0, RECV_BUFFER_SIZE);
 }
@@ -401,7 +399,7 @@ static void fn12(request_t *request)
 
 	if((ret == 6) || (ret == 5)) {
 		debug("server host:\'%s\', server port:\'%s\', path\'%s\', user:\'%s\', password\'%s\'", ftp_server_path->host, ftp_server_path->port, ftp_server_path->path, ftp_server_path->user, ftp_server_path->password);
-		request_ftp_client_download(ftp_server_path->host, ftp_server_path->port, ftp_server_path->path, ftp_server_path->user, ftp_server_path->password);
+		request_ftp_client_download(ftp_server_path->host, ftp_server_path->port, ftp_server_path->path, ftp_server_path->user, ftp_server_path->password, FTP_CLIENT_ACTION_DOWNLOAD, NULL, NULL);
 	}
 
 	os_free(ftp_server_path);

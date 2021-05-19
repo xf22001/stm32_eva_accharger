@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年05月18日 星期二 21时33分32秒
+ *   修改日期：2021年05月19日 星期三 19时07分46秒
  *   描    述：
  *
  *================================================================*/
@@ -26,11 +26,11 @@
 #include "test_event.h"
 #include "file_log.h"
 #include "uart_debug.h"
+#include "probe_tool.h"
 #include "net_client.h"
 #include "ftp_client.h"
 #include "usb_upgrade.h"
 
-#define LOG_NONE
 #include "log.h"
 
 #include "channels_config.h"
@@ -87,6 +87,7 @@ void app(void const *argument)
 
 	poll_loop_t *poll_loop;
 	add_log_handler((log_fn_t)log_uart_data);
+	add_log_handler((log_fn_t)log_udp_data);
 	add_log_handler((log_fn_t)log_file_data);
 
 	{
@@ -118,7 +119,8 @@ void app(void const *argument)
 
 	poll_loop = get_or_alloc_poll_loop(0);
 	OS_ASSERT(poll_loop != NULL);
-
+	probe_broadcast_add_poll_loop(poll_loop);
+	probe_server_add_poll_loop(poll_loop);
 	//net_client_add_poll_loop(poll_loop);
 	ftp_client_add_poll_loop(poll_loop);
 
