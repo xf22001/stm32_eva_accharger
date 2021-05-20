@@ -122,6 +122,7 @@ USER_C_SOURCES += Middlewares/Third_Party/LwIP/src/core/ipv4/ip4_addr.c
 
 USER_CFLAGS += -DtraceTASK_SWITCHED_IN=StartIdleMonitor -DtraceTASK_SWITCHED_OUT=EndIdleMonitor
 USER_CFLAGS += -DSAL_HOOK
+USER_CFLAGS += -DLOG_CONFIG_FILE=\"log_config.h\"
 
 C_SOURCES += $(USER_C_SOURCES)
 

@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年05月19日 星期三 19时07分46秒
+ *   修改日期：2021年05月19日 星期三 21时56分47秒
  *   描    述：
  *
  *================================================================*/
@@ -121,9 +121,12 @@ void app(void const *argument)
 	OS_ASSERT(poll_loop != NULL);
 	probe_broadcast_add_poll_loop(poll_loop);
 	probe_server_add_poll_loop(poll_loop);
-	//net_client_add_poll_loop(poll_loop);
+	net_client_add_poll_loop(poll_loop);
 	ftp_client_add_poll_loop(poll_loop);
 
+	while(is_log_server_valid() == 0) {
+		osDelay(1);
+	}
 
 	debug("===========================================start app============================================");
 
