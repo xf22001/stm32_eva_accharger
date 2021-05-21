@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年05月19日 星期三 21时56分47秒
+ *   修改日期：2021年05月21日 星期五 21时22分55秒
  *   描    述：
  *
  *================================================================*/
@@ -149,8 +149,8 @@ void app(void const *argument)
 	} else {
 		debug("app_load_config failed!");
 		snprintf(app_info->mechine.device_id, sizeof(app_info->mechine.device_id), "%s", "0000000000");
-		snprintf(app_info->mechine.host, sizeof(app_info->mechine.host), "%s", "112.74.40.227");
-		snprintf(app_info->mechine.port, sizeof(app_info->mechine.port), "%s", "12345");
+		snprintf(app_info->mechine.host, sizeof(app_info->mechine.host), "%s", "10.42.0.1");
+		snprintf(app_info->mechine.port, sizeof(app_info->mechine.port), "%s", "6003");
 		snprintf(app_info->mechine.path, sizeof(app_info->mechine.path), "%s", "");
 		debug("device id:\'%s\', server host:\'%s\', server port:\'%s\'!", app_info->mechine.device_id, app_info->mechine.host, app_info->mechine.port);
 		app_info->mechine.upgrade_enable = 0;
@@ -206,38 +206,22 @@ void app(void const *argument)
 #include "hw_rtc.h"
 #include "hw_adc.h"
 #include "ntc_temperature.h"
-			//extern ADC_HandleTypeDef hadc1;
-			//adc_info_t *adc_info = get_or_alloc_adc_info(&hadc1);
-			//static int set = 0;
-			//struct tm *tm = rtc_get_datetime();
-			//debug("tm %04d-%02d-%02d %02d:%02d:%02d",
-			//      tm->tm_year + 1900,
-			//      tm->tm_mon + 1,
-			//      tm->tm_mday,
-			//      tm->tm_hour,
-			//      tm->tm_min,
-			//      tm->tm_sec);
+			extern ADC_HandleTypeDef hadc1;
+			adc_info_t *adc_info = get_or_alloc_adc_info(&hadc1);
+			struct tm *tm = rtc_get_datetime();
+			debug("tm %04d-%02d-%02d %02d:%02d:%02d",
+			      tm->tm_year + 1900,
+			      tm->tm_mon + 1,
+			      tm->tm_mday,
+			      tm->tm_hour,
+			      tm->tm_min,
+			      tm->tm_sec);
 
-			//if(tm->tm_sec == 30) {
-			//	if(set == 0) {
-			//		set = 1;
-			//	}
-
-			//	debug("set rtc ...");
-			//	tm->tm_year = 2021 - 1900;
-			//	tm->tm_mon  = 5 - 1;
-			//	tm->tm_mday = 15;
-			//	tm->tm_hour = 15;
-			//	tm->tm_min = 52;
-			//	tm->tm_sec = 0;
-			//	debug("rtc_set_datetime(tm):%d", rtc_set_datetime(tm));
-			//}
-
-			//OS_ASSERT(adc_info != NULL);
-			//debug("adc[0]:%d, temperature:%d", get_adc_value(adc_info, 0), get_ntc_temperature(10000, get_adc_value(adc_info, 0), 4095));
-			//debug("adc[1]:%d", get_adc_value(adc_info, 1));
-			//debug("adc[2]:%d", get_adc_value(adc_info, 2));
-			//debug("adc[3]:%d", get_adc_value(adc_info, 3));
+			OS_ASSERT(adc_info != NULL);
+			debug("adc[0]:%d, temperature:%d", get_adc_value(adc_info, 0), get_ntc_temperature(10000, get_adc_value(adc_info, 0), 4095));
+			debug("adc[1]:%d", get_adc_value(adc_info, 1));
+			debug("adc[2]:%d", get_adc_value(adc_info, 2));
+			debug("adc[3]:%d", get_adc_value(adc_info, 3));
 		}
 	}
 }

@@ -6,7 +6,7 @@
  *   文件名称：probe_tool_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年03月20日 星期五 12时48分07秒
- *   修改日期：2021年05月19日 星期三 19时15分26秒
+ *   修改日期：2021年05月21日 星期五 21时20分43秒
  *   描    述：
  *
  *================================================================*/
@@ -22,6 +22,7 @@
 #include "iap.h"
 #include "app.h"
 #include "ftp_client.h"
+#include "hw_rtc.h"
 
 #include "sal_hook.h"
 
@@ -199,11 +200,11 @@ static void fn5(request_t *request)
 	_printf("cpu usage:%d\n", cpu_usage);
 	_printf("free os heap size:%d\n", size);
 	_printf("total heap size:%d, free heap size:%d, used:%d, heap count:%d, max heap size:%d\n",
-			total_heap_size,
-			total_heap_size - heap_size,
-			heap_size,
-			heap_count,
-			heap_max_size);
+	        total_heap_size,
+	        total_heap_size - heap_size,
+	        heap_size,
+	        heap_count,
+	        heap_max_size);
 	_printf("current ticks:%lu\n", ticks);
 	_printf("%lu day %lu hour %lu min %lu sec\n",
 	        ticks / (1000 * 60 * 60 * 24),//day
@@ -405,6 +406,36 @@ static void fn12(request_t *request)
 	os_free(ftp_server_path);
 }
 
+static void fn13(request_t *request)
+{
+	char *content = (char *)(request + 1);
+	int fn;
+	int catched;
+	int ret;
+	struct tm tm;
+
+	ret = sscanf(content, "%d %04d%02d%02d%02d%02d%02d %n",
+	             &fn,
+	             &tm.tm_year,
+	             &tm.tm_mon,
+	             &tm.tm_mday,
+	             &tm.tm_hour,
+	             &tm.tm_min,
+	             &tm.tm_sec,
+	             &catched);
+	debug("ret:%d", ret);
+	tm.tm_year -= 1900;
+	tm.tm_mon -= 1;
+
+	if(ret == 7) {
+		if(rtc_set_datetime(&tm) == 0) {
+			debug("set time successful!");
+		} else {
+			debug("set time failed!");
+		}
+	}
+}
+
 static server_item_t server_map[] = {
 	{1, fn1},
 	{2, fn2},
@@ -418,6 +449,7 @@ static server_item_t server_map[] = {
 	{10, fn10},
 	{11, fn11},
 	{12, fn12},
+	{13, fn13},
 };
 
 server_map_info_t server_map_info = {
