@@ -16,7 +16,7 @@
 
 static void handle_channel_periodic(void *_channel_info, void *_channels_info)
 {
-	//debug("channel_id %d periodic!", ((channel_info_t *)_channel_info)->channel_id);
+	debug("channel_id %d periodic!", ((channel_info_t *)_channel_info)->channel_id);
 }
 
 static int _handle_channel_event(channel_info_t *channel_info, channel_event_t *channel_event)
@@ -41,7 +41,6 @@ static int _handle_channel_event(channel_info_t *channel_info, channel_event_t *
 
 	return ret;
 }
-
 
 static void handle_channel_event(void *_channel_info, void *_channels_event)
 {

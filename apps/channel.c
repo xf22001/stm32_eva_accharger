@@ -6,7 +6,7 @@
  *   文件名称：channel.c
  *   创 建 者：肖飞
  *   创建日期：2021年04月08日 星期四 09时51分12秒
- *   修改日期：2021年05月11日 星期二 10时50分44秒
+ *   修改日期：2021年05月22日 星期六 13时26分03秒
  *   描    述：
  *
  *================================================================*/
@@ -60,11 +60,14 @@ static int channel_init(channel_info_t *channel_info)
 	return ret;
 }
 
-int handle_channel_event(channel_info_t *channel_info, channel_event_t *channel_event)
+static void handle_channels_periodic(void *_channels_info, void *chain_ctx)
+{
+	debug("channels_info periodic!");
+}
+
+static int handle_channel_event(channels_info_t *channels_info, channel_event_t *channel_event)
 {
 	int ret = -1;
-
-	debug("channel_id %d process event %s!", channel_info->channel_id, get_channel_event_type_des(channel_event->type));
 
 	switch(channel_event->type) {
 		case CHANNEL_EVENT_TYPE_START_CHANNEL: {
@@ -82,6 +85,29 @@ int handle_channel_event(channel_info_t *channel_info, channel_event_t *channel_
 
 	return ret;
 }
+
+static void handle_channels_event(void *_channels_info, void *_channels_event)
+{
+	channels_info_t *channels_info = (channels_info_t *)_channels_info;
+	channels_event_t *channels_event = (channels_event_t *)_channels_event;
+
+	debug("");
+
+	debug("channels_info process event %s!", get_channel_event_type_des(channels_event->type));
+
+	switch(channels_event->type) {
+		case CHANNELS_EVENT_CHANNEL_EVENT: {
+			channel_event_t *channel_event = &channels_event->event.channel_event;
+			handle_channel_event(channels_info, channel_event);
+		}
+		break;
+
+		default: {
+		}
+		break;
+	}
+}
+
 
 channel_info_t *alloc_channels_channel_info(channels_info_t *channels_info)
 {
@@ -103,6 +129,13 @@ channel_info_t *alloc_channels_channel_info(channels_info_t *channels_info)
 		channel_init(channel_info_item);
 	}
 
+	channels_info->periodic_callback_item.fn = handle_channels_periodic;
+	channels_info->periodic_callback_item.fn_ctx = channels_info;
+	OS_ASSERT(register_callback(channels_info->common_periodic_chain, &channels_info->periodic_callback_item) == 0);
+
+	channels_info->event_callback_item.fn = handle_channels_event;
+	channels_info->event_callback_item.fn_ctx = channels_info;
+	OS_ASSERT(register_callback(channels_info->common_event_chain, &channels_info->event_callback_item) == 0);
 
 	return channel_info;
 }

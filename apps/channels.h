@@ -6,7 +6,7 @@
  *   文件名称：channels.h
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 10时08分44秒
- *   修改日期：2021年05月11日 星期二 10时12分17秒
+ *   修改日期：2021年05月22日 星期六 13时06分07秒
  *   描    述：
  *
  *================================================================*/
@@ -92,6 +92,9 @@ typedef struct {
 	event_pool_t *event_pool;
 	callback_chain_t *common_periodic_chain;
 	callback_chain_t *common_event_chain;
+
+	callback_item_t periodic_callback_item;
+	callback_item_t event_callback_item;
 
 	uint8_t configed;
 
