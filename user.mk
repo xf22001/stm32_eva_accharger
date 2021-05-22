@@ -6,7 +6,7 @@
 #   文件名称：user.mk
 #   创 建 者：肖飞
 #   创建日期：2019年10月25日 星期五 13时04分38秒
-#   修改日期：2021年05月19日 星期三 19时08分34秒
+#   修改日期：2021年05月22日 星期六 13时40分02秒
 #   描    述：
 #
 #================================================================
@@ -19,6 +19,7 @@ USER_C_INCLUDES += -Iapps/modules/os
 USER_C_INCLUDES += -Iapps/modules/drivers
 USER_C_INCLUDES += -Iapps/modules/hardware
 USER_C_INCLUDES += -Iapps/modules/app
+USER_C_INCLUDES += -Iapps/modules/app/charger
 USER_C_INCLUDES += -Iapps/modules/app/vfs_disk
 USER_C_INCLUDES += -Iapps/modules/tests
 
@@ -47,25 +48,13 @@ USER_C_SOURCES += apps/uart_debug_handler.c
 USER_C_SOURCES += apps/probe_tool_handler.c
 USER_C_SOURCES += apps/channels_config.c
 USER_C_SOURCES += apps/can_config.c
-USER_C_SOURCES += apps/channels.c
-USER_C_SOURCES += apps/channel.c
-USER_C_SOURCES += apps/channel_handler_dc.c
-USER_C_SOURCES += apps/channel_handler_ac.c
-USER_C_SOURCES += apps/charger.c
-USER_C_SOURCES += apps/charger_handler_bms_native.c
-USER_C_SOURCES += apps/charger_bms.c
-USER_C_SOURCES += apps/charger_bms_gb.c
-USER_C_SOURCES += apps/channels_power_module.c
-USER_C_SOURCES += apps/channels_power_module_native.c
-USER_C_SOURCES += apps/energy_meter.c
-USER_C_SOURCES += apps/energy_meter_handler_dc_native.c
 USER_C_SOURCES += apps/wiznet_spi.c
 
 USER_C_SOURCES += apps/modules/app/eeprom_config.c
 USER_C_SOURCES += apps/modules/app/poll_loop.c
+USER_C_SOURCES += apps/modules/app/probe_tool.c
 USER_C_SOURCES += apps/modules/app/uart_debug.c
 USER_C_SOURCES += apps/modules/app/file_log.c
-USER_C_SOURCES += apps/modules/app/probe_tool.c
 USER_C_SOURCES += apps/modules/app/request.c
 USER_C_SOURCES += apps/modules/app/net_client.c
 USER_C_SOURCES += apps/modules/app/net_protocol_udp.c
@@ -96,6 +85,18 @@ USER_C_SOURCES += apps/modules/app/can_command.c
 USER_C_SOURCES += apps/modules/app/usb_upgrade.c
 USER_C_SOURCES += apps/modules/app/voice.c
 USER_C_SOURCES += apps/modules/app/ntc_temperature.c
+USER_C_SOURCES += apps/modules/app/charger/channels.c
+USER_C_SOURCES += apps/modules/app/charger/channel.c
+USER_C_SOURCES += apps/modules/app/charger/channel_handler_dc.c
+USER_C_SOURCES += apps/modules/app/charger/channel_handler_ac.c
+USER_C_SOURCES += apps/modules/app/charger/charger.c
+USER_C_SOURCES += apps/modules/app/charger/charger_handler_bms_native.c
+USER_C_SOURCES += apps/modules/app/charger/charger_bms.c
+USER_C_SOURCES += apps/modules/app/charger/charger_bms_gb.c
+USER_C_SOURCES += apps/modules/app/charger/channels_power_module.c
+USER_C_SOURCES += apps/modules/app/charger/channels_power_module_native.c
+USER_C_SOURCES += apps/modules/app/charger/energy_meter.c
+USER_C_SOURCES += apps/modules/app/charger/energy_meter_handler_dc_native.c
 USER_C_SOURCES += apps/modules/hardware/flash.c
 USER_C_SOURCES += apps/modules/hardware/eeprom.c
 USER_C_SOURCES += apps/modules/hardware/dlt_645_master_txrx.c
