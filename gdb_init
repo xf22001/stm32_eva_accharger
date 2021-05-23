@@ -50,7 +50,7 @@ end
 # $arg0 should be the address of the list_head
 # $arg1 should be the object type of the list item
 # $arg2 should be the object list field name
-define dump_fun_list
+define dump_list
 	set $list_head = $arg0
 	set $loop = $arg0
 
