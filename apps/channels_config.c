@@ -6,15 +6,17 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2021年05月15日 星期六 15时00分57秒
+ *   修改日期：2021年05月24日 星期一 16时37分09秒
  *   描    述：
  *
  *================================================================*/
 #include "channels_config.h"
 #include "os_utils.h"
 #include "channels_power_module.h"
+#include "main.h"
 
 extern CAN_HandleTypeDef hcan1;
+extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart3;
 extern UART_HandleTypeDef huart6;
 
@@ -118,6 +120,18 @@ static channels_config_t channels_config_0 = {
 		.channels_power_module_number = 0,
 		.hcan_power = NULL,
 		.channels_power_module_type = CHANNELS_POWER_MODULE_TYPE_NONE,
+	},
+	.voice_config = {
+		.data_port = voi_data_GPIO_Port,
+		.data_pin = voi_data_Pin,
+		.cs_port = voi_cs_GPIO_Port,
+		.cs_pin = voi_cs_Pin,
+		.clk_port = voi_clk_GPIO_Port,
+		.clk_pin = voi_clk_Pin,
+	},
+	.card_reader_config = {
+		.card_reader_type = CARD_READER_TYPE_ZLG,
+		.huart_card_reader = &huart1,
 	},
 };
 

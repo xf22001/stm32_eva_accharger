@@ -6,7 +6,7 @@
  *   文件名称：channels_config.h
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 11时00分11秒
- *   修改日期：2021年05月11日 星期二 16时59分33秒
+ *   修改日期：2021年05月24日 星期一 16时26分47秒
  *   描    述：
  *
  *================================================================*/
@@ -100,11 +100,21 @@ typedef struct {
 	uint16_t clk_pin;
 } voice_config_t;
 
+typedef enum {
+	CARD_READER_TYPE_ZLG = 0,
+} card_reader_type_t;
+
+typedef struct {
+	card_reader_type_t card_reader_type;
+	UART_HandleTypeDef *huart_card_reader;
+} card_reader_config_t;
+
 typedef struct {
 	uint8_t id;
 	channels_channels_config_t channels_config;
 	channels_power_module_config_t power_module_config;
 	voice_config_t voice_config;
+	card_reader_config_t card_reader_config;
 } channels_config_t;
 
 char *get_channel_config_channel_type(channel_type_t type);
