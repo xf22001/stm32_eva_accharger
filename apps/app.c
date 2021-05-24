@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年05月24日 星期一 10时17分40秒
+ *   修改日期：2021年05月24日 星期一 14时49分07秒
  *   描    述：
  *
  *================================================================*/
@@ -48,7 +48,6 @@ extern UART_HandleTypeDef huart4;
 extern SPI_HandleTypeDef hspi2;
 
 static app_info_t *app_info = NULL;
-static eeprom_info_t *eeprom_info = NULL;
 static os_signal_t app_event = NULL;
 
 app_info_t *get_app_info(void)
@@ -61,7 +60,7 @@ static int app_load_config(void)
 	eeprom_layout_t *eeprom_layout = get_eeprom_layout();
 	size_t offset = (size_t)&eeprom_layout->mechine_info_seg.eeprom_mechine_info.mechine_info;
 	debug("offset:%d", offset);
-	return eeprom_load_config_item(eeprom_info, "eva", &app_info->mechine, sizeof(mechine_info_t), offset);
+	return eeprom_load_config_item(app_info->eeprom_info, "eva", &app_info->mechine_info, sizeof(mechine_info_t), offset);
 }
 
 int app_save_config(void)
@@ -69,7 +68,7 @@ int app_save_config(void)
 	eeprom_layout_t *eeprom_layout = get_eeprom_layout();
 	size_t offset = (size_t)&eeprom_layout->mechine_info_seg.eeprom_mechine_info.mechine_info;
 	debug("offset:%d", offset);
-	return eeprom_save_config_item(eeprom_info, "eva", &app_info->mechine, sizeof(mechine_info_t), offset);
+	return eeprom_save_config_item(app_info->eeprom_info, "eva", &app_info->mechine_info, sizeof(mechine_info_t), offset);
 }
 
 void app_init(void)
@@ -86,9 +85,23 @@ void app(void const *argument)
 {
 
 	poll_loop_t *poll_loop;
+
+	app_info = (app_info_t *)os_calloc(1, sizeof(app_info_t));
+
+	OS_ASSERT(app_info != NULL);
+
+	app_info->eeprom_info = get_or_alloc_eeprom_info(get_or_alloc_spi_info(&hspi2),
+	                                       e2cs_GPIO_Port,
+	                                       e2cs_Pin,
+	                                       NULL,
+	                                       0);
+
+	OS_ASSERT(app_info->eeprom_info != NULL);
+
 	add_log_handler((log_fn_t)log_uart_data);
 	add_log_handler((log_fn_t)log_udp_data);
 	add_log_handler((log_fn_t)log_file_data);
+
 
 	{
 		uart_info_t *uart_info = get_or_alloc_uart_info(&huart4);
@@ -130,30 +143,18 @@ void app(void const *argument)
 
 	debug("===========================================start app============================================");
 
-	app_info = (app_info_t *)os_calloc(1, sizeof(app_info_t));
-
-	OS_ASSERT(app_info != NULL);
-
-	eeprom_info = get_or_alloc_eeprom_info(get_or_alloc_spi_info(&hspi2),
-	                                       e2cs_GPIO_Port,
-	                                       e2cs_Pin,
-	                                       NULL,
-	                                       0);
-
-	OS_ASSERT(eeprom_info != NULL);
-
 	if(app_load_config() == 0) {
 		debug("app_load_config successful!");
-		debug("device id:\'%s\', server host:\'%s\', server port:\'%s\'!", app_info->mechine.device_id, app_info->mechine.host, app_info->mechine.port);
+		debug("device id:\'%s\', server host:\'%s\', server port:\'%s\'!", app_info->mechine_info.device_id, app_info->mechine_info.host, app_info->mechine_info.port);
 		app_info->available = 1;
 	} else {
 		debug("app_load_config failed!");
-		snprintf(app_info->mechine.device_id, sizeof(app_info->mechine.device_id), "%s", "0000000000");
-		snprintf(app_info->mechine.host, sizeof(app_info->mechine.host), "%s", "10.42.0.1");
-		snprintf(app_info->mechine.port, sizeof(app_info->mechine.port), "%s", "6003");
-		snprintf(app_info->mechine.path, sizeof(app_info->mechine.path), "%s", "");
-		debug("device id:\'%s\', server host:\'%s\', server port:\'%s\'!", app_info->mechine.device_id, app_info->mechine.host, app_info->mechine.port);
-		app_info->mechine.upgrade_enable = 0;
+		snprintf(app_info->mechine_info.device_id, sizeof(app_info->mechine_info.device_id), "%s", "0000000000");
+		snprintf(app_info->mechine_info.host, sizeof(app_info->mechine_info.host), "%s", "10.42.0.1");
+		snprintf(app_info->mechine_info.port, sizeof(app_info->mechine_info.port), "%s", "6003");
+		snprintf(app_info->mechine_info.path, sizeof(app_info->mechine_info.path), "%s", "");
+		debug("device id:\'%s\', server host:\'%s\', server port:\'%s\'!", app_info->mechine_info.device_id, app_info->mechine_info.host, app_info->mechine_info.port);
+		app_info->mechine_info.upgrade_enable = 0;
 		app_save_config();
 		app_info->available = 1;
 	}

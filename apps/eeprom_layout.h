@@ -6,7 +6,7 @@
  *   文件名称：eeprom_layout.h
  *   创 建 者：肖飞
  *   创建日期：2021年03月30日 星期二 16时36分37秒
- *   修改日期：2021年05月24日 星期一 10时15分28秒
+ *   修改日期：2021年05月24日 星期一 10时34分08秒
  *   描    述：
  *
  *================================================================*/
@@ -71,11 +71,11 @@ typedef struct {
 	} channel_record_seg;
 } eeprom_layout_t;
 
+#pragma pack(pop)
+
 static inline eeprom_layout_t *get_eeprom_layout(void)
 {
 	return (eeprom_layout_t *)0;
 }
-
-#pragma pack(pop)
 
 #endif //_EEPROM_LAYOUT_H
