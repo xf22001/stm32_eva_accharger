@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年05月23日 星期日 12时00分14秒
+ *   修改日期：2021年05月24日 星期一 10时17分40秒
  *   描    述：
  *
  *================================================================*/
@@ -59,7 +59,7 @@ app_info_t *get_app_info(void)
 static int app_load_config(void)
 {
 	eeprom_layout_t *eeprom_layout = get_eeprom_layout();
-	size_t offset = (size_t)&eeprom_layout->mechine_info.mechine;
+	size_t offset = (size_t)&eeprom_layout->mechine_info_seg.eeprom_mechine_info.mechine_info;
 	debug("offset:%d", offset);
 	return eeprom_load_config_item(eeprom_info, "eva", &app_info->mechine, sizeof(mechine_info_t), offset);
 }
@@ -67,7 +67,7 @@ static int app_load_config(void)
 int app_save_config(void)
 {
 	eeprom_layout_t *eeprom_layout = get_eeprom_layout();
-	size_t offset = (size_t)&eeprom_layout->mechine_info.mechine;
+	size_t offset = (size_t)&eeprom_layout->mechine_info_seg.eeprom_mechine_info.mechine_info;
 	debug("offset:%d", offset);
 	return eeprom_save_config_item(eeprom_info, "eva", &app_info->mechine, sizeof(mechine_info_t), offset);
 }
