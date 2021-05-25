@@ -3294,6 +3294,13 @@
 #endif
 #include "mbedtls/check_config.h"
 
+#define MBEDTLS_SSL_SRV_RESPECT_CLIENT_PREFERENCE
+#define MBEDTLS_SSL_PROTO_TLS1_2
+#define MBEDTLS_NET_C
+#define MBEDTLS_SSL_CLI_C
+#define MBEDTLS_SSL_TLS_C
+#define MBEDTLS_SSL_TLS_C
+
 /* USER CODE END 1 */
 
 #endif /* MBEDTLS_CONFIG_H */

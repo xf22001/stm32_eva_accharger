@@ -6,7 +6,7 @@
 #   文件名称：user.mk
 #   创 建 者：肖飞
 #   创建日期：2019年10月25日 星期五 13时04分38秒
-#   修改日期：2021年05月24日 星期一 16时52分24秒
+#   修改日期：2021年05月25日 星期二 20时27分13秒
 #   描    述：
 #
 #================================================================
@@ -123,6 +123,7 @@ USER_C_SOURCES += apps/modules/tests/test_event.c
 
 USER_C_SOURCES += Middlewares/Third_Party/LwIP/src/core/def.c
 USER_C_SOURCES += Middlewares/Third_Party/LwIP/src/core/ipv4/ip4_addr.c
+USER_C_SOURCES += Src/net_sockets.c
 
 USER_CFLAGS += -DtraceTASK_SWITCHED_IN=StartIdleMonitor -DtraceTASK_SWITCHED_OUT=EndIdleMonitor
 USER_CFLAGS += -DSAL_HOOK
