@@ -6,7 +6,7 @@
 #   文件名称：user.mk
 #   创 建 者：肖飞
 #   创建日期：2019年10月25日 星期五 13时04分38秒
-#   修改日期：2021年05月25日 星期二 20时27分13秒
+#   修改日期：2021年05月27日 星期四 11时31分14秒
 #   描    述：
 #
 #================================================================
@@ -128,6 +128,8 @@ USER_C_SOURCES += Src/net_sockets.c
 USER_CFLAGS += -DtraceTASK_SWITCHED_IN=StartIdleMonitor -DtraceTASK_SWITCHED_OUT=EndIdleMonitor
 USER_CFLAGS += -DSAL_HOOK
 USER_CFLAGS += -DLOG_CONFIG_FILE=\"log_config.h\"
+#USER_CFLAGS += -DLOG_DISABLE
+#USER_CFLAGS += -DALLOC_TRACE_DISABLE
 
 C_SOURCES += $(USER_C_SOURCES)
 
