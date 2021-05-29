@@ -33,7 +33,6 @@
 
 #include "log.h"
 
-#include "channels_config.h"
 #include "channels.h"
 #include "duty_cycle_pattern.h"
 
@@ -163,25 +162,7 @@ void app(void const *argument)
 
 	//test_event();
 
-	{
-		channels_config_t *channels_config;
-		channels_info_t *channels_info;
-		osThreadDef(channels, task_channels, osPriorityNormal, 0, 128 * 2 * 2);
-
-		channels_config = get_channels_config(0);
-
-		if(channels_config == NULL) {
-			app_panic();
-		}
-
-		channels_info = get_or_alloc_channels_info(channels_config);
-
-		if(channels_info == NULL) {
-			app_panic();
-		}
-
-		osThreadCreate(osThread(channels), channels_info);
-	}
+	start_channels();
 
 	while(1) {
 		uint32_t event;
