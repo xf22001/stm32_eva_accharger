@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年05月24日 星期一 14时49分07秒
+ *   修改日期：2021年05月29日 星期六 11时42分36秒
  *   描    述：
  *
  *================================================================*/
@@ -190,14 +190,15 @@ void app(void const *argument)
 #include "ntc_temperature.h"
 			extern ADC_HandleTypeDef hadc1;
 			adc_info_t *adc_info = get_or_alloc_adc_info(&hadc1);
-			struct tm *tm = rtc_get_datetime();
+			struct tm tm;
+			rtc_get_datetime(&tm);
 			debug("tm %04d-%02d-%02d %02d:%02d:%02d",
-			      tm->tm_year + 1900,
-			      tm->tm_mon + 1,
-			      tm->tm_mday,
-			      tm->tm_hour,
-			      tm->tm_min,
-			      tm->tm_sec);
+			      tm.tm_year + 1900,
+			      tm.tm_mon + 1,
+			      tm.tm_mday,
+			      tm.tm_hour,
+			      tm.tm_min,
+			      tm.tm_sec);
 
 			OS_ASSERT(adc_info != NULL);
 			debug("adc[0]:%d, temperature:%d", get_adc_value(adc_info, 0), get_ntc_temperature(10000, get_adc_value(adc_info, 0), 4095));
