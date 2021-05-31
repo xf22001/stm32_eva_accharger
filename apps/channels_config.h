@@ -6,7 +6,7 @@
  *   文件名称：channels_config.h
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 11时00分11秒
- *   修改日期：2021年05月24日 星期一 16时26分47秒
+ *   修改日期：2021年05月31日 星期一 10时49分54秒
  *   描    述：
  *
  *================================================================*/
@@ -47,6 +47,17 @@ typedef enum {
 
 typedef struct {
 	channel_charger_type_t charger_type;
+
+	//ac
+	TIM_HandleTypeDef *cp_pwm_timer;
+	uint32_t cp_pwm_channel;
+
+	GPIO_TypeDef *kl_gpio;
+	uint16_t kl_pin;
+	GPIO_TypeDef *kn_gpio;
+	uint16_t kn_pin;
+
+	//dc
 	channel_charger_bms_type_t charger_bms_type;
 	CAN_HandleTypeDef *hcan_bms;
 } channel_charger_config_t;

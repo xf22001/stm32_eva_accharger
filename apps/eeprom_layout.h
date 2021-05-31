@@ -6,7 +6,7 @@
  *   文件名称：eeprom_layout.h
  *   创 建 者：肖飞
  *   创建日期：2021年03月30日 星期二 16时36分37秒
- *   修改日期：2021年05月24日 星期一 10时34分08秒
+ *   修改日期：2021年05月31日 星期一 09时41分51秒
  *   描    述：
  *
  *================================================================*/
@@ -45,6 +45,11 @@ typedef struct {
 
 typedef struct {
 	eeprom_config_item_head_t head;
+	channel_settings_t channel_settings;
+} eeprom_channel_settings_t;
+
+typedef struct {
+	eeprom_config_item_head_t head;
 	channel_record_info_t channel_record_info;
 } eeprom_channel_record_info_t;
 
@@ -60,6 +65,7 @@ typedef struct {
 	} mechine_info_seg;
 	union {
 		eeprom_channels_settings_t eeprom_channels_settings;
+		eeprom_channel_settings_t eeprom_channel_settings[0];
 		uint8_t seg[2 * 1024];
 	} channels_settings_seg;
 	union {

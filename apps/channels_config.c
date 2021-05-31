@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2021年05月24日 星期一 16时37分09秒
+ *   修改日期：2021年05月31日 星期一 10时50分45秒
  *   描    述：
  *
  *================================================================*/
@@ -19,6 +19,7 @@ extern CAN_HandleTypeDef hcan1;
 extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart3;
 extern UART_HandleTypeDef huart6;
+extern TIM_HandleTypeDef htim3;
 
 char *get_channel_config_channel_type(channel_type_t type)
 {
@@ -83,6 +84,12 @@ static channel_config_t channel0_config = {
 	.channel_type = CHANNEL_TYPE_AC,
 	.charger_config = {
 		.charger_type = CHANNEL_CHARGER_TYPE_AC_NATIVE,
+		.cp_pwm_timer = &htim3,
+		.cp_pwm_channel = TIM_CHANNEL_3,
+		.kl_gpio = kl1_GPIO_Port,
+		.kl_pin = kl1_Pin,
+		.kn_gpio = kn1_GPIO_Port,
+		.kn_pin = kn1_Pin,
 		.charger_bms_type = CHANNEL_CHARGER_BMS_TYPE_NONE,
 		.hcan_bms = NULL,
 	},
@@ -96,6 +103,12 @@ static channel_config_t channel1_config = {
 	.channel_type = CHANNEL_TYPE_AC,
 	.charger_config = {
 		.charger_type = CHANNEL_CHARGER_TYPE_AC_NATIVE,
+		.cp_pwm_timer = &htim3,
+		.cp_pwm_channel = TIM_CHANNEL_4,
+		.kl_gpio = kl2_GPIO_Port,
+		.kl_pin = kl2_Pin,
+		.kn_gpio = kn2_GPIO_Port,
+		.kn_pin = kn2_Pin,
 		.charger_bms_type = CHANNEL_CHARGER_BMS_TYPE_NONE,
 		.hcan_bms = NULL,
 	},
