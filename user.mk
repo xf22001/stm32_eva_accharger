@@ -6,7 +6,7 @@
 #   文件名称：user.mk
 #   创 建 者：肖飞
 #   创建日期：2019年10月25日 星期五 13时04分38秒
-#   修改日期：2021年05月31日 星期一 14时16分13秒
+#   修改日期：2021年06月02日 星期三 11时15分45秒
 #   描    述：
 #
 #================================================================
@@ -63,6 +63,7 @@ USER_C_SOURCES += apps/modules/app/net_protocol_ws.c
 USER_C_SOURCES += apps/modules/app/request_default.c
 USER_C_SOURCES += apps/modules/app/https.c
 USER_C_SOURCES += apps/modules/app/request_ws.c
+USER_C_SOURCES += apps/modules/app/request_sse.c
 USER_C_SOURCES += apps/modules/app/ftp_client.c
 USER_C_SOURCES += apps/modules/app/vfs_disk/vfs.c
 USER_C_SOURCES += apps/modules/app/mt_file.c
