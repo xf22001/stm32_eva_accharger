@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2021年05月31日 星期一 10时50分45秒
+ *   修改日期：2021年06月04日 星期五 23时44分42秒
  *   描    述：
  *
  *================================================================*/
@@ -44,12 +44,9 @@ char *get_channel_config_charger_type(channel_charger_type_t type)
 
 	switch(type) {
 			add_des_case(CHANNEL_CHARGER_TYPE_NONE);
-			add_des_case(CHANNEL_CHARGER_TYPE_BMS_NATIVE);
+			add_des_case(CHANNEL_CHARGER_TYPE_BMS_GB);
 			add_des_case(CHANNEL_CHARGER_TYPE_BMS_PROXY);
-			add_des_case(CHANNEL_CHARGER_TYPE_BMS_PROXY_AND_NATIVE);
-			add_des_case(CHANNEL_CHARGER_TYPE_AC_NATIVE);
-			add_des_case(CHANNEL_CHARGER_TYPE_AC_PROXY);
-			add_des_case(CHANNEL_CHARGER_TYPE_AC_PROXY_AND_NATIVE);
+			add_des_case(CHANNEL_CHARGER_TYPE_BMS_PROXY_AND_GB);
 
 		default: {
 		}
@@ -81,16 +78,15 @@ char *get_channel_config_energy_meter_type(channel_energy_meter_type_t type)
 }
 
 static channel_config_t channel0_config = {
-	.channel_type = CHANNEL_TYPE_AC,
+	.channel_type = CHANNEL_TYPE_DC,
 	.charger_config = {
-		.charger_type = CHANNEL_CHARGER_TYPE_AC_NATIVE,
 		.cp_pwm_timer = &htim3,
 		.cp_pwm_channel = TIM_CHANNEL_3,
 		.kl_gpio = kl1_GPIO_Port,
 		.kl_pin = kl1_Pin,
 		.kn_gpio = kn1_GPIO_Port,
 		.kn_pin = kn1_Pin,
-		.charger_bms_type = CHANNEL_CHARGER_BMS_TYPE_NONE,
+		.channel_charger_type = CHANNEL_CHARGER_TYPE_NONE,
 		.hcan_bms = NULL,
 	},
 	.energy_meter_config = {
@@ -100,16 +96,15 @@ static channel_config_t channel0_config = {
 };
 
 static channel_config_t channel1_config = {
-	.channel_type = CHANNEL_TYPE_AC,
+	.channel_type = CHANNEL_TYPE_DC,
 	.charger_config = {
-		.charger_type = CHANNEL_CHARGER_TYPE_AC_NATIVE,
 		.cp_pwm_timer = &htim3,
 		.cp_pwm_channel = TIM_CHANNEL_4,
 		.kl_gpio = kl2_GPIO_Port,
 		.kl_pin = kl2_Pin,
 		.kn_gpio = kn2_GPIO_Port,
 		.kn_pin = kn2_Pin,
-		.charger_bms_type = CHANNEL_CHARGER_BMS_TYPE_NONE,
+		.channel_charger_type = CHANNEL_CHARGER_TYPE_NONE,
 		.hcan_bms = NULL,
 	},
 	.energy_meter_config = {

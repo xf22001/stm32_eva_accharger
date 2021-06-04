@@ -1,12 +1,12 @@
 
 
 /*================================================================
- *   
- *   
+ *
+ *
  *   文件名称：wiznet_spi.c
  *   创 建 者：肖飞
  *   创建日期：2021年05月19日 星期三 09时47分16秒
- *   修改日期：2021年05月19日 星期三 18时55分53秒
+ *   修改日期：2021年06月04日 星期五 22时56分59秒
  *   描    述：
  *
  *================================================================*/
@@ -78,3 +78,7 @@ void wiznet_spi_cs_deselect(void)
 	HAL_GPIO_WritePin(spi1_cs_GPIO_Port, spi1_cs_Pin, GPIO_PIN_SET);
 }
 
+void set_lan_led(GPIO_PinState PinState)
+{
+	HAL_GPIO_WritePin(ledeth_GPIO_Port, ledeth_Pin, PinState);
+}
