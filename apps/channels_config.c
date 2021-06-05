@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2021年06月04日 星期五 23时44分42秒
+ *   修改日期：2021年06月05日 星期六 12时54分28秒
  *   描    述：
  *
  *================================================================*/
@@ -62,12 +62,11 @@ char *get_channel_config_energy_meter_type(channel_energy_meter_type_t type)
 
 	switch(type) {
 			add_des_case(CHANNEL_ENERGY_METER_TYPE_NONE);
-			add_des_case(CHANNEL_ENERGY_METER_TYPE_DC_NATIVE);
-			add_des_case(CHANNEL_ENERGY_METER_TYPE_DC_PROXY);
-			add_des_case(CHANNEL_ENERGY_METER_TYPE_DC_PROXY_AND_NATIVE);
-			add_des_case(CHANNEL_ENERGY_METER_TYPE_AC_NATIVE);
-			add_des_case(CHANNEL_ENERGY_METER_TYPE_AC_PROXY);
-			add_des_case(CHANNEL_ENERGY_METER_TYPE_AC_PROXY_AND_NATIVE);
+			add_des_case(CHANNEL_ENERGY_METER_TYPE_PROXY);
+			add_des_case(CHANNEL_ENERGY_METER_TYPE_DC);
+			add_des_case(CHANNEL_ENERGY_METER_TYPE_PROXY_AND_DC);
+			add_des_case(CHANNEL_ENERGY_METER_TYPE_AC);
+			add_des_case(CHANNEL_ENERGY_METER_TYPE_PROXY_AND_AC);
 
 		default: {
 		}
@@ -78,7 +77,7 @@ char *get_channel_config_energy_meter_type(channel_energy_meter_type_t type)
 }
 
 static channel_config_t channel0_config = {
-	.channel_type = CHANNEL_TYPE_DC,
+	.channel_type = CHANNEL_TYPE_AC,
 	.charger_config = {
 		.cp_pwm_timer = &htim3,
 		.cp_pwm_channel = TIM_CHANNEL_3,
@@ -90,13 +89,13 @@ static channel_config_t channel0_config = {
 		.hcan_bms = NULL,
 	},
 	.energy_meter_config = {
-		.energy_meter_type = CHANNEL_ENERGY_METER_TYPE_AC_NATIVE,
+		.energy_meter_type = CHANNEL_ENERGY_METER_TYPE_AC,
 		.huart_energy_meter = &huart3,
 	},
 };
 
 static channel_config_t channel1_config = {
-	.channel_type = CHANNEL_TYPE_DC,
+	.channel_type = CHANNEL_TYPE_AC,
 	.charger_config = {
 		.cp_pwm_timer = &htim3,
 		.cp_pwm_channel = TIM_CHANNEL_4,
@@ -108,7 +107,7 @@ static channel_config_t channel1_config = {
 		.hcan_bms = NULL,
 	},
 	.energy_meter_config = {
-		.energy_meter_type = CHANNEL_ENERGY_METER_TYPE_AC_NATIVE,
+		.energy_meter_type = CHANNEL_ENERGY_METER_TYPE_AC,
 		.huart_energy_meter = &huart6,
 	},
 };
