@@ -6,7 +6,7 @@
 #   文件名称：user.mk
 #   创 建 者：肖飞
 #   创建日期：2019年10月25日 星期五 13时04分38秒
-#   修改日期：2021年06月05日 星期六 13时01分08秒
+#   修改日期：2021年06月06日 星期日 15时41分20秒
 #   描    述：
 #
 #================================================================
@@ -90,6 +90,7 @@ USER_C_SOURCES += apps/modules/app/charger/channels.c
 USER_C_SOURCES += apps/modules/app/charger/channel.c
 USER_C_SOURCES += apps/modules/app/charger/channel_handler_dc.c
 USER_C_SOURCES += apps/modules/app/charger/channel_handler_ac.c
+USER_C_SOURCES += apps/modules/app/charger/channel_handler_proxy.c
 USER_C_SOURCES += apps/modules/app/charger/charger.c
 USER_C_SOURCES += apps/modules/app/charger/charger_bms.c
 USER_C_SOURCES += apps/modules/app/charger/charger_bms_gb.c
@@ -101,6 +102,8 @@ USER_C_SOURCES += apps/modules/app/charger/energy_meter_handler_ac.c
 USER_C_SOURCES += apps/modules/app/charger/channel_record.c
 USER_C_SOURCES += apps/modules/app/charger/card_reader.c
 USER_C_SOURCES += apps/modules/app/charger/card_reader_handler_zlg.c
+USER_C_SOURCES += apps/modules/app/charger/channel_comm_channel.c
+USER_C_SOURCES += apps/modules/app/charger/channel_comm_channels.c
 USER_C_SOURCES += apps/modules/hardware/flash.c
 USER_C_SOURCES += apps/modules/hardware/eeprom.c
 USER_C_SOURCES += apps/modules/hardware/dlt_645_master_txrx.c
