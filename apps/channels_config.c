@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2021年06月06日 星期日 19时42分11秒
+ *   修改日期：2021年06月10日 星期四 15时53分28秒
  *   描    述：
  *
  *================================================================*/
@@ -16,6 +16,7 @@
 #include "main.h"
 
 extern CAN_HandleTypeDef hcan1;
+extern ADC_HandleTypeDef hadc1;
 extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart3;
 extern UART_HandleTypeDef huart6;
@@ -90,6 +91,9 @@ static channel_config_t channel0_config = {
 		.energy_meter_type = CHANNEL_ENERGY_METER_TYPE_AC,
 		.huart_energy_meter = &huart3,
 	},
+	.hcan_channel_comm = &hcan1,
+	.cp_ad_adc = &hadc1,
+	.cp_ad_adc_rank = 2,
 };
 
 static channel_config_t channel1_config = {
@@ -108,6 +112,9 @@ static channel_config_t channel1_config = {
 		.energy_meter_type = CHANNEL_ENERGY_METER_TYPE_AC,
 		.huart_energy_meter = &huart6,
 	},
+	.hcan_channel_comm = &hcan1,
+	.cp_ad_adc = &hadc1,
+	.cp_ad_adc_rank = 3,
 };
 
 static channel_config_t *channel_config_sz[] = {
@@ -136,6 +143,9 @@ static channels_config_t channels_config_0 = {
 		.card_reader_type = CARD_READER_TYPE_ZLG,
 		.huart_card_reader = &huart1,
 	},
+	.hcan_channel_comm = &hcan1,
+	.board_temperature_adc = &hadc1,
+	.board_temperature_adc_rank = 0,
 };
 
 static channels_config_t *channels_config_sz[] = {
