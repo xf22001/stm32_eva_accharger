@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2021年06月18日 星期五 15时01分21秒
+ *   修改日期：2021年06月19日 星期六 11时44分08秒
  *   描    述：
  *
  *================================================================*/
@@ -88,8 +88,6 @@ static channel_config_t channel0_config = {
 		.rey3_pin = rey3_Pin,
 		.rey4_gpio = rey4_GPIO_Port,
 		.rey4_pin = rey4_Pin,
-		.adhe_gpio = adhe_1_GPIO_Port,
-		.adhe_pin = adhe_1_Pin,
 		.channel_charger_type = CHANNEL_CHARGER_TYPE_BMS_NONE,
 		.hcan_bms = NULL,
 	},
@@ -98,8 +96,10 @@ static channel_config_t channel0_config = {
 		.huart_energy_meter = &huart3,
 	},
 	.hcan_channel_comm = &hcan1,
+	.adhe_ad_adc = &hadc1,
+	.adhe_ad_adc_rank = 2,
 	.cp_ad_adc = &hadc1,
-	.cp_ad_adc_rank = 2,
+	.cp_ad_adc_rank = 4,
 };
 
 static channel_config_t channel1_config = {
@@ -115,8 +115,6 @@ static channel_config_t channel1_config = {
 		.rey3_pin = rey3_Pin,
 		.rey4_gpio = rey4_GPIO_Port,
 		.rey4_pin = rey4_Pin,
-		.adhe_gpio = adhe_2_GPIO_Port,
-		.adhe_pin = adhe_2_Pin,
 		.channel_charger_type = CHANNEL_CHARGER_TYPE_BMS_NONE,
 		.hcan_bms = NULL,
 	},
@@ -125,8 +123,10 @@ static channel_config_t channel1_config = {
 		.huart_energy_meter = &huart6,
 	},
 	.hcan_channel_comm = &hcan1,
+	.adhe_ad_adc = &hadc1,
+	.adhe_ad_adc_rank = 3,
 	.cp_ad_adc = &hadc1,
-	.cp_ad_adc_rank = 3,
+	.cp_ad_adc_rank = 5,
 };
 
 static channel_config_t *channel_config_sz[] = {
