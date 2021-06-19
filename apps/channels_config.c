@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2021年06月19日 星期六 11时44分08秒
+ *   修改日期：2021年06月19日 星期六 22时56分57秒
  *   描    述：
  *
  *================================================================*/
@@ -46,8 +46,9 @@ char *get_channel_config_charger_type(channel_charger_type_t type)
 
 	switch(type) {
 			add_des_case(CHANNEL_CHARGER_TYPE_BMS_NONE);
-			add_des_case(CHANNEL_CHARGER_TYPE_BMS_PROXY);
 			add_des_case(CHANNEL_CHARGER_TYPE_BMS_GB);
+			add_des_case(CHANNEL_CHARGER_TYPE_BMS_AC);
+			add_des_case(CHANNEL_CHARGER_TYPE_BMS_PROXY);
 
 		default: {
 		}
@@ -88,7 +89,7 @@ static channel_config_t channel0_config = {
 		.rey3_pin = rey3_Pin,
 		.rey4_gpio = rey4_GPIO_Port,
 		.rey4_pin = rey4_Pin,
-		.channel_charger_type = CHANNEL_CHARGER_TYPE_BMS_NONE,
+		.channel_charger_type = CHANNEL_CHARGER_TYPE_BMS_AC,
 		.hcan_bms = NULL,
 	},
 	.energy_meter_config = {
@@ -115,7 +116,7 @@ static channel_config_t channel1_config = {
 		.rey3_pin = rey3_Pin,
 		.rey4_gpio = rey4_GPIO_Port,
 		.rey4_pin = rey4_Pin,
-		.channel_charger_type = CHANNEL_CHARGER_TYPE_BMS_NONE,
+		.channel_charger_type = CHANNEL_CHARGER_TYPE_BMS_AC,
 		.hcan_bms = NULL,
 	},
 	.energy_meter_config = {
@@ -158,6 +159,8 @@ static channels_config_t channels_config_0 = {
 	.hcan_channel_comm = &hcan1,
 	.board_temperature_adc = &hadc1,
 	.board_temperature_adc_rank = 0,
+	.force_stop_port = esb_GPIO_Port,
+	.force_stop_pin = esb_Pin,
 };
 
 static channels_config_t *channels_config_sz[] = {
