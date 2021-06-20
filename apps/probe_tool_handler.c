@@ -6,7 +6,7 @@
  *   文件名称：probe_tool_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年03月20日 星期五 12时48分07秒
- *   修改日期：2021年05月25日 星期二 20时15分28秒
+ *   修改日期：2021年06月20日 星期日 12时13分19秒
  *   描    述：
  *
  *================================================================*/
@@ -179,6 +179,9 @@ static void get_host_by_name(char *content, uint32_t size)
 
 static void fn4(request_t *request)
 {
+	ip_addr_t *local_ip = get_default_gw();
+	_printf("local host ip:%s\n", inet_ntoa(*local_ip));
+
 	get_host_by_name((char *)(request + 1), request->header.data_size);
 	memset(request, 0, RECV_BUFFER_SIZE);
 }
@@ -267,6 +270,9 @@ static void fn6(request_t *request)
 		} else if(memcmp(protocol, "udp", 3) == 0) {
 			set_net_client_protocol_type(net_client_info, PROTOCOL_UDP);
 			set_net_client_request_type(net_client_info, REQUEST_TYPE_DEFAULT);
+		} else if(memcmp(protocol, "ws", 2) == 0) {
+			set_net_client_protocol_type(net_client_info, PROTOCOL_WS);
+			set_net_client_request_type(net_client_info, REQUEST_TYPE_WEBSOCKET);
 		}
 
 	} else {
@@ -331,11 +337,18 @@ void set_connect_enable(uint8_t enable);
 uint8_t get_connect_enable(void);
 static void fn10(request_t *request)
 {
-	set_connect_enable(1);
+	char *content = (char *)(request + 1);
+	int ret;
+	int fn;
+	int enable;
+	int catched;
 
-	//while(get_connect_enable() == 1) {
-	//	continue;
-	//}
+	ret = sscanf(content, "%d %d %n", &fn, &enable, &catched);
+
+	if(ret == 2) {
+		debug("set connect enable:%d", enable);
+		set_connect_enable(enable);
+	}
 }
 
 static void fn11(request_t *request)
