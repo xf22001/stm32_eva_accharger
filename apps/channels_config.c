@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2021年06月19日 星期六 22时56分57秒
+ *   修改日期：2021年06月20日 星期日 10时41分04秒
  *   描    述：
  *
  *================================================================*/
@@ -79,6 +79,8 @@ char *get_channel_config_energy_meter_type(channel_energy_meter_type_t type)
 static channel_config_t channel0_config = {
 	.channel_type = CHANNEL_TYPE_AC,
 	.charger_config = {
+		.channel_charger_type = CHANNEL_CHARGER_TYPE_BMS_AC,
+		.hcan_bms = NULL,
 		.cp_pwm_timer = &htim3,
 		.cp_pwm_channel = TIM_CHANNEL_3,
 		.kl_gpio = kl1_GPIO_Port,
@@ -89,14 +91,14 @@ static channel_config_t channel0_config = {
 		.rey3_pin = rey3_Pin,
 		.rey4_gpio = rey4_GPIO_Port,
 		.rey4_pin = rey4_Pin,
-		.channel_charger_type = CHANNEL_CHARGER_TYPE_BMS_AC,
-		.hcan_bms = NULL,
 	},
 	.energy_meter_config = {
 		.energy_meter_type = CHANNEL_ENERGY_METER_TYPE_AC,
 		.huart_energy_meter = &huart3,
 	},
 	.hcan_channel_comm = &hcan1,
+	.temperature_adc = &hadc1,
+	.temperature_adc_rank = 0,
 	.adhe_ad_adc = &hadc1,
 	.adhe_ad_adc_rank = 2,
 	.cp_ad_adc = &hadc1,
@@ -106,6 +108,8 @@ static channel_config_t channel0_config = {
 static channel_config_t channel1_config = {
 	.channel_type = CHANNEL_TYPE_AC,
 	.charger_config = {
+		.channel_charger_type = CHANNEL_CHARGER_TYPE_BMS_AC,
+		.hcan_bms = NULL,
 		.cp_pwm_timer = &htim3,
 		.cp_pwm_channel = TIM_CHANNEL_4,
 		.kl_gpio = kl2_GPIO_Port,
@@ -116,14 +120,14 @@ static channel_config_t channel1_config = {
 		.rey3_pin = rey3_Pin,
 		.rey4_gpio = rey4_GPIO_Port,
 		.rey4_pin = rey4_Pin,
-		.channel_charger_type = CHANNEL_CHARGER_TYPE_BMS_AC,
-		.hcan_bms = NULL,
 	},
 	.energy_meter_config = {
 		.energy_meter_type = CHANNEL_ENERGY_METER_TYPE_AC,
 		.huart_energy_meter = &huart6,
 	},
 	.hcan_channel_comm = &hcan1,
+	.temperature_adc = &hadc1,
+	.temperature_adc_rank = 1,
 	.adhe_ad_adc = &hadc1,
 	.adhe_ad_adc_rank = 3,
 	.cp_ad_adc = &hadc1,
@@ -157,7 +161,7 @@ static channels_config_t channels_config_0 = {
 		.huart_card_reader = &huart1,
 	},
 	.hcan_channel_comm = &hcan1,
-	.board_temperature_adc = &hadc1,
+	.board_temperature_adc = NULL,
 	.board_temperature_adc_rank = 0,
 	.force_stop_port = esb_GPIO_Port,
 	.force_stop_pin = esb_Pin,
