@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2021年06月20日 星期日 10时41分04秒
+ *   修改日期：2021年06月21日 星期一 10时47分59秒
  *   描    述：
  *
  *================================================================*/
@@ -97,8 +97,6 @@ static channel_config_t channel0_config = {
 		.huart_energy_meter = &huart3,
 	},
 	.hcan_channel_comm = &hcan1,
-	.temperature_adc = &hadc1,
-	.temperature_adc_rank = 0,
 	.adhe_ad_adc = &hadc1,
 	.adhe_ad_adc_rank = 2,
 	.cp_ad_adc = &hadc1,
@@ -126,8 +124,6 @@ static channel_config_t channel1_config = {
 		.huart_energy_meter = &huart6,
 	},
 	.hcan_channel_comm = &hcan1,
-	.temperature_adc = &hadc1,
-	.temperature_adc_rank = 1,
 	.adhe_ad_adc = &hadc1,
 	.adhe_ad_adc_rank = 3,
 	.cp_ad_adc = &hadc1,
