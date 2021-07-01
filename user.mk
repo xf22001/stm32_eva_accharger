@@ -6,7 +6,7 @@
 #   文件名称：user.mk
 #   创 建 者：肖飞
 #   创建日期：2019年10月25日 星期五 13时04分38秒
-#   修改日期：2021年06月22日 星期二 10时20分21秒
+#   修改日期：2021年07月01日 星期四 10时16分49秒
 #   描    述：
 #
 #================================================================
@@ -20,6 +20,7 @@ USER_C_INCLUDES += -Iapps/modules/drivers
 USER_C_INCLUDES += -Iapps/modules/hardware
 USER_C_INCLUDES += -Iapps/modules/app
 USER_C_INCLUDES += -Iapps/modules/app/charger
+USER_C_INCLUDES += -Iapps/modules/app/power_modules
 USER_C_INCLUDES += -Iapps/modules/app/vfs_disk
 USER_C_INCLUDES += -Iapps/modules/tests
 
@@ -73,19 +74,19 @@ USER_C_SOURCES += apps/modules/app/duty_cycle_pattern.c
 USER_C_SOURCES += apps/modules/app/usbh_user_callback.c
 USER_C_SOURCES += apps/modules/app/early_sys_callback.c
 USER_C_SOURCES += apps/modules/app/connect_state.c
-USER_C_SOURCES += apps/modules/app/power_modules.c
-USER_C_SOURCES += apps/modules/app/power_modules_handler_huawei.c
-USER_C_SOURCES += apps/modules/app/power_modules_handler_increase.c
-USER_C_SOURCES += apps/modules/app/power_modules_handler_infy.c
-USER_C_SOURCES += apps/modules/app/power_modules_handler_pseudo.c
-USER_C_SOURCES += apps/modules/app/power_modules_handler_stategrid.c
-USER_C_SOURCES += apps/modules/app/power_modules_handler_yyln.c
-USER_C_SOURCES += apps/modules/app/power_modules_handler_winline.c
-USER_C_SOURCES += apps/modules/app/power_modules_handler_zte.c
 USER_C_SOURCES += apps/modules/app/can_command.c
 USER_C_SOURCES += apps/modules/app/usb_upgrade.c
 USER_C_SOURCES += apps/modules/app/voice.c
 USER_C_SOURCES += apps/modules/app/ntc_temperature.c
+USER_C_SOURCES += apps/modules/app/power_modules/power_modules.c
+USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_huawei.c
+USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_increase.c
+USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_infy.c
+USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_pseudo.c
+USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_stategrid.c
+USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_yyln.c
+USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_winline.c
+USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_zte.c
 USER_C_SOURCES += apps/modules/app/charger/channels.c
 USER_C_SOURCES += apps/modules/app/charger/channel.c
 USER_C_SOURCES += apps/modules/app/charger/channel_handler_dc.c
