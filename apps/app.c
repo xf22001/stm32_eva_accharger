@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年06月20日 星期日 15时01分10秒
+ *   修改日期：2021年07月04日 星期日 14时18分48秒
  *   描    述：
  *
  *================================================================*/
@@ -90,10 +90,10 @@ void app(void const *argument)
 	OS_ASSERT(app_info != NULL);
 
 	app_info->eeprom_info = get_or_alloc_eeprom_info(get_or_alloc_spi_info(&hspi2),
-	                                       e2cs_GPIO_Port,
-	                                       e2cs_Pin,
-	                                       NULL,
-	                                       0);
+	                        e2cs_GPIO_Port,
+	                        e2cs_Pin,
+	                        NULL,
+	                        0);
 
 	OS_ASSERT(app_info->eeprom_info != NULL);
 
@@ -191,7 +191,9 @@ void app(void const *argument)
 			extern ADC_HandleTypeDef hadc1;
 			adc_info_t *adc_info = get_or_alloc_adc_info(&hadc1);
 			struct tm tm;
+			uint8_t data[10];
 			rtc_get_datetime(&tm);
+			uint64_t u = 0xffffffffffffffff;
 			debug("tm %04d-%02d-%02d %02d:%02d:%02d",
 			      tm.tm_year + 1900,
 			      tm.tm_mon + 1,
@@ -205,6 +207,18 @@ void app(void const *argument)
 			debug("adc[1]:%d", get_adc_value(adc_info, 1));
 			debug("adc[2]:%d", get_adc_value(adc_info, 2));
 			debug("adc[3]:%d", get_adc_value(adc_info, 3));
+			get_bcd_b0123456789_from_u64(&data[0], &data[1], &data[2], &data[3], &data[4], &data[5], &data[6], &data[7], &data[8], &data[9], u);
+			debug("0xffffffffffffffff is:%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
+			     data[9],
+			     data[8],
+			     data[7],
+			     data[6],
+			     data[5],
+			     data[4],
+			     data[3],
+			     data[2],
+			     data[1],
+			     data[0]);
 		}
 	}
 }
