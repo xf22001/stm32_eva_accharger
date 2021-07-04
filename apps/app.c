@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年07月04日 星期日 14时18分48秒
+ *   修改日期：2021年07月04日 星期日 21时56分00秒
  *   描    述：
  *
  *================================================================*/
@@ -133,8 +133,6 @@ void app(void const *argument)
 	OS_ASSERT(poll_loop != NULL);
 	probe_broadcast_add_poll_loop(poll_loop);
 	probe_server_add_poll_loop(poll_loop);
-	net_client_add_poll_loop(poll_loop);
-	ftp_client_add_poll_loop(poll_loop);
 
 	while(is_log_server_valid() == 0) {
 		osDelay(1);
@@ -163,6 +161,9 @@ void app(void const *argument)
 	//test_event();
 
 	start_channels();
+
+	net_client_add_poll_loop(poll_loop);
+	ftp_client_add_poll_loop(poll_loop);
 
 	while(1) {
 		uint32_t event;
