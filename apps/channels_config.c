@@ -68,6 +68,7 @@ char *get_channel_config_energy_meter_type(channel_energy_meter_type_t type)
 			add_des_case(CHANNEL_ENERGY_METER_TYPE_PROXY);
 			add_des_case(CHANNEL_ENERGY_METER_TYPE_DC);
 			add_des_case(CHANNEL_ENERGY_METER_TYPE_AC);
+			add_des_case(CHANNEL_ENERGY_METER_TYPE_AC_HLW8032);
 
 		default: {
 		}
