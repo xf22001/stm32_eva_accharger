@@ -22,6 +22,7 @@ USER_C_INCLUDES += -Iapps/modules/app
 USER_C_INCLUDES += -Iapps/modules/app/charger
 USER_C_INCLUDES += -Iapps/modules/app/power_modules
 USER_C_INCLUDES += -Iapps/modules/app/vfs_disk
+USER_C_INCLUDES += -Iapps/modules/app/net_client
 USER_C_INCLUDES += -Iapps/modules/tests
 
 USER_C_INCLUDES += -IMiddlewares/Third_Party/LwIP/src/include
@@ -56,15 +57,17 @@ USER_C_SOURCES += apps/modules/app/poll_loop.c
 USER_C_SOURCES += apps/modules/app/probe_tool.c
 USER_C_SOURCES += apps/modules/app/uart_debug.c
 USER_C_SOURCES += apps/modules/app/file_log.c
-USER_C_SOURCES += apps/modules/app/request.c
-USER_C_SOURCES += apps/modules/app/net_client.c
-USER_C_SOURCES += apps/modules/app/net_protocol_udp.c
-USER_C_SOURCES += apps/modules/app/net_protocol_tcp.c
-USER_C_SOURCES += apps/modules/app/net_protocol_ws.c
-USER_C_SOURCES += apps/modules/app/request_default.c
-USER_C_SOURCES += apps/modules/app/https.c
-USER_C_SOURCES += apps/modules/app/request_ws.c
-USER_C_SOURCES += apps/modules/app/request_sse.c
+USER_C_SOURCES += apps/modules/app/net_client/request.c
+USER_C_SOURCES += apps/modules/app/net_client/net_client.c
+USER_C_SOURCES += apps/modules/app/net_client/net_protocol_udp.c
+USER_C_SOURCES += apps/modules/app/net_client/net_protocol_tcp.c
+USER_C_SOURCES += apps/modules/app/net_client/net_protocol_tls.c
+USER_C_SOURCES += apps/modules/app/net_client/request_default.c
+USER_C_SOURCES += apps/modules/app/net_client/request_sse.c
+USER_C_SOURCES += apps/modules/app/net_client/request_ocpp_1_6.c
+USER_C_SOURCES += apps/modules/app/net_client/https.c
+USER_C_SOURCES += apps/modules/app/net_client/websocket.c
+USER_C_SOURCES += apps/modules/app/net_client/test_https.c
 USER_C_SOURCES += apps/modules/app/ftp_client.c
 USER_C_SOURCES += apps/modules/app/vfs_disk/vfs.c
 USER_C_SOURCES += apps/modules/app/mt_file.c
@@ -143,6 +146,8 @@ USER_CFLAGS += -DLOG_CONFIG_FILE=\"log_config.h\"
 #USER_CFLAGS += -DALLOC_TRACE_DISABLE
 
 CFLAGS += $(USER_CFLAGS)
+
+#LDFLAGS += -u _printf_float -Wl,--wrap=srand  -Wl,--wrap=rand
 LDFLAGS += -u _printf_float
 
 IAP_FILE := apps/modules/os/iap.h

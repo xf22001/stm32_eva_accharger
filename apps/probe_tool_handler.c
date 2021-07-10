@@ -6,7 +6,7 @@
  *   文件名称：probe_tool_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年03月20日 星期五 12时48分07秒
- *   修改日期：2021年06月20日 星期日 12时13分19秒
+ *   修改日期：2021年07月10日 星期六 12时50分54秒
  *   描    述：
  *
  *================================================================*/
@@ -241,9 +241,6 @@ static void fn5(request_t *request)
 	}
 }
 
-extern protocol_if_t protocol_if_tcp;
-extern protocol_if_t protocol_if_udp;
-extern request_callback_t request_callback_default;
 static void fn6(request_t *request)
 {
 	char *content = (char *)(request + 1);
@@ -259,22 +256,18 @@ static void fn6(request_t *request)
 
 	set_client_state(net_client_info, CLIENT_SUSPEND);
 
-	ret = sscanf(content, "%d %3s%n", &fn, protocol, &catched);
+	ret = sscanf(content, "%d %10s%n", &fn, protocol, &catched);
 
 	if(ret == 2) {
 		_printf("protocol:%s!\n", protocol);
 
-		if(memcmp(protocol, "tcp", 3) == 0) {
-			set_net_client_protocol_type(net_client_info, PROTOCOL_TCP);
+		if(memcmp(protocol, "default", 7) == 0) {
 			set_net_client_request_type(net_client_info, REQUEST_TYPE_DEFAULT);
-		} else if(memcmp(protocol, "udp", 3) == 0) {
-			set_net_client_protocol_type(net_client_info, PROTOCOL_UDP);
-			set_net_client_request_type(net_client_info, REQUEST_TYPE_DEFAULT);
-		} else if(memcmp(protocol, "ws", 2) == 0) {
-			set_net_client_protocol_type(net_client_info, PROTOCOL_WS);
-			set_net_client_request_type(net_client_info, REQUEST_TYPE_WEBSOCKET);
+		} else if(memcmp(protocol, "sse", 3) == 0) {
+			set_net_client_request_type(net_client_info, REQUEST_TYPE_SSE);
+		} else if(memcmp(protocol, "ocpp", 4) == 0) {
+			set_net_client_request_type(net_client_info, REQUEST_TYPE_OCPP_1_6);
 		}
-
 	} else {
 		_printf("no protocol!\n");
 	}
@@ -333,24 +326,22 @@ static void fn9(request_t *request)
 {
 }
 
+#include "test_https.h"
 void set_connect_enable(uint8_t enable);
-uint8_t get_connect_enable(void);
 static void fn10(request_t *request)
 {
-	char *content = (char *)(request + 1);
-	int ret;
-	int fn;
-	int enable;
-	int catched;
-
-	ret = sscanf(content, "%d %d %n", &fn, &enable, &catched);
-
-	if(ret == 2) {
-		debug("set connect enable:%d", enable);
-		set_connect_enable(enable);
-	}
+	//char *url = "https://httpbin.org/get";
+	//char *url = "ws://192.168.41.2:8080/ocpp/";
+	//char *url = "ws://47.244.218.210:8080/OCPP/echoSocket/13623";
+	//char *url = "wss://35.201.125.176:433/SSECHINAEVSE";
+	//char *url = "https://216.58.199.110";
+	//char *url = "wss://ocpp-16-json.dev-plugitcloud.com/SSECHINAEVSE";
+	//char *url = "wss://iot-ebus-ocpp-v16-server-test.azurewebsites.net/ws/test123";
+	//test_https(url);
+	set_connect_enable(1);
 }
 
+//11 0 ws://82.157.123.54:9010/ajaxchattest
 static void fn11(request_t *request)
 {
 	app_info_t *app_info = get_app_info();
@@ -371,26 +362,25 @@ static void fn11(request_t *request)
 
 	set_client_state(net_client_info, CLIENT_SUSPEND);
 
-	ret = sscanf(content, "%d %s %s %s %n", &fn, buffer->device_id, buffer->host, buffer->port, &catched);
+	ret = sscanf(content, "%d %s %s %n", &fn, buffer->device_id, buffer->uri, &catched);
 
-	if(ret == 4) {
+	if(ret == 3) {
 		app_info->available = 0;
 		strcpy(app_info->mechine_info.device_id, buffer->device_id);
-		strcpy(app_info->mechine_info.host, buffer->host);
-		strcpy(app_info->mechine_info.port, buffer->port);
+		strcpy(app_info->mechine_info.uri, buffer->uri);
 		app_info->available = 1;
 		app_save_config();
 	}
 
 	os_free(buffer);
 
-	debug("device id:\'%s\', server host:\'%s\', server port:\'%s\'!", app_info->mechine_info.device_id, app_info->mechine_info.host, app_info->mechine_info.port);
+	debug("device id:\'%s\', server uri:\'%s\'!", app_info->mechine_info.device_id, app_info->mechine_info.uri);
 
 	set_client_state(net_client_info, CLIENT_REINIT);
 }
 
-//12 192.168.1.128 2121 /user.mk anonymous
-//12 192.168.1.128 2121 /user.mk user pass
+//12 10.42.0.1 2121 /user.mk anonymous
+//12 10.42.0.1 2121 /user.mk user pass
 //12 ftp.gnu.org 21 /gnu/tar/tar-1.32.tar.gz anonymous
 //12 ftp.sjtu.edu.cn 21 /centos/2/centos2-scripts-v1.tar anonymous
 static void fn12(request_t *request)

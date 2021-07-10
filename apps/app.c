@@ -142,15 +142,13 @@ void app(void const *argument)
 
 	if(app_load_config() == 0) {
 		debug("app_load_config successful!");
-		debug("device id:\'%s\', server host:\'%s\', server port:\'%s\'!", app_info->mechine_info.device_id, app_info->mechine_info.host, app_info->mechine_info.port);
+		debug("device id:\'%s\', server uri:\'%s\'!", app_info->mechine_info.device_id, app_info->mechine_info.uri);
 		app_info->available = 1;
 	} else {
 		debug("app_load_config failed!");
 		snprintf(app_info->mechine_info.device_id, sizeof(app_info->mechine_info.device_id), "%s", "0000000000");
-		snprintf(app_info->mechine_info.host, sizeof(app_info->mechine_info.host), "%s", "10.42.0.1");
-		snprintf(app_info->mechine_info.port, sizeof(app_info->mechine_info.port), "%s", "6003");
-		snprintf(app_info->mechine_info.path, sizeof(app_info->mechine_info.path), "%s", "");
-		debug("device id:\'%s\', server host:\'%s\', server port:\'%s\'!", app_info->mechine_info.device_id, app_info->mechine_info.host, app_info->mechine_info.port);
+		snprintf(app_info->mechine_info.uri, sizeof(app_info->mechine_info.uri), "%s", "tcp://112.74.40.227:12345");
+		debug("device id:\'%s\', server uri:\'%s\'!", app_info->mechine_info.device_id, app_info->mechine_info.uri);
 		app_info->mechine_info.upgrade_enable = 0;
 		app_save_config();
 		app_info->available = 1;
