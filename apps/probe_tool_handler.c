@@ -6,7 +6,7 @@
  *   文件名称：probe_tool_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年03月20日 星期五 12时48分07秒
- *   修改日期：2021年07月10日 星期六 12时50分54秒
+ *   修改日期：2021年07月10日 星期六 22时39分54秒
  *   描    述：
  *
  *================================================================*/
@@ -341,7 +341,9 @@ static void fn10(request_t *request)
 	set_connect_enable(1);
 }
 
+//http://coolaf.com/tool/chattest
 //11 0 ws://82.157.123.54:9010/ajaxchattest
+//11 0 wss://echo.websocket.org
 static void fn11(request_t *request)
 {
 	app_info_t *app_info = get_app_info();
