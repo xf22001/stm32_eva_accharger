@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年07月16日 星期五 22时46分16秒
+ *   修改日期：2021年07月17日 星期六 00时33分03秒
  *   描    述：
  *
  *================================================================*/
@@ -44,7 +44,7 @@
 
 extern IWDG_HandleTypeDef hiwdg;
 extern TIM_HandleTypeDef htim2;
-extern UART_HandleTypeDef huart4;
+//extern UART_HandleTypeDef huart4;
 extern SPI_HandleTypeDef hspi2;
 
 static app_info_t *app_info = NULL;
@@ -130,18 +130,18 @@ void app(void const *argument)
 	add_log_handler((log_fn_t)log_udp_data);
 	add_log_handler((log_fn_t)log_file_data);
 
-	{
-		uart_info_t *uart_info = get_or_alloc_uart_info(&huart4);
+	//{
+	//	uart_info_t *uart_info = get_or_alloc_uart_info(&huart4);
 
-		if(uart_info == NULL) {
-			app_panic();
-		}
+	//	if(uart_info == NULL) {
+	//		app_panic();
+	//	}
 
-		set_log_uart_info(uart_info);
+	//	set_log_uart_info(uart_info);
 
-		osThreadDef(uart_debug, task_uart_debug, osPriorityNormal, 0, 128 * 2 * 2);
-		osThreadCreate(osThread(uart_debug), uart_info);
-	}
+	//	osThreadDef(uart_debug, task_uart_debug, osPriorityNormal, 0, 128 * 2 * 2);
+	//	osThreadCreate(osThread(uart_debug), uart_info);
+	//}
 
 	//{
 	//	uart_info_t *uart_info = get_or_alloc_uart_info(&huart4);
