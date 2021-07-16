@@ -6,7 +6,7 @@
  *   文件名称：app.h
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时56分29秒
- *   修改日期：2021年07月08日 星期四 15时33分44秒
+ *   修改日期：2021年07月16日 星期五 16时36分37秒
  *   描    述：
  *
  *================================================================*/
@@ -19,7 +19,9 @@ extern "C"
 
 #include "app_platform.h"
 #include "cmsis_os.h"
+
 #include "eeprom.h"
+#include "callback_chain.h"
 
 #ifdef __cplusplus
 }
@@ -43,7 +45,10 @@ typedef struct {
 typedef struct {
 	unsigned char available;
 	mechine_info_t mechine_info;
+	uint8_t mechine_info_invalid;
 	eeprom_info_t *eeprom_info;
+	callback_item_t display_data_invalid_callback_item;
+	callback_item_t display_data_changed_callback_item;
 } app_info_t;
 
 #pragma pack(pop)
@@ -54,6 +59,7 @@ typedef enum {
 } app_event_t;
 
 app_info_t *get_app_info(void);
+int app_load_config(void);
 int app_save_config(void);
 void app_init(void);
 void send_app_event(app_event_t event);

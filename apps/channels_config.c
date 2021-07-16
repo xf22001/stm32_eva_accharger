@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2021年07月01日 星期四 11时33分09秒
+ *   修改日期：2021年07月16日 星期五 22时39分52秒
  *   描    述：
  *
  *================================================================*/
@@ -18,6 +18,7 @@
 extern CAN_HandleTypeDef hcan1;
 extern ADC_HandleTypeDef hadc1;
 extern UART_HandleTypeDef huart1;
+extern UART_HandleTypeDef huart2;
 extern UART_HandleTypeDef huart3;
 extern UART_HandleTypeDef huart6;
 extern TIM_HandleTypeDef htim3;
@@ -163,6 +164,7 @@ static channels_config_t channels_config_0 = {
 		.card_reader_type = CARD_READER_TYPE_ZLG,
 		.huart_card_reader = &huart1,
 	},
+	.huart_display = &huart2,
 	.hcan_channel_comm = &hcan1,
 	.board_temperature_adc = NULL,
 	.board_temperature_adc_rank = 0,

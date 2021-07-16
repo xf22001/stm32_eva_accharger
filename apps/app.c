@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年07月04日 星期日 21时56分00秒
+ *   修改日期：2021年07月16日 星期五 22时46分16秒
  *   描    述：
  *
  *================================================================*/
@@ -40,6 +40,7 @@
 #include "sal_netdev.h"
 #include "sal_netdev.h"
 #include "wiz_ethernet.h"
+#include "display.h"
 
 extern IWDG_HandleTypeDef hiwdg;
 extern TIM_HandleTypeDef htim2;
@@ -54,7 +55,7 @@ app_info_t *get_app_info(void)
 	return app_info;
 }
 
-static int app_load_config(void)
+int app_load_config(void)
 {
 	eeprom_layout_t *eeprom_layout = get_eeprom_layout();
 	size_t offset = (size_t)&eeprom_layout->mechine_info_seg.eeprom_mechine_info.mechine_info;
@@ -80,10 +81,38 @@ void send_app_event(app_event_t event)
 	signal_send(app_event, event, 0);
 }
 
+static void app_mechine_info_invalid(void *fn_ctx, void *chain_ctx)
+{
+	app_info_t *app_info = (app_info_t *)fn_ctx;
+	modbus_data_ctx_t *modbus_data_ctx = (modbus_data_ctx_t *)chain_ctx;
+
+	if(modbus_data_ctx->influence < (void *)&app_info->mechine_info) {
+		return;
+	}
+
+	if(modbus_data_ctx->influence > (void *)(&app_info->mechine_info + 1)) {
+		return;
+	}
+
+	app_info->mechine_info_invalid = 1;
+}
+
+static void app_mechine_info_changed(void *fn_ctx, void *chain_ctx)
+{
+	app_info_t *app_info = (app_info_t *)fn_ctx;
+
+	if(app_info->mechine_info_invalid != 0) {
+		app_info->mechine_info_invalid = 0;
+		app_save_config();
+	}
+}
+
 void app(void const *argument)
 {
 
 	poll_loop_t *poll_loop;
+	channels_info_t *channels_info = NULL;
+	display_info_t *display_info = NULL;
 
 	app_info = (app_info_t *)os_calloc(1, sizeof(app_info_t));
 
@@ -100,7 +129,6 @@ void app(void const *argument)
 	add_log_handler((log_fn_t)log_uart_data);
 	add_log_handler((log_fn_t)log_udp_data);
 	add_log_handler((log_fn_t)log_file_data);
-
 
 	{
 		uart_info_t *uart_info = get_or_alloc_uart_info(&huart4);
@@ -158,10 +186,22 @@ void app(void const *argument)
 
 	//test_event();
 
-	start_channels();
+	channels_info = start_channels();
+	OS_ASSERT(channels_info != NULL);
 
 	net_client_add_poll_loop(poll_loop);
 	ftp_client_add_poll_loop(poll_loop);
+
+	display_info = (display_info_t *)channels_info->display_info;
+	OS_ASSERT(display_info != NULL);
+
+	app_info->display_data_invalid_callback_item.fn = app_mechine_info_invalid;
+	app_info->display_data_invalid_callback_item.fn_ctx = app_info;
+	OS_ASSERT(register_callback(display_info->modbus_slave_info->data_invalid_chain, &app_info->display_data_invalid_callback_item) == 0);
+
+	app_info->display_data_changed_callback_item.fn = app_mechine_info_changed;
+	app_info->display_data_changed_callback_item.fn_ctx = app_info;
+	OS_ASSERT(register_callback(display_info->modbus_slave_info->data_changed_chain, &app_info->display_data_changed_callback_item) == 0);
 
 	while(1) {
 		uint32_t event;

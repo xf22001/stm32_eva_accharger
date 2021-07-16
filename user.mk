@@ -51,6 +51,7 @@ USER_C_SOURCES += apps/probe_tool_handler.c
 USER_C_SOURCES += apps/channels_config.c
 USER_C_SOURCES += apps/can_config.c
 USER_C_SOURCES += apps/wiznet_spi.c
+USER_C_SOURCES += apps/channels_addr_handler.c
 
 USER_C_SOURCES += apps/modules/app/eeprom_config.c
 USER_C_SOURCES += apps/modules/app/poll_loop.c
@@ -111,11 +112,14 @@ USER_C_SOURCES += apps/modules/app/charger/card_reader.c
 USER_C_SOURCES += apps/modules/app/charger/card_reader_handler_zlg.c
 USER_C_SOURCES += apps/modules/app/charger/channel_comm_channel.c
 USER_C_SOURCES += apps/modules/app/charger/channel_comm_channels.c
+USER_C_SOURCES += apps/modules/app/charger/display.c
 USER_C_SOURCES += apps/modules/hardware/flash.c
 USER_C_SOURCES += apps/modules/hardware/eeprom.c
 USER_C_SOURCES += apps/modules/hardware/dlt_645_master_txrx.c
 USER_C_SOURCES += apps/modules/hardware/hw_rtc.c
 USER_C_SOURCES += apps/modules/hardware/hw_adc.c
+USER_C_SOURCES += apps/modules/hardware/modbus_slave_txrx.c
+USER_C_SOURCES += apps/modules/hardware/modbus_spec.c
 USER_C_SOURCES += apps/modules/drivers/spi_txrx.c
 USER_C_SOURCES += apps/modules/drivers/can_txrx.c
 USER_C_SOURCES += apps/modules/drivers/can_ops_hal.c
@@ -136,12 +140,15 @@ USER_C_SOURCES += apps/modules/tests/test_event.c
 USER_C_SOURCES += Middlewares/Third_Party/LwIP/src/core/def.c
 USER_C_SOURCES += Middlewares/Third_Party/LwIP/src/core/ipv4/ip4_addr.c
 USER_C_SOURCES += Src/net_sockets.c
+USER_C_SOURCES += apps/cJSON.c
 
 C_SOURCES += $(USER_C_SOURCES)
 
 USER_CFLAGS += -DtraceTASK_SWITCHED_IN=StartIdleMonitor -DtraceTASK_SWITCHED_OUT=EndIdleMonitor
 USER_CFLAGS += -DSAL_HOOK
 USER_CFLAGS += -DLOG_CONFIG_FILE=\"log_config.h\"
+USER_CFLAGS += -DCJSON_API_VISIBILITY -DCJSON_EXPORT_SYMBOLS -DENABLE_LOCALES -Dcjson_EXPORTS
+
 #USER_CFLAGS += -DLOG_DISABLE
 #USER_CFLAGS += -DALLOC_TRACE_DISABLE
 
