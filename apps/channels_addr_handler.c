@@ -6,7 +6,7 @@
  *   文件名称：channels_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月16日 星期五 14时03分28秒
- *   修改日期：2021年07月16日 星期五 17时30分02秒
+ *   修改日期：2021年07月16日 星期五 23时33分50秒
  *   描    述：
  *
  *================================================================*/
@@ -21,11 +21,18 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 {
 	channels_info_t *channels_info = (channels_info_t *)fn_ctx;
 	channels_settings_t *channels_settings = &channels_info->channels_settings;
+	channels_config_t *channels_config = channels_info->channels_config;
 	modbus_data_ctx_t *modbus_data_ctx = (modbus_data_ctx_t *)chain_ctx;
+	app_info_t *app_info = get_app_info();
+	//mechine_info_t *mechine_info = &app_info->mechine_info;
 
 	switch(modbus_data_ctx->addr) {
 		case 5: {//枪数设置	0：单枪 1：双枪
-			modbus_data_value_rw(modbus_data_ctx, channels_settings->channel_number);
+			modbus_data_value_with_base_rw(modbus_data_ctx, channels_settings->channel_number, -1);
+
+			if(channels_settings->channel_number > channels_config->channel_number) {
+				channels_settings->channel_number = channels_config->channel_number;
+			}
 		}
 		break;
 
@@ -35,6 +42,7 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		break;
 
 		case 7: {//后台设置	0:无 1：SSE 2:OCPP
+			modbus_data_value_rw(modbus_data_ctx, channels_settings->request_type);
 		}
 		break;
 
