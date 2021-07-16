@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年07月17日 星期六 00时33分03秒
+ *   修改日期：2021年07月17日 星期六 00时41分10秒
  *   描    述：
  *
  *================================================================*/
@@ -90,7 +90,7 @@ static void app_mechine_info_invalid(void *fn_ctx, void *chain_ctx)
 		return;
 	}
 
-	if(modbus_data_ctx->influence > (void *)(&app_info->mechine_info + 1)) {
+	if(modbus_data_ctx->influence >= (void *)(&app_info->mechine_info + 1)) {
 		return;
 	}
 
