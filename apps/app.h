@@ -6,7 +6,7 @@
  *   文件名称：app.h
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时56分29秒
- *   修改日期：2021年07月16日 星期五 23时29分23秒
+ *   修改日期：2021年07月17日 星期六 10时21分00秒
  *   描    述：
  *
  *================================================================*/
@@ -22,6 +22,7 @@ extern "C"
 
 #include "eeprom.h"
 #include "callback_chain.h"
+#include "display_cache.h"
 
 #ifdef __cplusplus
 }
@@ -39,15 +40,15 @@ typedef struct {
 	//tcp://www.baidu.com:80
 	//udp://www.baidu.com:80
 	char uri[256];
+
 	uint8_t upgrade_enable;
-	uint8_t ip[4];
-	uint8_t port[2];
 } mechine_info_t;
 
 typedef struct {
 	unsigned char available;
 	mechine_info_t mechine_info;
 	uint8_t mechine_info_invalid;
+	display_cache_app_t display_cache_app;
 	eeprom_info_t *eeprom_info;
 	callback_item_t display_data_invalid_callback_item;
 	callback_item_t display_data_changed_callback_item;

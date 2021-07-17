@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年07月17日 星期六 00时41分10秒
+ *   修改日期：2021年07月17日 星期六 10时10分42秒
  *   描    述：
  *
  *================================================================*/
@@ -41,6 +41,7 @@
 #include "sal_netdev.h"
 #include "wiz_ethernet.h"
 #include "display.h"
+#include "display_cache.h"
 
 extern IWDG_HandleTypeDef hiwdg;
 extern TIM_HandleTypeDef htim2;
@@ -97,9 +98,19 @@ static void app_mechine_info_invalid(void *fn_ctx, void *chain_ctx)
 	app_info->mechine_info_invalid = 1;
 }
 
+__weak void load_app_display_cache(app_info_t *app_info)
+{
+}
+
+__weak void sync_app_display_cache(app_info_t *app_info)
+{
+}
+
 static void app_mechine_info_changed(void *fn_ctx, void *chain_ctx)
 {
 	app_info_t *app_info = (app_info_t *)fn_ctx;
+
+	sync_app_display_cache(app_info);
 
 	if(app_info->mechine_info_invalid != 0) {
 		app_info->mechine_info_invalid = 0;
@@ -171,6 +182,7 @@ void app(void const *argument)
 	if(app_load_config() == 0) {
 		debug("app_load_config successful!");
 		debug("device id:\'%s\', server uri:\'%s\'!", app_info->mechine_info.device_id, app_info->mechine_info.uri);
+		load_app_display_cache(app_info);
 		app_info->available = 1;
 	} else {
 		debug("app_load_config failed!");
