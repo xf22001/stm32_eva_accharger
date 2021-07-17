@@ -6,7 +6,7 @@
  *   文件名称：channels_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月16日 星期五 14时03分28秒
- *   修改日期：2021年07月17日 星期六 13时38分08秒
+ *   修改日期：2021年07月17日 星期六 18时41分03秒
  *   描    述：
  *
  *================================================================*/
@@ -213,7 +213,7 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		//}
 		//break;
 
-		case 301 ... 307: {//系统时间 周	BCD
+		case 301 ... 307: {//系统时间	BCD //todo
 			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_GET) {
 				time_t ts = get_time();
 				struct tm *tm = localtime(&ts);
@@ -297,10 +297,14 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		break;
 
 		case 318 ... 333: {//密码输入区	ASCII
+			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
+			modbus_data_buffer_rw(modbus_data_ctx, channel_info->channel_event_start.account, 16, modbus_data_ctx->addr - 318);
 		}
 		break;
 
 		case 334 ... 349: {//账户名输入区	ASCII
+			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
+			modbus_data_buffer_rw(modbus_data_ctx, channel_info->channel_event_start.password, 16, modbus_data_ctx->addr - 334);
 		}
 		break;
 
@@ -528,35 +532,51 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 
 		case 650: {//充电模式设置
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
-			modbus_data_value_rw(modbus_data_ctx, channel_info->display_cache_channel.charge_mode);
-
-			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
-				channel_info->display_cache_channel.charge_sync = 1;
-			}
+			modbus_data_value_rw(modbus_data_ctx, channel_info->channel_event_start.charge_mode);
 		}
 		break;
 
 		case 651: {//设定充电金额
+			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
+			modbus_data_value_rw(modbus_data_ctx, channel_info->channel_event_start.account_balance);
 		}
 		break;
 
 		case 652: {//开始充电时间时	BCD
+			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
+			struct tm *tm = localtime(&channel_info->channel_record_item.start_time);
+			uint16_t value = get_bcd_from_u8(tm->tm_hour);
+			modbus_data_value_r(modbus_data_ctx, value);
 		}
 		break;
 
 		case 653: {//开始充电时间分	BCD
+			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
+			struct tm *tm = localtime(&channel_info->channel_record_item.start_time);
+			uint16_t value = get_bcd_from_u8(tm->tm_min);
+			modbus_data_value_r(modbus_data_ctx, value);
 		}
 		break;
 
 		case 654: {//结束充电时间时	BCD
+			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
+			struct tm *tm = localtime(&channel_info->channel_record_item.stop_time);
+			uint16_t value = get_bcd_from_u8(tm->tm_hour);
+			modbus_data_value_r(modbus_data_ctx, value);
 		}
 		break;
 
 		case 655: {//结束充电时间分	BCD
+			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
+			struct tm *tm = localtime(&channel_info->channel_record_item.stop_time);
+			uint16_t value = get_bcd_from_u8(tm->tm_min);
+			modbus_data_value_r(modbus_data_ctx, value);
 		}
 		break;
 
 		case 656: {//设定充电电量
+			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
+			modbus_data_value_rw(modbus_data_ctx, channel_info->channel_event_start.account_energy);
 		}
 		break;
 
@@ -572,67 +592,101 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		}
 		break;
 
-		case 900: {//记录查询 年	BCD
-		}
-		break;
+		//case 900: {//记录查询 年	BCD
+		//}
+		//break;
 
-		case 901: {//记录查询 月	BCD
-		}
-		break;
+		//case 901: {//记录查询 月	BCD
+		//}
+		//break;
 
-		case 902: {//记录查询 日	BCD
+		//case 902: {//记录查询 日	BCD
+		//}
+		//break;
+
+		case 900 ... 902: {//记录查询 	BCD
+			modbus_data_buffer_rw(modbus_data_ctx, &channels_info->display_cache_channels.record_dt_cache, 3, modbus_data_ctx->addr - 900);
+
+			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
+				channels_info->display_cache_channels.record_sync = 1;
+			}
 		}
 		break;
 
 		case 903: {//查询确认	按键 下发1
+			channel_record_task_info_t *channel_record_task_info = get_or_alloc_channel_record_task_info(0);
+			modbus_data_value_rw(modbus_data_ctx, channels_info->display_cache_channels.record_load_cmd);
+
+			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
+				channels_info->display_cache_channels.record_sync = 1;
+			}
+
+			channel_record_item_page_load_current(channel_record_task_info);
 		}
 		break;
 
 		case 904: {//未上传记录数
+			channel_record_task_info_t *channel_record_task_info = get_or_alloc_channel_record_task_info(0);
+			modbus_data_value_r(modbus_data_ctx, channel_record_task_info->finish_state_count);
 		}
 		break;
 
 		case 905: {//记录总数
+			channel_record_task_info_t *channel_record_task_info = get_or_alloc_channel_record_task_info(0);
+			uint16_t end = channel_record_task_info->channel_record_info.end;
+			uint16_t start = channel_record_task_info->channel_record_info.start;
+			uint16_t value;
+
+			if(end < start) {
+				end += CHANNEL_RECORD_NUMBER;
+			}
+			value = end - start;
+			modbus_data_value_r(modbus_data_ctx, value);
 		}
 		break;
 
-		case 906: {//枪号
-		}
-		break;
+		//case 906: {//枪号
+		//}
+		//break;
 
-		case 907 ... 922: {//账户号	ASCII
-		}
-		break;
+		//case 907 ... 922: {//账户号	ASCII
+		//}
+		//break;
 
-		case 923: {//开始时间时+分 	BCD
-		}
-		break;
+		//case 923: {//开始时间时+分 	BCD
+		//}
+		//break;
 
-		case 924: {//结束时间时+分	BCD
-		}
-		break;
+		//case 924: {//结束时间时+分	BCD
+		//}
+		//break;
 
-		case 925: {//充电量高
-		}
-		break;
+		//case 925: {//充电量高
+		//}
+		//break;
 
-		case 926: {//充电量低
-		}
-		break;
+		//case 926: {//充电量低
+		//}
+		//break;
 
-		case 927: {//消费金额高
-		}
-		break;
+		//case 927: {//消费金额高
+		//}
+		//break;
 
-		case 928: {//消费金额低
-		}
-		break;
+		//case 928: {//消费金额低
+		//}
+		//break;
 
-		case 929: {//开始充电时间
-		}
-		break;
+		//case 929: {//开始充电原因
+		//}
+		//break;
 
-		case 930: {//结束充电时间
+		//case 930: {//结束充电原因
+		//}
+		//break;
+	
+		case 906 ... 1155: {
+			modbus_data_buffer_rw(modbus_data_ctx, channels_info->display_cache_channels.record_item_cache, 25 * 10, modbus_data_ctx->addr - 906);
 		}
 		break;
 

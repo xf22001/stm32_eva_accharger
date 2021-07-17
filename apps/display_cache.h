@@ -1,12 +1,12 @@
 
 
 /*================================================================
- *   
- *   
+ *
+ *
  *   文件名称：display_cache.h
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分47秒
- *   修改日期：2021年07月17日 星期六 13时38分31秒
+ *   修改日期：2021年07月17日 星期六 22时07分48秒
  *   描    述：
  *
  *================================================================*/
@@ -49,6 +49,27 @@ typedef struct {
 } datetime_cache_t;
 
 typedef struct {
+	uint16_t year;
+	uint16_t mon;
+	uint16_t day;
+} record_dt_cache_t;
+
+typedef struct {
+	uint16_t channel_id;
+	uint16_t account[16];//bcd
+	uint16_t start_hour_min;//bcd
+	uint16_t stop_hour_min;//bcd
+	uint16_t energy_h;
+	uint16_t energy_l;
+	uint16_t amount_h;
+	uint16_t amount_l;
+	uint16_t start_reason;
+	uint16_t stop_reason;
+} record_item_cache_t;
+
+#define RECORD_ITEM_CACHE_NUMBER 10
+
+typedef struct {
 	uint8_t price_sync;
 	price_item_cache_t price_item_cache[20];
 
@@ -58,12 +79,15 @@ typedef struct {
 
 	uint8_t datetime_sync;
 	datetime_cache_t datetime_cache;
+
+	uint8_t record_sync;
+	record_dt_cache_t record_dt_cache;
+	uint16_t record_load_cmd;
+	record_item_cache_t record_item_cache[RECORD_ITEM_CACHE_NUMBER];
 } display_cache_channels_t;
 
 typedef struct {
-	uint8_t charge_sync;
-
-	uint8_t charge_mode;
+	uint8_t sync;
 } display_cache_channel_t;
 
 #pragma pack(pop)

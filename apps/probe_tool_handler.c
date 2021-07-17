@@ -6,7 +6,7 @@
  *   文件名称：probe_tool_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年03月20日 星期五 12时48分07秒
- *   修改日期：2021年07月11日 星期日 14时31分52秒
+ *   修改日期：2021年07月17日 星期六 23时18分30秒
  *   描    述：
  *
  *================================================================*/
@@ -23,6 +23,7 @@
 #include "app.h"
 #include "ftp_client.h"
 #include "hw_rtc.h"
+#include "channels.h"
 
 #include "sal_hook.h"
 
@@ -441,6 +442,46 @@ static void fn13(request_t *request)
 	}
 }
 
+static void fn14(request_t *request)
+{
+	char *content = (char *)(request + 1);
+	int fn;
+	int channel_id;
+	int type;//channel_event_type_t
+	int catched;
+	int ret;
+
+	ret = sscanf(content, "%d %d %d %n",
+	             &fn,
+	             &channel_id,
+	             &type,
+	             &catched);
+	debug("ret:%d", ret);
+
+	if(ret == 3) {
+		channel_event_t *channel_event = os_calloc(1, sizeof(channel_event_t));
+		channels_event_t *channels_event = os_calloc(1, sizeof(channels_event_t));
+		channels_info_t *channels_info = get_channels();
+		channel_info_t *channel_info = channels_info->channel_info + channel_id;
+
+		OS_ASSERT(channel_event != NULL);
+		OS_ASSERT(channels_event != NULL);
+
+		channel_info->channel_event_start.charge_mode = CHANNEL_RECORD_CHARGE_MODE_UNLIMIT;
+
+		channel_event->channel_id = channel_id;
+		channel_event->type = type;
+		channels_event->type = CHANNELS_EVENT_CHANNEL;
+		channels_event->event = channel_event;
+
+		if(send_channels_event(channels_info, channels_event, 10) != 0) {
+			debug("send channel %d type %d failed!", channel_id, type);
+		} else {
+			debug("send channel %d type %d successful!", channel_id, type);
+		}
+	}
+}
+
 static server_item_t server_map[] = {
 	{1, fn1},
 	{2, fn2},
@@ -455,6 +496,7 @@ static server_item_t server_map[] = {
 	{11, fn11},
 	{12, fn12},
 	{13, fn13},
+	{14, fn14},
 };
 
 server_map_info_t server_map_info = {

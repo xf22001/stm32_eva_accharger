@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年07月17日 星期六 10时10分42秒
+ *   修改日期：2021年07月17日 星期六 22时45分41秒
  *   描    述：
  *
  *================================================================*/
@@ -201,8 +201,8 @@ void app(void const *argument)
 	channels_info = start_channels();
 	OS_ASSERT(channels_info != NULL);
 
-	net_client_add_poll_loop(poll_loop);
-	ftp_client_add_poll_loop(poll_loop);
+	//net_client_add_poll_loop(poll_loop);
+	//ftp_client_add_poll_loop(poll_loop);
 
 	display_info = (display_info_t *)channels_info->display_info;
 	OS_ASSERT(display_info != NULL);
@@ -234,6 +234,7 @@ void app(void const *argument)
 
 		handle_open_log();
 		handle_usb_upgrade();
+		continue;
 		{
 #include <time.h>
 #include "hw_rtc.h"
