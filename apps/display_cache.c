@@ -6,7 +6,7 @@
  *   文件名称：display_cache.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分40秒
- *   修改日期：2021年07月17日 星期六 22时09分00秒
+ *   修改日期：2021年07月18日 星期日 19时20分56秒
  *   描    述：
  *
  *================================================================*/
@@ -56,6 +56,10 @@ void channel_record_item_page_item_refresh(channel_record_item_t *channel_record
 	}
 
 	memset(record_item_cache, 0, sizeof(record_item_cache_t));
+
+	if(channel_record_item == NULL) {
+		return;
+	}
 	
 	record_item_cache->channel_id = channel_record_item->channel_id + 1;
 	memcpy(record_item_cache->account, channel_record_item->account, 32);

@@ -6,7 +6,7 @@
  *   文件名称：channels_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月16日 星期五 14时03分28秒
- *   修改日期：2021年07月17日 星期六 18时41分03秒
+ *   修改日期：2021年07月18日 星期日 17时24分21秒
  *   描    述：
  *
  *================================================================*/
@@ -54,7 +54,7 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		break;
 
 		case 8 ... 11: {//IP	ASCII
-			modbus_data_buffer_rw(modbus_data_ctx, app_info->display_cache_app.ip, 4, modbus_data_ctx->addr - 8);
+			modbus_data_buffer_rw(modbus_data_ctx, app_info->display_cache_app.ip, 4 * 2, modbus_data_ctx->addr - 8);
 
 			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
 				app_info->display_cache_app.ip_sync = 1;
@@ -93,7 +93,7 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		//break;
 
 		case 19 ... 78: {//计费设置	同上
-			modbus_data_buffer_rw(modbus_data_ctx, channels_info->display_cache_channels.price_item_cache, 60, modbus_data_ctx->addr - 19);
+			modbus_data_buffer_rw(modbus_data_ctx, channels_info->display_cache_channels.price_item_cache, 60 * 2, modbus_data_ctx->addr - 19);
 
 			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
 				channels_info->display_cache_channels.price_sync = 1;
@@ -102,7 +102,7 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		break;
 
 		case 79 ... 94: {//设备编号	ASCII
-			modbus_data_buffer_rw(modbus_data_ctx, mechine_info->device_id, 16, modbus_data_ctx->addr - 79);
+			modbus_data_buffer_rw(modbus_data_ctx, mechine_info->device_id, 16 * 2, modbus_data_ctx->addr - 79);
 		}
 		break;
 
@@ -226,7 +226,7 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 				channels_info->display_cache_channels.datetime_cache.wday = tm->tm_wday;
 			}
 
-			modbus_data_buffer_rw(modbus_data_ctx, &channels_info->display_cache_channels.datetime_cache, 7, modbus_data_ctx->addr - 301);
+			modbus_data_buffer_rw(modbus_data_ctx, &channels_info->display_cache_channels.datetime_cache, 7 * 2, modbus_data_ctx->addr - 301);
 
 			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
 				channels_info->display_cache_channels.datetime_sync = 1;
@@ -298,13 +298,13 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 
 		case 318 ... 333: {//密码输入区	ASCII
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
-			modbus_data_buffer_rw(modbus_data_ctx, channel_info->channel_event_start.account, 16, modbus_data_ctx->addr - 318);
+			modbus_data_buffer_rw(modbus_data_ctx, channel_info->channel_event_start.account, 16 * 2, modbus_data_ctx->addr - 318);
 		}
 		break;
 
 		case 334 ... 349: {//账户名输入区	ASCII
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
-			modbus_data_buffer_rw(modbus_data_ctx, channel_info->channel_event_start.password, 16, modbus_data_ctx->addr - 334);
+			modbus_data_buffer_rw(modbus_data_ctx, channel_info->channel_event_start.password, 16 * 2, modbus_data_ctx->addr - 334);
 		}
 		break;
 
@@ -372,15 +372,15 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		break;
 
 		case 505: {//充电时长
-			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
-			uint16_t duration = (get_time() - channel_info->channel_record_item.start_time) / 60;
+			//channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
+			uint16_t duration = 0;
 			modbus_data_value_r(modbus_data_ctx, duration);
 		}
 		break;
 
 		case 506 ... 521: {//充电账户
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
-			modbus_data_buffer_rw(modbus_data_ctx, channel_info->channel_record_item.account, 16, modbus_data_ctx->addr - 506);
+			modbus_data_buffer_rw(modbus_data_ctx, channel_info->channel_record_item.account, 16 * 2, modbus_data_ctx->addr - 506);
 		}
 		break;
 
@@ -458,7 +458,7 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		}
 		break;
 
-		case 600: {//开关机状态
+		case 600: {//开关机 0-关机, 1-开机
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
 			uint16_t value = get_u16_1_from_u32(channel_info->total_energy);
 			modbus_data_value_r(modbus_data_ctx, value);
@@ -605,7 +605,7 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		//break;
 
 		case 900 ... 902: {//记录查询 	BCD
-			modbus_data_buffer_rw(modbus_data_ctx, &channels_info->display_cache_channels.record_dt_cache, 3, modbus_data_ctx->addr - 900);
+			modbus_data_buffer_rw(modbus_data_ctx, &channels_info->display_cache_channels.record_dt_cache, 3 * 2, modbus_data_ctx->addr - 900);
 
 			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
 				channels_info->display_cache_channels.record_sync = 1;
@@ -640,6 +640,7 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 			if(end < start) {
 				end += CHANNEL_RECORD_NUMBER;
 			}
+
 			value = end - start;
 			modbus_data_value_r(modbus_data_ctx, value);
 		}
@@ -684,9 +685,9 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		//case 930: {//结束充电原因
 		//}
 		//break;
-	
+
 		case 906 ... 1155: {
-			modbus_data_buffer_rw(modbus_data_ctx, channels_info->display_cache_channels.record_item_cache, 25 * 10, modbus_data_ctx->addr - 906);
+			modbus_data_buffer_rw(modbus_data_ctx, channels_info->display_cache_channels.record_item_cache, 25 * 10 * 2, modbus_data_ctx->addr - 906);
 		}
 		break;
 
@@ -698,4 +699,12 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 			      modbus_data_ctx->addr);
 			break;
 	}
+
+	debug("op:%s, addr:%d, value:%d",
+	      (modbus_data_ctx->action == MODBUS_DATA_ACTION_GET) ? "get" :
+	      (modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) ? "set" :
+	      "unknow",
+	      modbus_data_ctx->addr,
+	      modbus_data_ctx->value);
+
 }

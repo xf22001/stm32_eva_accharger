@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年07月17日 星期六 22时45分41秒
+ *   修改日期：2021年07月18日 星期日 17时33分52秒
  *   描    述：
  *
  *================================================================*/
@@ -94,6 +94,8 @@ static void app_mechine_info_invalid(void *fn_ctx, void *chain_ctx)
 	if(modbus_data_ctx->influence >= (void *)(&app_info->mechine_info + 1)) {
 		return;
 	}
+
+	debug("[%p, %p, %p]", &app_info->mechine_info, modbus_data_ctx->influence, &app_info->mechine_info + 1);
 
 	app_info->mechine_info_invalid = 1;
 }
@@ -259,6 +261,8 @@ void app(void const *argument)
 			debug("adc[1]:%d", get_adc_value(adc_info, 1));
 			debug("adc[2]:%d", get_adc_value(adc_info, 2));
 			debug("adc[3]:%d", get_adc_value(adc_info, 3));
+			debug("adc[4]:%d", get_adc_value(adc_info, 4));
+			debug("adc[5]:%d", get_adc_value(adc_info, 5));
 			get_bcd_b0123456789_from_u64(&data[0], &data[1], &data[2], &data[3], &data[4], &data[5], &data[6], &data[7], &data[8], &data[9], u);
 			debug("0xffffffffffffffff is:%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
 			     data[9],
