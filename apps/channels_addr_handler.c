@@ -6,7 +6,7 @@
  *   文件名称：channels_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月16日 星期五 14时03分28秒
- *   修改日期：2021年07月19日 星期一 17时24分19秒
+ *   修改日期：2021年07月20日 星期二 17时30分14秒
  *   描    述：
  *
  *================================================================*/
@@ -730,6 +730,9 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		break;
 
 		case 605: {//枪是否锁定//xiaofei todo
+			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
+			uint16_t value = (channel_info->state == CHANNEL_STATE_IDLE) ? 0 : 1;
+			modbus_data_value_r(modbus_data_ctx, value);
 		}
 		break;
 
@@ -761,7 +764,7 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		}
 		break;
 
-		//case 610 ... 699: {//预留
+		//case 610 ... 649: {//预留
 		//}
 		//break;
 
@@ -847,12 +850,8 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		//}
 		//break;
 
-		case 900 ... 902: {//记录查询 	BCD
+		case 900 ... 902: {//记录查询 	BCD 年 月 日
 			modbus_data_buffer_rw(modbus_data_ctx, &channels_info->display_cache_channels.record_dt_cache, 3 * 2, modbus_data_ctx->addr - 900);
-
-			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
-				channels_info->display_cache_channels.record_sync = 1;
-			}
 		}
 		break;
 
@@ -863,8 +862,6 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
 				channels_info->display_cache_channels.record_sync = 1;
 			}
-
-			channel_record_item_page_load_current(channel_record_task_info);
 		}
 		break;
 
