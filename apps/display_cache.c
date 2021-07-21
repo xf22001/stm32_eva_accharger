@@ -6,7 +6,7 @@
  *   文件名称：display_cache.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分40秒
- *   修改日期：2021年07月20日 星期二 17时50分07秒
+ *   修改日期：2021年07月21日 星期三 09时59分14秒
  *   描    述：
  *
  *================================================================*/
@@ -17,6 +17,105 @@
 #include "app.h"
 #include "channels.h"
 #include "channel.h"
+
+typedef enum {
+	DISPLAY_CHARGER_STOP_NONE,//未关机
+	DISPLAY_CHARGER_STOP_BMS,//BMS停机
+	DISPLAY_CHARGER_STOP_SCREEN,//手动点击触摸屏停机
+	DISPLAY_CHARGER_STOP_NO_LOAD,//空载停机
+	DISPLAY_CHARGER_STOP_ELCMETER_A_DISCONNECT,//电表1未连接停机
+	DISPLAY_CHARGER_STOP_ELCMETER_B_DISCONNECT,//电表2未连接停机
+	DISPLAY_CHARGER_STOP_CARD_DISCONNECT,//刷卡板未连接停机
+	DISPLAY_CHARGER_STOP_GUN_DISCONNECT,//充电枪连接断开停机
+	DISPLAY_CHARGER_STOP_OVERCURRENT,//过流停机
+	DISPLAY_CHARGER_STOP_SYS_ERR,//系统故障停机
+	DISPLAY_CHARGER_STOP_AC_U_OVER,//输入过压停机
+	DISPLAY_CHARGER_STOP_AC_U_BELOW,//输入欠压停机
+	DISPLAY_CHARGER_STOP_MONEY,//按金额充电停机
+	DISPLAY_CHARGER_STOP_ENERGY,//按电量充电停机
+	DISPLAY_CHARGER_STOP_TIME,//按时间充电停机
+	DISPLAY_CHARGER_STOP_DURATION,//按时长充电停机
+	DISPLAY_CHARGER_STOP_BACK_STAGE,//后台关机
+	DISPLAY_CHARGER_STOP_NO_POWER,//断电停机
+	DISPLAY_CHARGER_STOP_NO_MONEY,//余额不足
+} display_charger_stop_reason_t;
+
+uint16_t display_cache_get_stop_reason(channel_record_item_stop_reason_t reason, uint8_t channel_id)
+{
+	uint16_t display_charger_stop_reason = DISPLAY_CHARGER_STOP_NONE;
+
+	switch(reason) {
+		case CHANNEL_RECORD_ITEM_STOP_REASON_BMS: {
+			display_charger_stop_reason = DISPLAY_CHARGER_STOP_BMS;
+		}
+		break;
+
+		case CHANNEL_RECORD_ITEM_STOP_REASON_MANUAL: {
+			display_charger_stop_reason = DISPLAY_CHARGER_STOP_SCREEN;
+		}
+		break;
+
+		case CHANNEL_RECORD_ITEM_STOP_REASON_FAULT_ENERGYMETER: {
+			if(channel_id == 0) {
+				display_charger_stop_reason = DISPLAY_CHARGER_STOP_ELCMETER_A_DISCONNECT;
+			} else if(channel_id == 1) {
+				display_charger_stop_reason = DISPLAY_CHARGER_STOP_ELCMETER_B_DISCONNECT;
+			}
+
+		}
+		break;
+
+		case CHANNEL_RECORD_ITEM_STOP_REASON_FAULT_CARD_READER: {
+			display_charger_stop_reason = DISPLAY_CHARGER_STOP_CARD_DISCONNECT;
+		}
+		break;
+
+		case DISPLAY_CHARGER_STOP_GUN_DISCONNECT: {
+			display_charger_stop_reason = DISPLAY_CHARGER_STOP_CARD_DISCONNECT;
+		}
+		break;
+		case CHANNEL_RECORD_ITEM_STOP_REASON_BMS_OVER_CURRENT: {
+			display_charger_stop_reason = DISPLAY_CHARGER_STOP_OVERCURRENT;
+		}
+		break;
+		case CHANNEL_RECORD_ITEM_STOP_REASON_FAULT_INPUT_OVER_VOLTAGE: {
+			display_charger_stop_reason = DISPLAY_CHARGER_STOP_AC_U_OVER;
+		}
+		break;
+		case CHANNEL_RECORD_ITEM_STOP_REASON_FAULT_INPUT_LOW_VOLTAGE: {
+			display_charger_stop_reason = DISPLAY_CHARGER_STOP_AC_U_BELOW;
+		}
+		break;
+
+		case CHANNEL_RECORD_ITEM_STOP_REASON_AMOUNT: {
+			display_charger_stop_reason = DISPLAY_CHARGER_STOP_MONEY;
+		}
+		break;
+
+		case CHANNEL_RECORD_ITEM_STOP_REASON_ENERGY: {
+			display_charger_stop_reason = DISPLAY_CHARGER_STOP_ENERGY;
+		}
+		break;
+
+		case CHANNEL_RECORD_ITEM_STOP_REASON_DURATION: {
+			display_charger_stop_reason = DISPLAY_CHARGER_STOP_TIME;
+		}
+		break;
+
+		case CHANNEL_RECORD_ITEM_STOP_REASON_REMOTE: {
+			display_charger_stop_reason = DISPLAY_CHARGER_STOP_BACK_STAGE;
+		}
+		break;
+
+		default: {
+			display_charger_stop_reason = DISPLAY_CHARGER_STOP_SCREEN;
+			break;
+		}
+		break;
+	}
+
+	return display_charger_stop_reason;
+}
 
 void load_app_display_cache(app_info_t *app_info)
 {
@@ -238,7 +337,7 @@ void channel_record_item_page_item_refresh(channel_record_item_t *channel_record
 	record_item_cache->energy_l = get_u16_0_from_u32(channel_record_item->energy);
 	record_item_cache->amount_h = get_u16_1_from_u32(channel_record_item->amount);
 	record_item_cache->amount_l = get_u16_0_from_u32(channel_record_item->amount);
-	record_item_cache->start_reason = get_u16_0_from_u32(channel_record_item->start_reason);
-	record_item_cache->stop_reason = get_u16_0_from_u32(channel_record_item->stop_reason);
+	record_item_cache->start_reason = channel_record_item->start_reason;
+	record_item_cache->stop_reason = display_cache_get_stop_reason(channel_info->channel_record_item.stop_reason, 0);
 }
 

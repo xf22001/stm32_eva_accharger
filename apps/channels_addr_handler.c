@@ -6,7 +6,7 @@
  *   文件名称：channels_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月16日 星期五 14时03分28秒
- *   修改日期：2021年07月20日 星期二 17时30分14秒
+ *   修改日期：2021年07月21日 星期三 09时33分05秒
  *   描    述：
  *
  *================================================================*/
@@ -16,11 +16,13 @@
 #include "channel.h"
 #include "charger.h"
 #include "display.h"
+#include "display_cache.h"
 #include "net_client.h"
 
 #include "log.h"
 
 uint16_t osGetCPUUsage(void);
+uint16_t display_cache_get_stop_reason(channel_record_item_stop_reason_t reason, uint8_t channel_id);
 
 typedef enum {
 	DISPLAY_FAULT_OK = 0, //(0)系统无故障
@@ -98,28 +100,6 @@ typedef enum {
 	DISPLAY_CHARGE_STATUS_RUNNING,//正在充电 插枪充电
 	DISPLAY_CHARGE_STATUS_FINISH,//充电完成 插枪充完电
 } display_charge_status_type_t;
-
-typedef enum {
-	DISPLAY_CHARGER_STOP_NONE,//未关机
-	DISPLAY_CHARGER_STOP_BMS,//BMS停机
-	DISPLAY_CHARGER_STOP_SCREEN,//手动点击触摸屏停机
-	DISPLAY_CHARGER_STOP_NO_LOAD,//空载停机
-	DISPLAY_CHARGER_STOP_ELCMETER_A_DISCONNECT,//电表1未连接停机
-	DISPLAY_CHARGER_STOP_ELCMETER_B_DISCONNECT,//电表2未连接停机
-	DISPLAY_CHARGER_STOP_CARD_DISCONNECT,//刷卡板未连接停机
-	DISPLAY_CHARGER_STOP_GUN_DISCONNECT,//充电枪连接断开停机
-	DISPLAY_CHARGER_STOP_OVERCURRENT,//过流停机
-	DISPLAY_CHARGER_STOP_SYS_ERR,//系统故障停机
-	DISPLAY_CHARGER_STOP_AC_U_OVER,//输入过压停机
-	DISPLAY_CHARGER_STOP_AC_U_BELOW,//输入欠压停机
-	DISPLAY_CHARGER_STOP_MONEY,//按金额充电停机
-	DISPLAY_CHARGER_STOP_ENERGY,//按电量充电停机
-	DISPLAY_CHARGER_STOP_TIME,//按时间充电停机
-	DISPLAY_CHARGER_STOP_DURATION,//按时长充电停机
-	DISPLAY_CHARGER_STOP_BACK_STAGE,//后台关机
-	DISPLAY_CHARGER_STOP_NO_POWER,//断电停机
-	DISPLAY_CHARGER_STOP_NO_MONEY,//余额不足
-} display_charger_stop_type;
 
 void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 {
@@ -678,53 +658,14 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 
 		case 603: {//停止充电原因
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
-			uint16_t value = DISPLAY_CHARGER_STOP_NONE;
-
-			switch(channel_info->channel_record_item.stop_reason) {
-				case CHANNEL_RECORD_ITEM_STOP_REASON_BMS_SOC_ARCHIEVED ... CHANNEL_RECORD_ITEM_STOP_REASON_BMS_BMS_OTHER_FAULT: {
-					value = DISPLAY_CHARGER_STOP_BMS;
-				}
-				break;
-
-				case CHANNEL_RECORD_ITEM_STOP_REASON_MANUAL: {
-					value = DISPLAY_CHARGER_STOP_SCREEN;
-				}
-				break;
-
-				case CHANNEL_RECORD_ITEM_STOP_REASON_AMOUNT: {
-					value = DISPLAY_CHARGER_STOP_MONEY;
-				}
-				break;
-
-				case CHANNEL_RECORD_ITEM_STOP_REASON_ENERGY: {
-					value = DISPLAY_CHARGER_STOP_ENERGY;
-				}
-				break;
-
-				case CHANNEL_RECORD_ITEM_STOP_REASON_DURATION: {
-					value = DISPLAY_CHARGER_STOP_TIME;
-				}
-				break;
-
-				case CHANNEL_RECORD_ITEM_STOP_REASON_REMOTE: {
-					value = DISPLAY_CHARGER_STOP_BACK_STAGE;
-				}
-				break;
-
-				default: {
-					value = DISPLAY_CHARGER_STOP_SCREEN;
-					break;
-				}
-				break;
-			}
-
+			uint16_t value = display_cache_get_stop_reason(channel_info->channel_record_item.stop_reason, 0);
 			modbus_data_value_r(modbus_data_ctx, value);
 		}
 		break;
 
 		case 604: {//开始充电原因
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
-			uint16_t value = channel_info->channel_record_item.start_reason;//todo
+			uint16_t value = channel_info->channel_record_item.start_reason;
 			modbus_data_value_r(modbus_data_ctx, value);
 		}
 		break;
