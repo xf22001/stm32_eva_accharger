@@ -6,7 +6,7 @@
  *   文件名称：display_cache.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分40秒
- *   修改日期：2021年07月21日 星期三 09时59分14秒
+ *   修改日期：2021年07月21日 星期三 13时13分14秒
  *   描    述：
  *
  *================================================================*/
@@ -338,6 +338,6 @@ void channel_record_item_page_item_refresh(channel_record_item_t *channel_record
 	record_item_cache->amount_h = get_u16_1_from_u32(channel_record_item->amount);
 	record_item_cache->amount_l = get_u16_0_from_u32(channel_record_item->amount);
 	record_item_cache->start_reason = channel_record_item->start_reason;
-	record_item_cache->stop_reason = display_cache_get_stop_reason(channel_info->channel_record_item.stop_reason, 0);
+	record_item_cache->stop_reason = display_cache_get_stop_reason(channel_record_item->stop_reason, channel_record_item->channel_id);
 }
 
