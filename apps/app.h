@@ -6,7 +6,7 @@
  *   文件名称：app.h
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时56分29秒
- *   修改日期：2021年07月22日 星期四 15时36分17秒
+ *   修改日期：2021年07月22日 星期四 16时55分05秒
  *   描    述：
  *
  *================================================================*/
@@ -71,6 +71,10 @@ int app_load_config(void);
 int app_save_config(void);
 void app_init(void);
 void send_app_event(app_event_t event);
+void load_app_display_cache(app_info_t *app_info);
+void sync_app_display_cache(app_info_t *app_info);
+void update_network_ip_config(app_info_t *app_info);
 void app(void const *argument);
 void idle(void const *argument);
+
 #endif //_APP_H
