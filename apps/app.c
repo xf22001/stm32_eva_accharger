@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年07月18日 星期日 17时33分52秒
+ *   修改日期：2021年07月22日 星期四 16时13分26秒
  *   描    述：
  *
  *================================================================*/
@@ -120,6 +120,46 @@ static void app_mechine_info_changed(void *fn_ctx, void *chain_ctx)
 	}
 }
 
+void update_network_ip_config(app_info_t *app_info)
+{
+	int exit = 0;
+
+	while(exit == 0) {
+		if(set_dhcp_enable(app_info->mechine_info.dhcp_enable) != 0) {
+			debug("");
+			osDelay(1000);
+		} else {
+			if(app_info->mechine_info.dhcp_enable == 0) {
+				if(set_default_ipaddr(&app_info->mechine_info.ip) != 0) {
+					debug("");
+					osDelay(1000);
+					continue;
+				}
+
+				if(set_default_netmask(&app_info->mechine_info.sn) != 0) {
+					debug("");
+					osDelay(1000);
+					continue;
+				}
+
+				if(set_default_gw(&app_info->mechine_info.gw) != 0) {
+					debug("");
+					osDelay(1000);
+					continue;
+				}
+
+				if(set_default_dns_server(&app_info->mechine_info.gw) != 0) {
+					debug("");
+					osDelay(1000);
+					continue;
+				}
+			}
+
+			exit = 1;
+		}
+	}
+}
+
 void app(void const *argument)
 {
 
@@ -191,10 +231,15 @@ void app(void const *argument)
 		snprintf(app_info->mechine_info.device_id, sizeof(app_info->mechine_info.device_id), "%s", "0000000000");
 		snprintf(app_info->mechine_info.uri, sizeof(app_info->mechine_info.uri), "%s", "tcp://112.74.40.227:12345");
 		debug("device id:\'%s\', server uri:\'%s\'!", app_info->mechine_info.device_id, app_info->mechine_info.uri);
+		IP4_ADDR(&app_info->mechine_info.ip, 10, 42, 0, 122);
+		IP4_ADDR(&app_info->mechine_info.sn, 255, 255, 255, 0);
+		IP4_ADDR(&app_info->mechine_info.gw, 10, 42, 0, 1);
 		app_info->mechine_info.upgrade_enable = 0;
 		app_save_config();
 		app_info->available = 1;
 	}
+
+	update_network_ip_config(app_info);
 
 	//ftpd_init();
 
@@ -265,16 +310,16 @@ void app(void const *argument)
 			debug("adc[5]:%d", get_adc_value(adc_info, 5));
 			get_bcd_b0123456789_from_u64(&data[0], &data[1], &data[2], &data[3], &data[4], &data[5], &data[6], &data[7], &data[8], &data[9], u);
 			debug("0xffffffffffffffff is:%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
-			     data[9],
-			     data[8],
-			     data[7],
-			     data[6],
-			     data[5],
-			     data[4],
-			     data[3],
-			     data[2],
-			     data[1],
-			     data[0]);
+			      data[9],
+			      data[8],
+			      data[7],
+			      data[6],
+			      data[5],
+			      data[4],
+			      data[3],
+			      data[2],
+			      data[1],
+			      data[0]);
 		}
 	}
 }

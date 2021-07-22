@@ -6,7 +6,7 @@
  *   文件名称：app.h
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时56分29秒
- *   修改日期：2021年07月17日 星期六 10时21分00秒
+ *   修改日期：2021年07月22日 星期四 15时46分40秒
  *   描    述：
  *
  *================================================================*/
@@ -23,6 +23,7 @@ extern "C"
 #include "eeprom.h"
 #include "callback_chain.h"
 #include "display_cache.h"
+#include "sal_hook.h"
 
 #ifdef __cplusplus
 }
@@ -40,6 +41,11 @@ typedef struct {
 	//tcp://www.baidu.com:80
 	//udp://www.baidu.com:80
 	char uri[256];
+
+	ip_addr_t ip;
+	ip_addr_t sn;
+	ip_addr_t gw;
+	uint8_t dhcp_enable;
 
 	uint8_t upgrade_enable;
 } mechine_info_t;

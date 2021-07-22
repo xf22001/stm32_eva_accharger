@@ -6,7 +6,7 @@
  *   文件名称：probe_tool_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年03月20日 星期五 12时48分07秒
- *   修改日期：2021年07月17日 星期六 23时18分30秒
+ *   修改日期：2021年07月22日 星期四 14时53分43秒
  *   描    述：
  *
  *================================================================*/
@@ -180,7 +180,7 @@ static void get_host_by_name(char *content, uint32_t size)
 
 static void fn4(request_t *request)
 {
-	ip_addr_t *local_ip = get_default_gw();
+	const ip_addr_t *local_ip = get_default_gw();
 	_printf("local host ip:%s\n", inet_ntoa(*local_ip));
 
 	get_host_by_name((char *)(request + 1), request->header.data_size);
