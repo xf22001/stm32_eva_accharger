@@ -6,7 +6,7 @@
  *   文件名称：channels_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月16日 星期五 14时03分28秒
- *   修改日期：2021年07月21日 星期三 09时33分05秒
+ *   修改日期：2021年07月22日 星期四 11时46分49秒
  *   描    述：
  *
  *================================================================*/
@@ -17,6 +17,8 @@
 #include "charger.h"
 #include "display.h"
 #include "display_cache.h"
+#include "net_client.h"
+#include "card_reader.h"
 #include "net_client.h"
 
 #include "log.h"
@@ -100,6 +102,51 @@ typedef enum {
 	DISPLAY_CHARGE_STATUS_RUNNING,//正在充电 插枪充电
 	DISPLAY_CHARGE_STATUS_FINISH,//充电完成 插枪充完电
 } display_charge_status_type_t;
+
+void sync_channel_display_cache(channel_info_t *channel_info);
+static void account_request_cb(void *fn_ctx, void *chain_ctx)
+{
+	channel_info_t *channel_info = (channel_info_t *)fn_ctx;
+	account_response_info_t *account_response_info = (account_response_info_t *)chain_ctx;
+
+	switch(account_response_info->code) {
+		case ACCOUNT_STATE_CODE_OK: {
+			channel_info->display_cache_channel.account_balance = account_response_info->balance;
+			channel_info->display_cache_channel.start_reason = CHANNEL_RECORD_ITEM_START_REASON_CARD;
+			channel_info->display_cache_channel.charger_start_sync = 1;
+			sync_channel_display_cache(channel_info);
+		}
+		break;
+
+		default: {
+		}
+		break;
+	}
+}
+
+static void card_reader_cb_fn(void *fn_ctx, void *chain_ctx)
+{
+	channel_info_t *channel_info = (channel_info_t *)fn_ctx;
+	card_reader_data_t *card_reader_data = (card_reader_data_t *)chain_ctx;
+
+	if(card_reader_data != NULL) {
+		net_client_info_t *net_client_info = get_net_client_info();
+		account_request_info_t account_request_info = {0};
+
+		if(net_client_info == NULL) {
+			return;
+		}
+
+		channel_info->display_cache_channel.card_id = card_reader_data->id;
+
+		account_request_info.account_type = ACCOUNT_TYPE_CARD;
+		account_request_info.card_id = card_reader_data->id;
+		account_request_info.password = (char *)channel_info->display_cache_channel.password;
+		account_request_info.fn = account_request_cb;
+		account_request_info.fn_ctx = channel_info;
+		net_client_net_client_ctrl_cmd(net_client_info, NET_CLIENT_CTRL_CMD_QUERY_ACCOUNT, &account_request_info);
+	}
+}
 
 void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 {
@@ -422,26 +469,26 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 
 		case 318 ... 333: {//密码输入区	ASCII
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
-			modbus_data_buffer_rw(modbus_data_ctx, channel_info->channel_event_start.password, 16 * 2, modbus_data_ctx->addr - 318);
+			modbus_data_buffer_rw(modbus_data_ctx, channel_info->display_cache_channel.password, 16 * 2, modbus_data_ctx->addr - 318);
 		}
 		break;
 
 		case 334 ... 349: {//账户名输入区	ASCII
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
-			modbus_data_buffer_rw(modbus_data_ctx, channel_info->channel_event_start.account, 16 * 2, modbus_data_ctx->addr - 334);
+			modbus_data_buffer_rw(modbus_data_ctx, channel_info->display_cache_channel.account, 16 * 2, modbus_data_ctx->addr - 334);
 		}
 		break;
 
 		case 366: {//账户余额
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
-			uint16_t value = get_u16_0_from_u32(channel_info->channel_event_start.account_balance);
+			uint16_t value = get_u16_0_from_u32(channel_info->channel_record_item.account_balance);
 			modbus_data_value_r(modbus_data_ctx, value);
 		}
 		break;
 
 		case 367: {//账户余额
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
-			uint16_t value = get_u16_1_from_u32(channel_info->channel_event_start.account_balance);
+			uint16_t value = get_u16_1_from_u32(channel_info->channel_record_item.account_balance);
 			modbus_data_value_r(modbus_data_ctx, value);
 		}
 		break;
@@ -615,19 +662,23 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		break;
 
 		case 600: {//开关机 0-关机, 1-开机
-			channel_event_t *channel_event = os_calloc(1, sizeof(channel_event_t));
-			channels_event_t *channels_event = os_calloc(1, sizeof(channels_event_t));
-			channels_info_t *channels_info = get_channels();
+			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
+			modbus_data_value_rw(modbus_data_ctx, channel_info->display_cache_channel.onoff);
 
-			OS_ASSERT(channel_event != NULL);
-			OS_ASSERT(channels_event != NULL);
+			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
+				if(channels_settings->authorize == 0) {
+					channel_info->display_cache_channel.charger_start_sync = 1;
+					channel_info->display_cache_channel.start_reason = CHANNEL_RECORD_ITEM_START_REASON_MANUAL;
+				} else {
+					card_reader_info_t *card_reader_info = (card_reader_info_t *)channels_info->card_reader_info;
+					card_reader_cb_t card_reader_cb;
 
-			channel_event->channel_id = 0;
-			channel_event->type = (modbus_data_ctx->value == 1) ? CHANNEL_EVENT_TYPE_START_CHANNEL : CHANNEL_EVENT_TYPE_STOP_CHANNEL;
-			channels_event->type = CHANNELS_EVENT_CHANNEL;
-			channels_event->event = channel_event;
+					card_reader_cb.fn = card_reader_cb_fn;
+					card_reader_cb.fn_ctx = channel_info;
+					card_reader_cb.timeout = 5000;
 
-			if(send_channels_event(channels_info, channels_event, 10) != 0) {
+					start_card_reader_cb(card_reader_info, &card_reader_cb);
+				}
 			}
 		}
 		break;
@@ -711,59 +762,43 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 
 		case 650: {//充电模式设置
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
-			modbus_data_value_rw(modbus_data_ctx, channel_info->channel_event_start.charge_mode);
+			modbus_data_value_rw(modbus_data_ctx, channel_info->display_cache_channel.charge_mode);
 		}
 		break;
 
 		case 651: {//设定充电金额
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
-			modbus_data_value_rw(modbus_data_ctx, channel_info->channel_event_start.account_balance);
+			modbus_data_value_rw(modbus_data_ctx, channel_info->display_cache_channel.charge_amount);
 		}
 		break;
 
 		case 652: {//开始充电时间时	BCD
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
 			modbus_data_value_rw(modbus_data_ctx, channel_info->display_cache_channel.start_hour);
-
-			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
-				channel_info->display_cache_channel.charger_start_sync = 1;
-			}
 		}
 		break;
 
 		case 653: {//开始充电时间分	BCD
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
 			modbus_data_value_rw(modbus_data_ctx, channel_info->display_cache_channel.start_min);
-
-			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
-				channel_info->display_cache_channel.charger_start_sync = 1;
-			}
 		}
 		break;
 
 		case 654: {//结束充电时间时	BCD
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
 			modbus_data_value_rw(modbus_data_ctx, channel_info->display_cache_channel.stop_hour);
-
-			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
-				channel_info->display_cache_channel.charger_start_sync = 1;
-			}
 		}
 		break;
 
 		case 655: {//结束充电时间分	BCD
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
 			modbus_data_value_rw(modbus_data_ctx, channel_info->display_cache_channel.stop_min);
-
-			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
-				channel_info->display_cache_channel.charger_start_sync = 1;
-			}
 		}
 		break;
 
 		case 656: {//设定充电电量
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
-			modbus_data_value_rw(modbus_data_ctx, channel_info->channel_event_start.account_energy);
+			modbus_data_value_rw(modbus_data_ctx, channel_info->display_cache_channel.charge_energy);
 		}
 		break;
 
@@ -797,7 +832,6 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		break;
 
 		case 903: {//查询确认	按键 下发1
-			channel_record_task_info_t *channel_record_task_info = get_or_alloc_channel_record_task_info(0);
 			modbus_data_value_rw(modbus_data_ctx, channels_info->display_cache_channels.record_load_cmd);
 
 			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {

@@ -6,7 +6,7 @@
  *   文件名称：display_cache.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分40秒
- *   修改日期：2021年07月21日 星期三 13时13分14秒
+ *   修改日期：2021年07月22日 星期四 11时44分47秒
  *   描    述：
  *
  *================================================================*/
@@ -17,6 +17,7 @@
 #include "app.h"
 #include "channels.h"
 #include "channel.h"
+#include "log.h"
 
 typedef enum {
 	DISPLAY_CHARGER_STOP_NONE,//未关机
@@ -74,14 +75,17 @@ uint16_t display_cache_get_stop_reason(channel_record_item_stop_reason_t reason,
 			display_charger_stop_reason = DISPLAY_CHARGER_STOP_CARD_DISCONNECT;
 		}
 		break;
+
 		case CHANNEL_RECORD_ITEM_STOP_REASON_BMS_OVER_CURRENT: {
 			display_charger_stop_reason = DISPLAY_CHARGER_STOP_OVERCURRENT;
 		}
 		break;
+
 		case CHANNEL_RECORD_ITEM_STOP_REASON_FAULT_INPUT_OVER_VOLTAGE: {
 			display_charger_stop_reason = DISPLAY_CHARGER_STOP_AC_U_OVER;
 		}
 		break;
+
 		case CHANNEL_RECORD_ITEM_STOP_REASON_FAULT_INPUT_LOW_VOLTAGE: {
 			display_charger_stop_reason = DISPLAY_CHARGER_STOP_AC_U_BELOW;
 		}
@@ -280,23 +284,89 @@ void load_channel_display_cache(channel_info_t *channel_info)
 void sync_channel_display_cache(channel_info_t *channel_info)
 {
 	if(channel_info->display_cache_channel.charger_start_sync == 1) {
-		int hour;
-		int min;
-		struct tm tm = {0};
+		channel_event_type_t type = CHANNEL_EVENT_TYPE_UNKNOW;
+		channel_event_t *channel_event;
+		channels_event_t *channels_event;
+		channels_info_t *channels_info = (channels_info_t *)channel_info->channels_info;
 
 		channel_info->display_cache_channel.charger_start_sync = 0;
 
-		hour = get_u8_from_bcd(channel_info->display_cache_channel.start_hour);
-		min = get_u8_from_bcd(channel_info->display_cache_channel.start_min);
-		tm.tm_hour = hour;
-		tm.tm_min = min;
-		channel_info->channel_record_item.start_time = mktime(&tm);
+		if(channel_info->display_cache_channel.onoff == 1) {//开机
+			if(channel_info->state != CHANNEL_STATE_IDLE) {
+				debug("");
+				return;
+			}
 
-		hour = get_u8_from_bcd(channel_info->display_cache_channel.stop_hour);
-		min = get_u8_from_bcd(channel_info->display_cache_channel.stop_min);
-		tm.tm_hour = hour;
-		tm.tm_min = min;
-		channel_info->channel_record_item.stop_time = mktime(&tm);
+			if(channel_info->channel_event_start.start_state != CHANNEL_EVENT_START_STATE_IDLE) {
+				debug("");
+				return;
+			}
+
+			channel_info->channel_event_start.start_state = CHANNEL_EVENT_START_STATE_PREPARE;
+
+			channel_info->channel_event_start.charge_mode = channel_info->display_cache_channel.charge_mode;
+			channel_info->channel_event_start.start_reason = channel_info->display_cache_channel.start_reason;
+			type = CHANNEL_EVENT_TYPE_START_CHANNEL;
+
+			switch(channel_info->display_cache_channel.charge_mode) {
+				case CHANNEL_RECORD_CHARGE_MODE_UNLIMIT: {
+				}
+				break;
+
+				case CHANNEL_RECORD_CHARGE_MODE_DURATION: {
+					int hour;
+					int min;
+					struct tm tm = {0};
+
+					hour = get_u8_from_bcd(channel_info->display_cache_channel.start_hour);
+					min = get_u8_from_bcd(channel_info->display_cache_channel.start_min);
+					tm.tm_hour = hour;
+					tm.tm_min = min;
+					channel_info->channel_event_start.start_time = mktime(&tm);
+
+					hour = get_u8_from_bcd(channel_info->display_cache_channel.stop_hour);
+					min = get_u8_from_bcd(channel_info->display_cache_channel.stop_min);
+					tm.tm_hour = hour;
+					tm.tm_min = min;
+
+					channel_info->channel_event_start.charge_duration = mktime(&tm) - channel_info->channel_event_start.start_time;
+				}
+				break;
+
+				case CHANNEL_RECORD_CHARGE_MODE_AMOUNT: {
+					channel_info->channel_event_start.charge_amount = channel_info->display_cache_channel.charge_amount;
+				}
+				break;
+
+				case CHANNEL_RECORD_CHARGE_MODE_ENERGY: {
+					channel_info->channel_event_start.charge_energy = channel_info->display_cache_channel.charge_energy;
+				}
+				break;
+
+				default: {
+
+				}
+				break;
+			}
+		} else {
+			channel_info->channel_event_stop.stop_reason = CHANNEL_RECORD_ITEM_STOP_REASON_MANUAL;
+			type = CHANNEL_EVENT_TYPE_STOP_CHANNEL;
+		}
+
+		channel_event = os_calloc(1, sizeof(channel_event_t));
+		channels_event = os_calloc(1, sizeof(channels_event_t));
+
+		OS_ASSERT(channel_event != NULL);
+		OS_ASSERT(channels_event != NULL);
+
+		channel_event->channel_id = channel_info->channel_id;
+		channel_event->type = type;
+
+		channels_event->type = CHANNELS_EVENT_CHANNEL;
+		channels_event->event = channel_event;
+
+		if(send_channels_event(channels_info, channels_event, 10) != 0) {
+		}
 	}
 }
 

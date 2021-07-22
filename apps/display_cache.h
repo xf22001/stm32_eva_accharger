@@ -6,7 +6,7 @@
  *   文件名称：display_cache.h
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分47秒
- *   修改日期：2021年07月21日 星期三 09时32分15秒
+ *   修改日期：2021年07月22日 星期四 11时42分11秒
  *   描    述：
  *
  *================================================================*/
@@ -90,10 +90,19 @@ typedef struct {
 
 typedef struct {
 	uint8_t charger_start_sync;
+	uint8_t start_reason;
+	uint32_t account_balance;
 	uint16_t start_hour;
 	uint16_t start_min;
 	uint16_t stop_hour;
 	uint16_t stop_min;
+	uint64_t card_id;
+	uint16_t account[16];
+	uint16_t password[16];
+	uint16_t charge_mode;
+	uint16_t charge_amount;
+	uint16_t charge_energy;
+	uint16_t onoff;
 } display_cache_channel_t;
 
 #pragma pack(pop)
