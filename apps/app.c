@@ -239,7 +239,7 @@ void app(void const *argument)
 		app_info->available = 1;
 	}
 
-	update_network_ip_config(app_info);
+	//update_network_ip_config(app_info);
 
 	//ftpd_init();
 
