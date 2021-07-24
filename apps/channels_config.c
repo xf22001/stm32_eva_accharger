@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2021年07月19日 星期一 14时46分19秒
+ *   修改日期：2021年07月24日 星期六 16时02分46秒
  *   描    述：
  *
  *================================================================*/
@@ -19,7 +19,9 @@ extern CAN_HandleTypeDef hcan1;
 extern ADC_HandleTypeDef hadc1;
 extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart2;
+extern UART_HandleTypeDef huart3;
 extern UART_HandleTypeDef huart4;
+extern UART_HandleTypeDef huart6;
 extern TIM_HandleTypeDef htim3;
 extern SPI_HandleTypeDef hspi2;
 
@@ -95,12 +97,14 @@ static channel_config_t channel0_config = {
 		.rey4_pin = rey4_Pin,
 	},
 	.energy_meter_config = {
-		.energy_meter_type = ENERGY_METER_TYPE_AC,
-		.huart = &huart1,
+		.energy_meter_type = ENERGY_METER_TYPE_AC_HLW8032,
+		.huart = &huart3,
 		.con_gpio = con1_485_GPIO_Port,
 		.con_pin = con1_485_Pin,
 	},
 	.hcan_channel_comm = &hcan1,
+	.charger_temperature_adc = &hadc1,
+	.charger_temperature_adc_rank = 1,
 	.adhe_ad_adc = &hadc1,
 	.adhe_ad_adc_rank = 2,
 	.cp_ad_adc = &hadc1,
@@ -124,12 +128,14 @@ static channel_config_t channel1_config = {
 		.rey4_pin = rey4_Pin,
 	},
 	.energy_meter_config = {
-		.energy_meter_type = ENERGY_METER_TYPE_AC,
-		.huart = &huart1,
+		.energy_meter_type = ENERGY_METER_TYPE_AC_HLW8032,
+		.huart = &huart6,
 		.con_gpio = con1_485_GPIO_Port,
 		.con_pin = con1_485_Pin,
 	},
 	.hcan_channel_comm = &hcan1,
+	.charger_temperature_adc = &hadc1,
+	.charger_temperature_adc_rank = 1,
 	.adhe_ad_adc = &hadc1,
 	.adhe_ad_adc_rank = 3,
 	.cp_ad_adc = &hadc1,
@@ -164,7 +170,7 @@ static channels_config_t channels_config_0 = {
 		.clk_pin = voi_clk_Pin,
 	},
 	.card_reader_config = {
-		.card_reader_type = CARD_READER_TYPE_ZLG,
+		.card_reader_type = CARD_READER_TYPE_MT_318_626,
 		.huart_card_reader = &huart4,
 	},
 	.display_config = {
@@ -173,7 +179,7 @@ static channels_config_t channels_config_0 = {
 		.con_pin = con2_485_Pin,
 	},
 	.hcan_channel_comm = &hcan1,
-	.board_temperature_adc = NULL,
+	.board_temperature_adc = &hadc1,
 	.board_temperature_adc_rank = 0,
 	.force_stop_port = esb_GPIO_Port,
 	.force_stop_pin = esb_Pin,

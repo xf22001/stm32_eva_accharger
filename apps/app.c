@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年07月22日 星期四 16时13分26秒
+ *   修改日期：2021年07月24日 星期六 15时41分27秒
  *   描    述：
  *
  *================================================================*/
@@ -190,19 +190,6 @@ void app(void const *argument)
 	//		app_panic();
 	//	}
 
-	//	set_log_uart_info(uart_info);
-
-	//	osThreadDef(uart_debug, task_uart_debug, osPriorityNormal, 0, 128 * 2 * 2);
-	//	osThreadCreate(osThread(uart_debug), uart_info);
-	//}
-
-	//{
-	//	uart_info_t *uart_info = get_or_alloc_uart_info(&huart4);
-
-	//	if(uart_info == NULL) {
-	//		app_panic();
-	//	}
-
 	//	osThreadDef(task_test_serial, task_test_serial, osPriorityNormal, 0, 128);
 	//	osThreadCreate(osThread(task_test_serial), uart_info);
 	//}
@@ -239,14 +226,14 @@ void app(void const *argument)
 		app_info->available = 1;
 	}
 
-	//update_network_ip_config(app_info);
-
 	//ftpd_init();
 
 	//test_event();
 
 	channels_info = start_channels();
 	OS_ASSERT(channels_info != NULL);
+
+	update_network_ip_config(app_info);
 
 	//net_client_add_poll_loop(poll_loop);
 	//ftp_client_add_poll_loop(poll_loop);

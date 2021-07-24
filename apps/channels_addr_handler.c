@@ -6,7 +6,7 @@
  *   文件名称：channels_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月16日 星期五 14时03分28秒
- *   修改日期：2021年07月22日 星期四 11时46分49秒
+ *   修改日期：2021年07月24日 星期六 17时45分04秒
  *   描    述：
  *
  *================================================================*/
@@ -494,7 +494,8 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		break;
 
 		case 368: {//控制板温度
-			modbus_data_value_r(modbus_data_ctx, channels_info->temperature);
+			int16_t value = channels_info->temperature * 10;
+			modbus_data_value_r(modbus_data_ctx, value);
 		}
 		break;
 
@@ -709,7 +710,14 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 
 		case 603: {//停止充电原因
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
-			uint16_t value = display_cache_get_stop_reason(channel_info->channel_record_item.stop_reason, 0);
+			uint16_t value;
+
+			if(channel_info->state != CHANNEL_STATE_IDLE) {
+				value = display_cache_get_stop_reason(channel_info->channel_record_item.stop_reason, 0);
+			} else {
+				value = 0;
+			}
+
 			modbus_data_value_r(modbus_data_ctx, value);
 		}
 		break;
@@ -731,7 +739,18 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		case 606: {//枪头温度
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
 			charger_info_t *charger_info = (charger_info_t *)channel_info->charger_info;
-			uint16_t value = (charger_info->dc_p_temperature > charger_info->dc_n_temperature) ? charger_info->dc_p_temperature : charger_info->dc_n_temperature;
+			int16_t value = (charger_info->dc_p_temperature > charger_info->dc_n_temperature) ? charger_info->dc_p_temperature : charger_info->dc_n_temperature;
+
+			if(channel_info->temperature > value) {
+				value = channel_info->temperature;
+			}
+
+			if(channels_info->temperature > value) {
+				value = channels_info->temperature;
+			}
+
+			value = value * 10;
+
 			modbus_data_value_r(modbus_data_ctx, value);
 		}
 		break;
@@ -915,11 +934,10 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 			break;
 	}
 
-	debug("op:%s, addr:%d, value:%d",
-	      (modbus_data_ctx->action == MODBUS_DATA_ACTION_GET) ? "get" :
-	      (modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) ? "set" :
-	      "unknow",
-	      modbus_data_ctx->addr,
-	      modbus_data_ctx->value);
-
+	//debug("op:%s, addr:%d, value:%d",
+	//      (modbus_data_ctx->action == MODBUS_DATA_ACTION_GET) ? "get" :
+	//      (modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) ? "set" :
+	//      "unknow",
+	//      modbus_data_ctx->addr,
+	//      modbus_data_ctx->value);
 }

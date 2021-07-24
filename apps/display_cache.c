@@ -6,7 +6,7 @@
  *   文件名称：display_cache.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分40秒
- *   修改日期：2021年07月22日 星期四 11时44分47秒
+ *   修改日期：2021年07月24日 星期六 17时44分56秒
  *   描    述：
  *
  *================================================================*/
@@ -20,7 +20,7 @@
 #include "log.h"
 
 typedef enum {
-	DISPLAY_CHARGER_STOP_NONE,//未关机
+	DISPLAY_CHARGER_STOP_NONE = 0,//未关机
 	DISPLAY_CHARGER_STOP_BMS,//BMS停机
 	DISPLAY_CHARGER_STOP_SCREEN,//手动点击触摸屏停机
 	DISPLAY_CHARGER_STOP_NO_LOAD,//空载停机
