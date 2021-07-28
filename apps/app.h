@@ -67,7 +67,6 @@ typedef enum {
 } app_event_t;
 
 app_info_t *get_app_info(void);
-int app_load_config(void);
 int app_save_config(void);
 void app_init(void);
 void send_app_event(app_event_t event);

@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年07月24日 星期六 15时41分27秒
+ *   修改日期：2021年07月28日 星期三 11时02分47秒
  *   描    述：
  *
  *================================================================*/
@@ -56,7 +56,7 @@ app_info_t *get_app_info(void)
 	return app_info;
 }
 
-int app_load_config(void)
+static int app_load_config(void)
 {
 	eeprom_layout_t *eeprom_layout = get_eeprom_layout();
 	size_t offset = (size_t)&eeprom_layout->mechine_info_seg.eeprom_mechine_info.mechine_info;
@@ -211,7 +211,6 @@ void app(void const *argument)
 	if(app_load_config() == 0) {
 		debug("app_load_config successful!");
 		debug("device id:\'%s\', server uri:\'%s\'!", app_info->mechine_info.device_id, app_info->mechine_info.uri);
-		load_app_display_cache(app_info);
 		app_info->available = 1;
 	} else {
 		debug("app_load_config failed!");
@@ -225,6 +224,8 @@ void app(void const *argument)
 		app_save_config();
 		app_info->available = 1;
 	}
+
+	load_app_display_cache(app_info);
 
 	//ftpd_init();
 
