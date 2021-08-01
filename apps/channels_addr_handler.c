@@ -6,7 +6,7 @@
  *   文件名称：channels_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月16日 星期五 14时03分28秒
- *   修改日期：2021年07月28日 星期三 15时49分41秒
+ *   修改日期：2021年08月01日 星期日 17时37分21秒
  *   描    述：
  *
  *================================================================*/
@@ -407,7 +407,7 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 
 		case 309: {//输入电压
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
-			modbus_data_value_r(modbus_data_ctx, channel_info->va);
+			modbus_data_value_r(modbus_data_ctx, channel_info->voltage);
 		}
 		break;
 
@@ -614,14 +614,14 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 
 		case 526: {//电量读数低
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
-			uint16_t value = get_u16_0_from_u32(channel_info->total_energy / 100);
+			uint16_t value = get_u16_1_from_u32(channel_info->total_energy / 100);
 			modbus_data_value_r(modbus_data_ctx, value);
 		}
 		break;
 
 		case 527: {//电量读数高
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
-			uint16_t value = get_u16_1_from_u32(channel_info->total_energy / 100);
+			uint16_t value = get_u16_0_from_u32(channel_info->total_energy / 100);
 			modbus_data_value_r(modbus_data_ctx, value);
 		}
 		break;

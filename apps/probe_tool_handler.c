@@ -6,7 +6,7 @@
  *   文件名称：probe_tool_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年03月20日 星期五 12时48分07秒
- *   修改日期：2021年07月22日 星期四 14时53分43秒
+ *   修改日期：2021年08月01日 星期日 16时17分40秒
  *   描    述：
  *
  *================================================================*/
@@ -482,6 +482,33 @@ static void fn14(request_t *request)
 	}
 }
 
+#include "voice.h"
+static void fn15(request_t *request)
+{
+	char *content = (char *)(request + 1);
+	int fn;
+	int voice_id;
+	int catched;
+	int ret;
+
+	ret = sscanf(content, "%d %d %n",
+	             &fn,
+	             &voice_id,
+	             &catched);
+	debug("ret:%d", ret);
+
+	if(ret == 2) {
+		channels_info_t *channels_info = get_channels();
+		channels_config_t *channels_config = channels_info->channels_config;
+		voice_info_t *voice_info = get_or_alloc_voice_info(channels_config);
+
+		if(voice_info != NULL) {
+			debug("voice_id:%d!", voice_id);
+			request_voice(voice_info, voice_id);
+		}
+	}
+}
+
 static server_item_t server_map[] = {
 	{1, fn1},
 	{2, fn2},
@@ -497,6 +524,7 @@ static server_item_t server_map[] = {
 	{12, fn12},
 	{13, fn13},
 	{14, fn14},
+	{15, fn15},
 };
 
 server_map_info_t server_map_info = {

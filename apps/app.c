@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年07月28日 星期三 11时02分47秒
+ *   修改日期：2021年08月01日 星期日 21时30分23秒
  *   描    述：
  *
  *================================================================*/
@@ -166,6 +166,11 @@ void app(void const *argument)
 	poll_loop_t *poll_loop;
 	channels_info_t *channels_info = NULL;
 	display_info_t *display_info = NULL;
+
+	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
+	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_3, 1000);
+	__HAL_TIM_SET_COMPARE(&htim3, TIM_CHANNEL_4, 1000);
 
 	app_info = (app_info_t *)os_calloc(1, sizeof(app_info_t));
 
