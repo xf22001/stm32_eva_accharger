@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年08月01日 星期日 21时30分23秒
+ *   修改日期：2021年08月01日 星期日 22时04分54秒
  *   描    述：
  *
  *================================================================*/
@@ -45,6 +45,7 @@
 
 extern IWDG_HandleTypeDef hiwdg;
 extern TIM_HandleTypeDef htim2;
+extern TIM_HandleTypeDef htim3;
 //extern UART_HandleTypeDef huart4;
 extern SPI_HandleTypeDef hspi2;
 
