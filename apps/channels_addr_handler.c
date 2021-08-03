@@ -6,7 +6,7 @@
  *   文件名称：channels_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月16日 星期五 14时03分28秒
- *   修改日期：2021年08月01日 星期日 17时37分21秒
+ *   修改日期：2021年08月02日 星期一 16时20分24秒
  *   描    述：
  *
  *================================================================*/
@@ -481,14 +481,14 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 
 		case 366: {//账户余额
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
-			uint16_t value = get_u16_0_from_u32(channel_info->channel_record_item.account_balance);
+			uint16_t value = get_u16_1_from_u32(channel_info->channel_record_item.account_balance);
 			modbus_data_value_r(modbus_data_ctx, value);
 		}
 		break;
 
 		case 367: {//账户余额
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
-			uint16_t value = get_u16_1_from_u32(channel_info->channel_record_item.account_balance);
+			uint16_t value = get_u16_0_from_u32(channel_info->channel_record_item.account_balance);
 			modbus_data_value_r(modbus_data_ctx, value);
 		}
 		break;
@@ -557,14 +557,14 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 
 		case 503: {//充电电量低
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
-			uint16_t value = get_u16_0_from_u32(channel_info->channel_record_item.energy);
+			uint16_t value = get_u16_1_from_u32(channel_info->channel_record_item.energy);
 			modbus_data_value_r(modbus_data_ctx, value);
 		}
 		break;
 
 		case 504: {//充电电量高
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
-			uint16_t value = get_u16_1_from_u32(channel_info->channel_record_item.energy);
+			uint16_t value = get_u16_0_from_u32(channel_info->channel_record_item.energy);
 			modbus_data_value_r(modbus_data_ctx, value);
 		}
 		break;
@@ -586,28 +586,28 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 
 		case 522: {//账户余额低
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
-			uint16_t value = get_u16_0_from_u32(channel_info->channel_record_item.account_balance);
+			uint16_t value = get_u16_1_from_u32(channel_info->channel_record_item.account_balance);
 			modbus_data_value_r(modbus_data_ctx, value);
 		}
 		break;
 
 		case 523: {//账户余额高
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
-			uint16_t value = get_u16_1_from_u32(channel_info->channel_record_item.account_balance);
+			uint16_t value = get_u16_0_from_u32(channel_info->channel_record_item.account_balance);
 			modbus_data_value_r(modbus_data_ctx, value);
 		}
 		break;
 
 		case 524: {//消费金额
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
-			uint16_t value = get_u16_0_from_u32(channel_info->channel_record_item.amount);
+			uint16_t value = get_u16_1_from_u32(channel_info->channel_record_item.amount);
 			modbus_data_value_r(modbus_data_ctx, value);
 		}
 		break;
 
 		case 525: {//消费金额
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
-			uint16_t value = get_u16_1_from_u32(channel_info->channel_record_item.amount);
+			uint16_t value = get_u16_0_from_u32(channel_info->channel_record_item.amount);
 			modbus_data_value_r(modbus_data_ctx, value);
 		}
 		break;

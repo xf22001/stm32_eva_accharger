@@ -6,16 +6,13 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年08月01日 星期日 22时04分54秒
+ *   修改日期：2021年08月03日 星期二 09时09分15秒
  *   描    述：
  *
  *================================================================*/
 #include "app.h"
 
 #include <string.h>
-
-#include "app_platform.h"
-#include "cmsis_os.h"
 
 #include "iwdg.h"
 
@@ -25,13 +22,10 @@
 #include "test_serial.h"
 #include "test_event.h"
 #include "file_log.h"
-#include "uart_debug.h"
 #include "probe_tool.h"
 #include "net_client.h"
 #include "ftp_client.h"
 #include "usb_upgrade.h"
-
-#include "log.h"
 
 #include "channels.h"
 #include "duty_cycle_pattern.h"
@@ -41,12 +35,12 @@
 #include "sal_netdev.h"
 #include "wiz_ethernet.h"
 #include "display.h"
-#include "display_cache.h"
+
+#include "log.h"
 
 extern IWDG_HandleTypeDef hiwdg;
 extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;
-//extern UART_HandleTypeDef huart4;
 extern SPI_HandleTypeDef hspi2;
 
 static app_info_t *app_info = NULL;
@@ -185,35 +179,6 @@ void app(void const *argument)
 
 	OS_ASSERT(app_info->eeprom_info != NULL);
 
-	add_log_handler((log_fn_t)log_uart_data);
-	add_log_handler((log_fn_t)log_udp_data);
-	add_log_handler((log_fn_t)log_file_data);
-
-	//{
-	//	uart_info_t *uart_info = get_or_alloc_uart_info(&huart4);
-
-	//	if(uart_info == NULL) {
-	//		app_panic();
-	//	}
-
-	//	osThreadDef(task_test_serial, task_test_serial, osPriorityNormal, 0, 128);
-	//	osThreadCreate(osThread(task_test_serial), uart_info);
-	//}
-
-	sal_init();
-	wiz_init();
-
-	poll_loop = get_or_alloc_poll_loop(0);
-	OS_ASSERT(poll_loop != NULL);
-	probe_broadcast_add_poll_loop(poll_loop);
-	probe_server_add_poll_loop(poll_loop);
-
-	while(is_log_server_valid() == 0) {
-		osDelay(1);
-	}
-
-	debug("===========================================start app============================================");
-
 	if(app_load_config() == 0) {
 		debug("app_load_config successful!");
 		debug("device id:\'%s\', server uri:\'%s\'!", app_info->mechine_info.device_id, app_info->mechine_info.uri);
@@ -233,14 +198,32 @@ void app(void const *argument)
 
 	load_app_display_cache(app_info);
 
+	sal_init();
+	wiz_init();
+
+	poll_loop = get_or_alloc_poll_loop(0);
+	OS_ASSERT(poll_loop != NULL);
+
+	update_network_ip_config(app_info);
+
+	probe_broadcast_add_poll_loop(poll_loop);
+	probe_server_add_poll_loop(poll_loop);
+
+	while(is_log_server_valid() == 0) {
+		osDelay(1);
+	}
+
+	add_log_handler((log_fn_t)log_udp_data);
+	add_log_handler((log_fn_t)log_file_data);
+
+	debug("===========================================start app============================================");
+
 	//ftpd_init();
 
 	//test_event();
 
 	channels_info = start_channels();
 	OS_ASSERT(channels_info != NULL);
-
-	update_network_ip_config(app_info);
 
 	//net_client_add_poll_loop(poll_loop);
 	//ftp_client_add_poll_loop(poll_loop);
