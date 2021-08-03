@@ -6,7 +6,7 @@
  *   文件名称：channels_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月16日 星期五 14时03分28秒
- *   修改日期：2021年08月02日 星期一 16时20分24秒
+ *   修改日期：2021年08月03日 星期二 22时12分44秒
  *   描    述：
  *
  *================================================================*/
@@ -781,7 +781,11 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 
 		case 650: {//充电模式设置
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
+			channels_notify_ctx_t channels_notify_ctx;
 			modbus_data_value_rw(modbus_data_ctx, channel_info->display_cache_channel.charge_mode);
+			channels_notify_ctx.notify = CHANNELS_NOTIFY_SELECT_CHARGE_TYPE;
+			channels_notify_ctx.ctx = NULL;
+			do_callback_chain(channels_info->channels_notify_chain, &channels_notify_ctx);
 		}
 		break;
 

@@ -6,7 +6,7 @@
 #   文件名称：user.mk
 #   创 建 者：肖飞
 #   创建日期：2019年10月25日 星期五 13时04分38秒
-#   修改日期：2021年07月28日 星期三 10时13分49秒
+#   修改日期：2021年08月03日 星期二 22时05分46秒
 #   描    述：
 #
 #================================================================
@@ -54,6 +54,7 @@ USER_C_SOURCES += apps/wiznet_spi.c
 USER_C_SOURCES += apps/channels_addr_handler.c
 USER_C_SOURCES += apps/display_cache.c
 USER_C_SOURCES += apps/local_time.c
+USER_C_SOURCES += apps/channels_notify_voice.c
 
 USER_C_SOURCES += apps/modules/app/eeprom_config.c
 USER_C_SOURCES += apps/modules/app/poll_loop.c
