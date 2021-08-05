@@ -6,7 +6,7 @@
  *   文件名称：probe_tool_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年03月20日 星期五 12时48分07秒
- *   修改日期：2021年08月01日 星期日 16时17分40秒
+ *   修改日期：2021年08月05日 星期四 14时17分34秒
  *   描    述：
  *
  *================================================================*/
@@ -180,7 +180,7 @@ static void get_host_by_name(char *content, uint32_t size)
 
 static void fn4(request_t *request)
 {
-	const ip_addr_t *local_ip = get_default_gw();
+	const ip_addr_t *local_ip = get_default_ipaddr();
 	_printf("local host ip:%s\n", inet_ntoa(*local_ip));
 
 	get_host_by_name((char *)(request + 1), request->header.data_size);
@@ -260,14 +260,24 @@ static void fn6(request_t *request)
 	ret = sscanf(content, "%d %10s%n", &fn, protocol, &catched);
 
 	if(ret == 2) {
+		app_info_t *app_info = get_app_info();
+
+		OS_ASSERT(app_info != NULL);
+
 		_printf("protocol:%s!\n", protocol);
 
-		if(memcmp(protocol, "default", 7) == 0) {
-			set_net_client_request_type(net_client_info, REQUEST_TYPE_DEFAULT);
-		} else if(memcmp(protocol, "sse", 3) == 0) {
-			set_net_client_request_type(net_client_info, REQUEST_TYPE_SSE);
-		} else if(memcmp(protocol, "ocpp", 4) == 0) {
-			set_net_client_request_type(net_client_info, REQUEST_TYPE_OCPP_1_6);
+		if(strcmp(protocol, "default") == 0) {
+			app_info->mechine_info.request_type = REQUEST_TYPE_DEFAULT;
+			app_save_config();
+		} else if(strcmp(protocol, "sse") == 0) {
+			app_info->mechine_info.request_type = REQUEST_TYPE_SSE;
+			app_save_config();
+		} else if(strcmp(protocol, "ocpp") == 0) {
+			app_info->mechine_info.request_type = REQUEST_TYPE_OCPP_1_6;
+			app_save_config();
+		} else {
+			app_info->mechine_info.request_type = REQUEST_TYPE_NONE;
+			app_save_config();
 		}
 	} else {
 		_printf("no protocol!\n");
@@ -345,6 +355,8 @@ static void fn10(request_t *request)
 //http://coolaf.com/tool/chattest
 //11 0 ws://82.157.123.54:9010/ajaxchattest
 //11 0 wss://echo.websocket.org
+//11 0 tcp://112.74.40.227:12345
+//11 0 udp://112.74.40.227:12345
 static void fn11(request_t *request)
 {
 	app_info_t *app_info = get_app_info();
@@ -368,10 +380,8 @@ static void fn11(request_t *request)
 	ret = sscanf(content, "%d %s %s %n", &fn, buffer->device_id, buffer->uri, &catched);
 
 	if(ret == 3) {
-		app_info->available = 0;
 		strcpy(app_info->mechine_info.device_id, buffer->device_id);
 		strcpy(app_info->mechine_info.uri, buffer->uri);
-		app_info->available = 1;
 		app_save_config();
 	}
 

@@ -6,7 +6,7 @@
  *   文件名称：uart_debug_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年05月13日 星期三 13时18分00秒
- *   修改日期：2021年07月09日 星期五 08时50分17秒
+ *   修改日期：2021年08月05日 星期四 14时17分49秒
  *   描    述：
  *
  *================================================================*/
@@ -106,14 +106,24 @@ static void fn6(char *arguments)
 	ret = sscanf(arguments, "%10s%n", protocol, &catched);
 
 	if(ret == 1) {
+		app_info_t *app_info = get_app_info();
+
+		OS_ASSERT(app_info != NULL);
+
 		_printf("protocol:%s!\n", protocol);
 
-		if(memcmp(protocol, "default", 7) == 0) {
-			set_net_client_request_type(net_client_info, REQUEST_TYPE_DEFAULT);
-		} else if(memcmp(protocol, "sse", 3) == 0) {
-			set_net_client_request_type(net_client_info, REQUEST_TYPE_SSE);
-		} else if(memcmp(protocol, "ocpp", 4) == 0) {
-			set_net_client_request_type(net_client_info, REQUEST_TYPE_OCPP_1_6);
+		if(strcmp(protocol, "default") == 0) {
+			app_info->mechine_info.request_type = REQUEST_TYPE_DEFAULT;
+			app_save_config();
+		} else if(strcmp(protocol, "sse") == 0) {
+			app_info->mechine_info.request_type = REQUEST_TYPE_SSE;
+			app_save_config();
+		} else if(strcmp(protocol, "ocpp") == 0) {
+			app_info->mechine_info.request_type = REQUEST_TYPE_OCPP_1_6;
+			app_save_config();
+		} else {
+			app_info->mechine_info.request_type = REQUEST_TYPE_NONE;
+			app_save_config();
 		}
 	} else {
 		_printf("no protocol!\n");

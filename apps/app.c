@@ -51,7 +51,7 @@ app_info_t *get_app_info(void)
 	return app_info;
 }
 
-static int app_load_config(void)
+int app_load_config(void)
 {
 	eeprom_layout_t *eeprom_layout = get_eeprom_layout();
 	size_t offset = (size_t)&eeprom_layout->mechine_info_seg.eeprom_mechine_info.mechine_info;
@@ -182,7 +182,6 @@ void app(void const *argument)
 	if(app_load_config() == 0) {
 		debug("app_load_config successful!");
 		debug("device id:\'%s\', server uri:\'%s\'!", app_info->mechine_info.device_id, app_info->mechine_info.uri);
-		app_info->available = 1;
 	} else {
 		debug("app_load_config failed!");
 		snprintf(app_info->mechine_info.device_id, sizeof(app_info->mechine_info.device_id), "%s", "0000000000");
@@ -193,7 +192,6 @@ void app(void const *argument)
 		IP4_ADDR(&app_info->mechine_info.gw, 10, 42, 0, 1);
 		app_info->mechine_info.upgrade_enable = 0;
 		app_save_config();
-		app_info->available = 1;
 	}
 
 	load_app_display_cache(app_info);
