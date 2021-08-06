@@ -6,7 +6,7 @@
  *   文件名称：channels_notify_voice.c
  *   创 建 者：肖飞
  *   创建日期：2021年08月03日 星期二 11时23分04秒
- *   修改日期：2021年08月03日 星期二 22时12分55秒
+ *   修改日期：2021年08月06日 星期五 22时35分06秒
  *   描    述：
  *
  *================================================================*/
@@ -51,22 +51,22 @@ typedef enum {
 	VOICE_DATA_SELECT_CHARGE_TYPE,
 } voice_data_t;
 
-void channels_notify_voice(void *fn_ctx, void *chain_ctx)
+static void channels_notify_voice(void *fn_ctx, void *chain_ctx)
 {
 	channels_info_t *channels_info = (channels_info_t *)fn_ctx;
 	channels_notify_ctx_t *channels_notify_ctx = (channels_notify_ctx_t *)chain_ctx;
 	voice_info_t *voice_info = (voice_info_t *)channels_info->voice_info;
 
 	switch(channels_notify_ctx->notify) {
-		case CHANNELS_NOTIFY_CHANNELS_READY: {
-			request_voice(voice_info, VOICE_DATA_WELCOM);
-		}
-		break;
-
 		case CHANNELS_NOTIFY_CHANNEL_STATE_CHANGE: {
 			channel_info_t *channel_info = (channel_info_t *)channels_notify_ctx->ctx;
 
 			switch(channel_info->request_state) {
+				case CHANNEL_STATE_IDLE: {
+					request_voice(voice_info, VOICE_DATA_WELCOM_NEXT_VISIT);
+				}
+				break;
+
 				case CHANNEL_STATE_START: {
 					switch(channel_info->channel_id) {
 						case 0: {
@@ -212,17 +212,13 @@ void channels_notify_voice(void *fn_ctx, void *chain_ctx)
 			request_voice(voice_info, VOICE_DATA_CARDREADER_GET_CARD);
 		}
 		break;
+
 		case CHANNELS_NOTIFY_CARD_READER_MARK_INVALID: {
 			request_voice(voice_info, VOICE_DATA_CARD_MARK_VALID);
 		}
 		break;
 
 		case CHANNELS_NOTIFY_CARD_READER_RESULT: {
-		}
-		break;
-
-		case CHANNELS_NOTIFY_WELCOM_NEXT_VISIT: {
-			request_voice(voice_info, VOICE_DATA_WELCOM_NEXT_VISIT);
 		}
 		break;
 
@@ -236,4 +232,32 @@ void channels_notify_voice(void *fn_ctx, void *chain_ctx)
 		}
 		break;
 	}
+}
+
+typedef struct {
+	callback_item_t channels_notify_callback_item;
+} channels_notify_voice_ctx_t;
+
+channels_notify_voice_ctx_t *channels_notify_voice_ctx = NULL;
+
+int init_channels_notify_voice(channels_info_t *channels_info)
+{
+	int ret = -1;
+	voice_info_t *voice_info = (voice_info_t *)channels_info->voice_info;
+
+	if(channels_notify_voice_ctx != NULL) {
+		return ret;
+	}
+
+	channels_notify_voice_ctx = os_calloc(1, sizeof(channels_notify_voice_ctx_t));
+	OS_ASSERT(channels_notify_voice_ctx != NULL);
+
+	channels_notify_voice_ctx->channels_notify_callback_item.fn = channels_notify_voice;
+	channels_notify_voice_ctx->channels_notify_callback_item.fn_ctx = channels_info;
+	OS_ASSERT(register_callback(channels_info->channels_notify_chain, &channels_notify_voice_ctx->channels_notify_callback_item) == 0);
+
+	request_voice(voice_info, VOICE_DATA_WELCOM);
+
+	ret = 0;
+	return ret;
 }

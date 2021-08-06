@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年08月03日 星期二 09时09分15秒
+ *   修改日期：2021年08月06日 星期五 22时13分53秒
  *   描    述：
  *
  *================================================================*/
@@ -35,6 +35,7 @@
 #include "sal_netdev.h"
 #include "wiz_ethernet.h"
 #include "display.h"
+#include "channels_notify_voice.h"
 
 #include "log.h"
 
@@ -222,6 +223,10 @@ void app(void const *argument)
 
 	channels_info = start_channels();
 	OS_ASSERT(channels_info != NULL);
+
+	if(init_channels_notify_voice(channels_info) != 0) {
+		debug("");
+	}
 
 	//net_client_add_poll_loop(poll_loop);
 	//ftp_client_add_poll_loop(poll_loop);
