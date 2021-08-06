@@ -6,7 +6,7 @@
  *   文件名称：probe_tool_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年03月20日 星期五 12时48分07秒
- *   修改日期：2021年08月05日 星期四 14时17分34秒
+ *   修改日期：2021年08月06日 星期五 23时35分46秒
  *   描    述：
  *
  *================================================================*/
@@ -519,6 +519,29 @@ static void fn15(request_t *request)
 	}
 }
 
+extern RTC_HandleTypeDef hrtc;
+static void fn16(request_t *request)
+{
+	char *content = (char *)(request + 1);
+	int fn;
+	int data;
+	int catched;
+	int ret;
+
+	ret = sscanf(content, "%d %d %n",
+	             &fn,
+	             &data,
+	             &catched);
+	debug("ret:%d", ret);
+
+	if(ret == 2) {
+		HAL_RTCEx_BKUPWrite(&hrtc, RTC_BKP_DR0, data);
+		HAL_NVIC_SystemReset();
+	} else {
+		debug("read data:%d", HAL_RTCEx_BKUPRead(&hrtc, RTC_BKP_DR0));
+	}
+}
+
 static server_item_t server_map[] = {
 	{1, fn1},
 	{2, fn2},
@@ -535,6 +558,7 @@ static server_item_t server_map[] = {
 	{13, fn13},
 	{14, fn14},
 	{15, fn15},
+	{16, fn16},
 };
 
 server_map_info_t server_map_info = {
