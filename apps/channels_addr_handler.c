@@ -6,7 +6,7 @@
  *   文件名称：channels_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月16日 星期五 14时03分28秒
- *   修改日期：2021年08月03日 星期二 22时12分44秒
+ *   修改日期：2021年08月07日 星期六 13时04分59秒
  *   描    述：
  *
  *================================================================*/
@@ -104,17 +104,30 @@ typedef enum {
 } display_charge_status_type_t;
 
 void sync_channel_display_cache(channel_info_t *channel_info);
+
 static void account_request_cb(void *fn_ctx, void *chain_ctx)
 {
-	channel_info_t *channel_info = (channel_info_t *)fn_ctx;
-	account_response_info_t *account_response_info = (account_response_info_t *)chain_ctx;
+	channels_info_t *channels_info = (channels_info_t *)fn_ctx;
+	channels_notify_ctx_t *channels_notify_ctx = (channels_notify_ctx_t *)chain_ctx;
 
-	switch(account_response_info->code) {
-		case ACCOUNT_STATE_CODE_OK: {
-			channel_info->display_cache_channel.account_balance = account_response_info->balance;
-			channel_info->display_cache_channel.start_reason = CHANNEL_RECORD_ITEM_START_REASON_CARD;
-			channel_info->display_cache_channel.charger_start_sync = 1;
-			sync_channel_display_cache(channel_info);
+	switch(channels_notify_ctx->notify) {
+		case CHANNELS_NOTIFY_CARD_READER_RESULT: {
+			account_response_info_t *account_response_info = (account_response_info_t *)channels_notify_ctx->ctx;
+			channel_info_t *channel_info = (channel_info_t *)account_response_info->channel_info;
+
+			switch(account_response_info->code) {
+				case ACCOUNT_STATE_CODE_OK: {
+					channel_info->display_cache_channel.account_balance = account_response_info->balance;
+					channel_info->display_cache_channel.start_reason = CHANNEL_RECORD_ITEM_START_REASON_CARD;
+					channel_info->display_cache_channel.charger_start_sync = 1;
+					sync_channel_display_cache(channel_info);
+				}
+				break;
+
+				default: {
+				}
+				break;
+			}
 		}
 		break;
 
@@ -142,8 +155,8 @@ static void card_reader_cb_fn(void *fn_ctx, void *chain_ctx)
 		account_request_info.account_type = ACCOUNT_TYPE_CARD;
 		account_request_info.card_id = card_reader_data->id;
 		account_request_info.password = (char *)channel_info->display_cache_channel.password;
+		account_request_info.channel_info = channel_info;
 		account_request_info.fn = account_request_cb;
-		account_request_info.fn_ctx = channel_info;
 		net_client_net_client_ctrl_cmd(net_client_info, NET_CLIENT_CTRL_CMD_QUERY_ACCOUNT, &account_request_info);
 	}
 }

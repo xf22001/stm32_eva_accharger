@@ -6,7 +6,7 @@
  *   文件名称：probe_tool_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年03月20日 星期五 12时48分07秒
- *   修改日期：2021年08月06日 星期五 23时35分46秒
+ *   修改日期：2021年08月07日 星期六 10时38分00秒
  *   描    述：
  *
  *================================================================*/
@@ -52,10 +52,13 @@ static void fn3(request_t *request)
 	uint8_t start_app = 0;
 
 	if(is_app() == 1) {
-		uint8_t flag = 0x00;
-		flash_write(APP_CONFIG_ADDRESS, &flag, 1);
-		_printf("in app, reset for upgrade!\n");
-		HAL_NVIC_SystemReset();
+		if(set_app_valid(0) == 0) {
+			_printf("in app, reset for upgrade!\n");
+			HAL_NVIC_SystemReset();
+		} else {
+			_printf("invalid app failed!\n");
+		}
+
 		return;
 	}
 
@@ -97,11 +100,13 @@ static void fn3(request_t *request)
 	loopback(request);
 
 	if(start_app) {
-		uint8_t flag = 0x01;
-
 		_printf("start app!\n");
-		flash_write(APP_CONFIG_ADDRESS, &flag, 1);
-		HAL_NVIC_SystemReset();
+
+		if(set_app_valid(1) == 0) {
+			HAL_NVIC_SystemReset();
+		} else {
+			_printf("valid app failed!\n");
+		}
 	}
 }
 
