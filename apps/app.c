@@ -35,6 +35,7 @@
 #include "sal_netdev.h"
 #include "wiz_ethernet.h"
 #include "display.h"
+#include "sal_hook.h"
 #include "channels_notify_voice.h"
 
 #include "log.h"
@@ -126,25 +127,41 @@ void update_network_ip_config(app_info_t *app_info)
 			osDelay(1000);
 		} else {
 			if(app_info->mechine_info.dhcp_enable == 0) {
-				if(set_default_ipaddr(&app_info->mechine_info.ip) != 0) {
+				ip_addr_t ip;
+				ip_addr_t sn;
+				ip_addr_t gw;
+
+				if(ipaddr_aton(app_info->mechine_info.ip, &ip) == 0) {
+					debug("ip:%s", app_info->mechine_info.ip);
+				}
+
+				if(ipaddr_aton(app_info->mechine_info.sn, &sn) == 0) {
+					debug("sn:%s", app_info->mechine_info.sn);
+				}
+
+				if(ipaddr_aton(app_info->mechine_info.gw, &gw) == 0) {
+					debug("gw:%s", app_info->mechine_info.gw);
+				}
+
+				if(set_default_ipaddr(&ip) != 0) {
 					debug("");
 					osDelay(1000);
 					continue;
 				}
 
-				if(set_default_netmask(&app_info->mechine_info.sn) != 0) {
+				if(set_default_netmask(&sn) != 0) {
 					debug("");
 					osDelay(1000);
 					continue;
 				}
 
-				if(set_default_gw(&app_info->mechine_info.gw) != 0) {
+				if(set_default_gw(&gw) != 0) {
 					debug("");
 					osDelay(1000);
 					continue;
 				}
 
-				if(set_default_dns_server(&app_info->mechine_info.gw) != 0) {
+				if(set_default_dns_server(&gw) != 0) {
 					debug("");
 					osDelay(1000);
 					continue;
@@ -188,9 +205,10 @@ void app(void const *argument)
 		snprintf(app_info->mechine_info.device_id, sizeof(app_info->mechine_info.device_id), "%s", "0000000000");
 		snprintf(app_info->mechine_info.uri, sizeof(app_info->mechine_info.uri), "%s", "tcp://112.74.40.227:12345");
 		debug("device id:\'%s\', server uri:\'%s\'!", app_info->mechine_info.device_id, app_info->mechine_info.uri);
-		IP4_ADDR(&app_info->mechine_info.ip, 10, 42, 0, 122);
-		IP4_ADDR(&app_info->mechine_info.sn, 255, 255, 255, 0);
-		IP4_ADDR(&app_info->mechine_info.gw, 10, 42, 0, 1);
+		snprintf(app_info->mechine_info.ip, sizeof(app_info->mechine_info.ip), "%d.%d.%d.%d", 10, 42, 0, 122);
+		snprintf(app_info->mechine_info.sn, sizeof(app_info->mechine_info.sn), "%d.%d.%d.%d", 255, 255, 255, 0);
+		snprintf(app_info->mechine_info.gw, sizeof(app_info->mechine_info.gw), "%d.%d.%d.%d", 10, 42, 0, 1);
+		app_info->mechine_info.dhcp_enable = 1;
 		app_info->mechine_info.upgrade_enable = 0;
 		app_save_config();
 	}
