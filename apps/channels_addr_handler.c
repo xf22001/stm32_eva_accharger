@@ -6,7 +6,7 @@
  *   文件名称：channels_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月16日 星期五 14时03分28秒
- *   修改日期：2021年08月07日 星期六 13时04分59秒
+ *   修改日期：2021年08月10日 星期二 16时12分01秒
  *   描    述：
  *
  *================================================================*/
@@ -107,7 +107,6 @@ void sync_channel_display_cache(channel_info_t *channel_info);
 
 static void account_request_cb(void *fn_ctx, void *chain_ctx)
 {
-	channels_info_t *channels_info = (channels_info_t *)fn_ctx;
 	channels_notify_ctx_t *channels_notify_ctx = (channels_notify_ctx_t *)chain_ctx;
 
 	switch(channels_notify_ctx->notify) {
