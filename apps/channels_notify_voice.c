@@ -6,7 +6,7 @@
  *   文件名称：channels_notify_voice.c
  *   创 建 者：肖飞
  *   创建日期：2021年08月03日 星期二 11时23分04秒
- *   修改日期：2021年08月06日 星期五 22时35分06秒
+ *   修改日期：2021年08月22日 星期日 16时04分19秒
  *   描    述：
  *
  *================================================================*/
@@ -87,7 +87,7 @@ static void channels_notify_voice(void *fn_ctx, void *chain_ctx)
 				}
 				break;
 
-				case VOICE_DATA_CHARGE_END: {
+				case CHANNEL_STATE_STOP: {
 					switch(channel_info->channel_id) {
 						case 0: {
 							request_voice(voice_info, VOICE_DATA_CHARGER1_END);

@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年08月06日 星期五 22时13分53秒
+ *   修改日期：2021年08月22日 星期日 16时11分36秒
  *   描    述：
  *
  *================================================================*/
@@ -179,6 +179,7 @@ void app(void const *argument)
 	poll_loop_t *poll_loop;
 	channels_info_t *channels_info = NULL;
 	display_info_t *display_info = NULL;
+	int ret;
 
 	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
 	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
@@ -197,7 +198,11 @@ void app(void const *argument)
 
 	OS_ASSERT(app_info->eeprom_info != NULL);
 
-	if(app_load_config() == 0) {
+	ret = app_load_config();
+
+	ret = -1;
+
+	if(ret == 0) {
 		debug("app_load_config successful!");
 		debug("device id:\'%s\', server uri:\'%s\'!", app_info->mechine_info.device_id, app_info->mechine_info.uri);
 	} else {
@@ -208,7 +213,7 @@ void app(void const *argument)
 		snprintf(app_info->mechine_info.ip, sizeof(app_info->mechine_info.ip), "%d.%d.%d.%d", 10, 42, 0, 122);
 		snprintf(app_info->mechine_info.sn, sizeof(app_info->mechine_info.sn), "%d.%d.%d.%d", 255, 255, 255, 0);
 		snprintf(app_info->mechine_info.gw, sizeof(app_info->mechine_info.gw), "%d.%d.%d.%d", 10, 42, 0, 1);
-		app_info->mechine_info.dhcp_enable = 1;
+		app_info->mechine_info.dhcp_enable = 0;
 		app_info->mechine_info.upgrade_enable = 0;
 		app_save_config();
 	}
@@ -226,9 +231,9 @@ void app(void const *argument)
 	probe_broadcast_add_poll_loop(poll_loop);
 	probe_server_add_poll_loop(poll_loop);
 
-	while(is_log_server_valid() == 0) {
-		osDelay(1);
-	}
+	//while(is_log_server_valid() == 0) {
+	//	osDelay(1);
+	//}
 
 	add_log_handler((log_fn_t)log_udp_data);
 	add_log_handler((log_fn_t)log_file_data);
@@ -262,7 +267,7 @@ void app(void const *argument)
 
 	while(1) {
 		uint32_t event;
-		int ret = signal_wait(app_event, &event, 1000);
+		ret = signal_wait(app_event, &event, 1000);
 
 		if(ret == 0) {
 			switch(event) {

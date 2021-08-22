@@ -6,7 +6,7 @@
  *   文件名称：display_cache.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分40秒
- *   修改日期：2021年07月24日 星期六 17时44分56秒
+ *   修改日期：2021年08月22日 星期日 17时55分03秒
  *   描    述：
  *
  *================================================================*/
@@ -302,7 +302,7 @@ void sync_channel_display_cache(channel_info_t *channel_info)
 				return;
 			}
 
-			channel_info->channel_event_start.start_state = CHANNEL_EVENT_START_STATE_PREPARE;
+			channel_info->channel_event_start.start_state = CHANNEL_EVENT_START_STATE_RUNNING;
 
 			channel_info->channel_event_start.charge_mode = channel_info->display_cache_channel.charge_mode;
 			channel_info->channel_event_start.start_reason = channel_info->display_cache_channel.start_reason;
