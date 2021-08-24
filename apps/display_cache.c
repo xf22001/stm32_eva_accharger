@@ -6,7 +6,7 @@
  *   文件名称：display_cache.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分40秒
- *   修改日期：2021年08月22日 星期日 17时55分03秒
+ *   修改日期：2021年08月24日 星期二 10时14分50秒
  *   描    述：
  *
  *================================================================*/
@@ -297,15 +297,8 @@ void sync_channel_display_cache(channel_info_t *channel_info)
 				return;
 			}
 
-			if(channel_info->channel_event_start.start_state != CHANNEL_EVENT_START_STATE_IDLE) {
-				debug("");
-				return;
-			}
-
-			channel_info->channel_event_start.start_state = CHANNEL_EVENT_START_STATE_RUNNING;
-
-			channel_info->channel_event_start.charge_mode = channel_info->display_cache_channel.charge_mode;
-			channel_info->channel_event_start.start_reason = channel_info->display_cache_channel.start_reason;
+			channel_info->channel_event_start_display.charge_mode = channel_info->display_cache_channel.charge_mode;
+			channel_info->channel_event_start_display.start_reason = channel_info->display_cache_channel.start_reason;
 			type = CHANNEL_EVENT_TYPE_START_CHANNEL;
 
 			switch(channel_info->display_cache_channel.charge_mode) {
@@ -322,24 +315,24 @@ void sync_channel_display_cache(channel_info_t *channel_info)
 					min = get_u8_from_bcd(channel_info->display_cache_channel.start_min);
 					tm.tm_hour = hour;
 					tm.tm_min = min;
-					channel_info->channel_event_start.start_time = mktime(&tm);
+					channel_info->channel_event_start_display.start_time = mktime(&tm);
 
 					hour = get_u8_from_bcd(channel_info->display_cache_channel.stop_hour);
 					min = get_u8_from_bcd(channel_info->display_cache_channel.stop_min);
 					tm.tm_hour = hour;
 					tm.tm_min = min;
 
-					channel_info->channel_event_start.charge_duration = mktime(&tm) - channel_info->channel_event_start.start_time;
+					channel_info->channel_event_start_display.charge_duration = mktime(&tm) - channel_info->channel_event_start_display.start_time;
 				}
 				break;
 
 				case CHANNEL_RECORD_CHARGE_MODE_AMOUNT: {
-					channel_info->channel_event_start.charge_amount = channel_info->display_cache_channel.charge_amount;
+					channel_info->channel_event_start_display.charge_amount = channel_info->display_cache_channel.charge_amount;
 				}
 				break;
 
 				case CHANNEL_RECORD_CHARGE_MODE_ENERGY: {
-					channel_info->channel_event_start.charge_energy = channel_info->display_cache_channel.charge_energy;
+					channel_info->channel_event_start_display.charge_energy = channel_info->display_cache_channel.charge_energy;
 				}
 				break;
 
@@ -361,11 +354,12 @@ void sync_channel_display_cache(channel_info_t *channel_info)
 
 		channel_event->channel_id = channel_info->channel_id;
 		channel_event->type = type;
+		channel_event->ctx = &channel_info->channel_event_start_display;
 
 		channels_event->type = CHANNELS_EVENT_CHANNEL;
 		channels_event->event = channel_event;
 
-		if(send_channels_event(channels_info, channels_event, 10) != 0) {
+		if(send_channels_event(channels_info, channels_event, 100) != 0) {
 		}
 	}
 }
