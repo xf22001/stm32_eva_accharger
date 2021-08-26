@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2021年08月22日 星期日 14时55分42秒
+ *   修改日期：2021年08月26日 星期四 10时38分33秒
  *   描    述：
  *
  *================================================================*/
@@ -153,11 +153,6 @@ static channels_config_t channels_config_0 = {
 	.id = 0,
 	.channel_number = ARRAY_SIZE(channel_config_sz),
 	.channel_config = channel_config_sz,
-	.channels_eeprom_config = {
-		.hspi_eeprom = &hspi2,
-		.eeprom_cs_port = e2cs_GPIO_Port,
-		.eeprom_cs_pin = e2cs_Pin,
-	},
 	.power_module_config = {
 		.channels_power_module_number = 0,
 		.hcan = NULL,

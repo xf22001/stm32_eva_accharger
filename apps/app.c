@@ -17,7 +17,7 @@
 #include "iwdg.h"
 
 #include "os_utils.h"
-#include "eeprom_layout.h"
+#include "config_layout.h"
 
 #include "test_serial.h"
 #include "test_event.h"
@@ -55,18 +55,18 @@ app_info_t *get_app_info(void)
 
 int app_load_config(void)
 {
-	eeprom_layout_t *eeprom_layout = get_eeprom_layout();
-	size_t offset = (size_t)&eeprom_layout->mechine_info_seg.eeprom_mechine_info.mechine_info;
+	config_layout_t *config_layout = get_config_layout();
+	size_t offset = (size_t)&config_layout->mechine_info_seg.storage_mechine_info.mechine_info;
 	debug("offset:%d", offset);
-	return eeprom_load_config_item(app_info->eeprom_info, "eva", &app_info->mechine_info, sizeof(mechine_info_t), offset);
+	return load_config_item(app_info->storage_info, "eva", &app_info->mechine_info, sizeof(mechine_info_t), offset);
 }
 
 int app_save_config(void)
 {
-	eeprom_layout_t *eeprom_layout = get_eeprom_layout();
-	size_t offset = (size_t)&eeprom_layout->mechine_info_seg.eeprom_mechine_info.mechine_info;
+	config_layout_t *config_layout = get_config_layout();
+	size_t offset = (size_t)&config_layout->mechine_info_seg.storage_mechine_info.mechine_info;
 	debug("offset:%d", offset);
-	return eeprom_save_config_item(app_info->eeprom_info, "eva", &app_info->mechine_info, sizeof(mechine_info_t), offset);
+	return save_config_item(app_info->storage_info, "eva", &app_info->mechine_info, sizeof(mechine_info_t), offset);
 }
 
 void app_init(void)
@@ -190,13 +190,8 @@ void app(void const *argument)
 
 	OS_ASSERT(app_info != NULL);
 
-	app_info->eeprom_info = get_or_alloc_eeprom_info(get_or_alloc_spi_info(&hspi2),
-	                        e2cs_GPIO_Port,
-	                        e2cs_Pin,
-	                        NULL,
-	                        0);
-
-	OS_ASSERT(app_info->eeprom_info != NULL);
+	app_info->storage_info = get_or_alloc_storage_info(&hspi2);
+	OS_ASSERT(app_info->storage_info != NULL);
 
 	ret = app_load_config();
 
