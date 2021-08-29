@@ -6,7 +6,7 @@
  *   文件名称：display_cache.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分40秒
- *   修改日期：2021年08月24日 星期二 10时14分50秒
+ *   修改日期：2021年08月29日 星期日 17时48分20秒
  *   描    述：
  *
  *================================================================*/
@@ -121,6 +121,56 @@ uint16_t display_cache_get_stop_reason(channel_record_item_stop_reason_t reason,
 	return display_charger_stop_reason;
 }
 
+static void load_device_id(uint16_t *id, uint16_t *cache, uint16_t size)
+{
+	u_uint16_bytes_t *u_uint16_bytes_id = (u_uint16_bytes_t *)id;
+	u_uint16_bytes_t *u_uint16_bytes_cache = (u_uint16_bytes_t *)cache;
+	int i;
+
+	for(i = 0; i < size; i++) {
+		uint8_t byte0 = u_uint16_bytes_id->s.byte0;
+		uint8_t byte1 = u_uint16_bytes_id->s.byte1;
+
+		if(byte0 == 0) {
+			byte0 = 0xff;
+		}
+
+		if(byte1 == 0) {
+			byte1 = 0xff;
+		}
+
+		u_uint16_bytes_cache->s.byte0 = byte1;
+		u_uint16_bytes_cache->s.byte1 = byte0;
+		u_uint16_bytes_id++;
+		u_uint16_bytes_cache++;
+	}
+}
+
+static void set_device_id(uint16_t *id, uint16_t *cache, uint16_t size)
+{
+	u_uint16_bytes_t *u_uint16_bytes_id = (u_uint16_bytes_t *)id;
+	u_uint16_bytes_t *u_uint16_bytes_cache = (u_uint16_bytes_t *)cache;
+	int i;
+
+	for(i = 0; i < size; i++) {
+		uint8_t byte0 = u_uint16_bytes_cache->s.byte0;
+		uint8_t byte1 = u_uint16_bytes_cache->s.byte1;
+
+		if(byte0 == 0xff) {
+			byte0 = 0;
+		}
+
+		if(byte1 == 0xff) {
+			byte1 = 0;
+		}
+
+		u_uint16_bytes_id->s.byte0 = byte1;
+		u_uint16_bytes_id->s.byte1 = byte0;
+		u_uint16_bytes_id++;
+		u_uint16_bytes_cache++;
+	}
+}
+
 void load_app_display_cache(app_info_t *app_info)
 {
 	int d0;
@@ -140,8 +190,10 @@ void load_app_display_cache(app_info_t *app_info)
 		app_info->display_cache_app.ip[1] = d1;
 		app_info->display_cache_app.ip[2] = d2;
 		app_info->display_cache_app.ip[3] = d3;
-		app_info->display_cache_app.port = port;
+		app_info->display_cache_app.ip[4] = port;
 	}
+
+	load_device_id((uint16_t *)app_info->mechine_info.device_id, (uint16_t *)app_info->display_cache_app.device_id, 16);
 }
 
 void sync_app_display_cache(app_info_t *app_info)
@@ -149,12 +201,19 @@ void sync_app_display_cache(app_info_t *app_info)
 	if(app_info->display_cache_app.ip_sync != 0) {
 		app_info->display_cache_app.ip_sync = 0;
 
-		snprintf(app_info->mechine_info.uri, 256, "tcp://%d.%d:%d.%d:%d",
+		snprintf(app_info->mechine_info.uri, 256, "tcp://%d.%d.%d.%d:%d",
 		         app_info->display_cache_app.ip[0],
 		         app_info->display_cache_app.ip[1],
 		         app_info->display_cache_app.ip[2],
 		         app_info->display_cache_app.ip[3],
-		         app_info->display_cache_app.port);
+		         app_info->display_cache_app.ip[4]);
+		app_info->mechine_info_invalid = 1;
+	}
+
+	if(app_info->display_cache_app.device_id_sync != 0) {
+		app_info->display_cache_app.device_id_sync = 0;
+		set_device_id((uint16_t *)app_info->mechine_info.device_id, (uint16_t *)app_info->display_cache_app.device_id, 16);
+
 		app_info->mechine_info_invalid = 1;
 	}
 }
@@ -279,6 +338,27 @@ void sync_channels_display_cache(channels_info_t *channels_info)
 
 void load_channel_display_cache(channel_info_t *channel_info)
 {
+	switch(channel_info->channel_settings.energy_meter_settings.type) {
+		case ENERGY_METER_TYPE_AC_HLW8032: {
+			channel_info->display_cache_channel.energy_meter_type = 0;
+		}
+		break;
+
+		case ENERGY_METER_TYPE_AC: {
+			channel_info->display_cache_channel.energy_meter_type = 1;
+		}
+		break;
+
+		case ENERGY_METER_TYPE_AC_SDM_220: {
+			channel_info->display_cache_channel.energy_meter_type = 3;
+		}
+		break;
+
+		default: {
+			channel_info->display_cache_channel.energy_meter_type = 2;
+		}
+		break;
+	}
 }
 
 void sync_channel_display_cache(channel_info_t *channel_info)
@@ -362,6 +442,35 @@ void sync_channel_display_cache(channel_info_t *channel_info)
 		if(send_channels_event(channels_info, channels_event, 100) != 0) {
 		}
 	}
+
+	if(channel_info->display_cache_channel.energy_meter_type_sync == 1) {
+		channel_info->display_cache_channel.energy_meter_type_sync = 0;
+
+		switch(channel_info->display_cache_channel.energy_meter_type) {
+			case 0: {
+				channel_info->channel_settings.energy_meter_settings.type = ENERGY_METER_TYPE_AC_HLW8032;
+			}
+			break;
+
+			case 1: {
+				channel_info->channel_settings.energy_meter_settings.type = ENERGY_METER_TYPE_AC;
+			}
+			break;
+
+			case 3: {
+				debug("");
+				channel_info->channel_settings.energy_meter_settings.type = ENERGY_METER_TYPE_AC_SDM_220;
+			}
+			break;
+
+			default: {
+				channel_info->channel_settings.energy_meter_settings.type = ENERGY_METER_TYPE_NONE;
+			}
+			break;
+		}
+
+		channel_info->channel_settings_invalid = 1;
+	}
 }
 
 int get_channel_record_page_load_item_number(void)
@@ -376,6 +485,7 @@ void channel_record_item_page_item_refresh(channel_record_item_t *channel_record
 	uint8_t hour;
 	uint8_t min;
 	struct tm *tm;
+	time_t ts;
 
 	if(offset >= RECORD_ITEM_CACHE_NUMBER) {
 		return;
@@ -389,11 +499,13 @@ void channel_record_item_page_item_refresh(channel_record_item_t *channel_record
 
 	record_item_cache->channel_id = channel_record_item->channel_id + 1;
 	memcpy(record_item_cache->account, channel_record_item->account, 32);
-	tm = localtime(&channel_record_item->start_time);
+	ts = channel_record_item->start_time;
+	tm = localtime(&ts);
 	hour = get_bcd_from_u8(tm->tm_hour);
 	min = get_bcd_from_u8(tm->tm_min);
 	record_item_cache->start_hour_min = get_u16_from_u8_lh(min, hour);
-	tm = localtime(&channel_record_item->stop_time);
+	ts = channel_record_item->stop_time;
+	tm = localtime(&ts);
 	hour = get_bcd_from_u8(tm->tm_hour);
 	min = get_bcd_from_u8(tm->tm_min);
 	record_item_cache->stop_hour_min = get_u16_from_u8_lh(min, hour);

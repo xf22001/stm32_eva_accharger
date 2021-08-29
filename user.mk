@@ -12,6 +12,7 @@
 #================================================================
 
 include sal/sal.mk
+include config.mk
 
 USER_C_INCLUDES += -Iapps
 USER_C_INCLUDES += -Iapps/modules
@@ -127,7 +128,15 @@ USER_C_SOURCES += apps/modules/hardware/modbus_slave_txrx.c
 USER_C_SOURCES += apps/modules/hardware/modbus_master_txrx.c
 USER_C_SOURCES += apps/modules/hardware/modbus_spec.c
 USER_C_SOURCES += apps/modules/hardware/storage.c
+ifdef CONFIG_STORAGE_25LC1024
 USER_C_SOURCES += apps/modules/hardware/storage_25lc1024.c
+endif
+ifdef CONFIG_STORAGE_24LC128
+USER_C_SOURCES += apps/modules/hardware/storage_24lc128.c
+endif
+ifdef CONFIG_STORAGE_W25Q256
+USER_C_SOURCES += apps/modules/hardware/storage_w25q256.c
+endif
 USER_C_SOURCES += apps/modules/drivers/spi_txrx.c
 USER_C_SOURCES += apps/modules/drivers/can_txrx.c
 USER_C_SOURCES += apps/modules/drivers/can_ops_hal.c
@@ -156,6 +165,15 @@ USER_CFLAGS += -DtraceTASK_SWITCHED_IN=StartIdleMonitor -DtraceTASK_SWITCHED_OUT
 USER_CFLAGS += -DSAL_HOOK
 USER_CFLAGS += -DLOG_CONFIG_FILE=\"log_config.h\"
 USER_CFLAGS += -DCJSON_API_VISIBILITY -DCJSON_EXPORT_SYMBOLS -DENABLE_LOCALES -Dcjson_EXPORTS
+ifdef CONFIG_STORAGE_25LC1024
+USER_CFLAGS += -D$(CONFIG_STORAGE_25LC1024)
+endif
+ifdef CONFIG_STORAGE_24LC128
+USER_CFLAGS += -D$(CONFIG_STORAGE_24LC128)
+endif
+ifdef CONFIG_STORAGE_W25Q256
+USER_CFLAGS += -D$(CONFIG_STORAGE_W25Q256)
+endif
 
 #USER_CFLAGS += -DLOG_DISABLE
 #USER_CFLAGS += -DALLOC_TRACE_DISABLE

@@ -6,7 +6,7 @@
  *   文件名称：channels_notify_voice.c
  *   创 建 者：肖飞
  *   创建日期：2021年08月03日 星期二 11时23分04秒
- *   修改日期：2021年08月22日 星期日 16时04分19秒
+ *   修改日期：2021年08月29日 星期日 15时42分00秒
  *   描    述：
  *
  *================================================================*/
@@ -63,7 +63,7 @@ static void channels_notify_voice(void *fn_ctx, void *chain_ctx)
 
 			switch(channel_info->request_state) {
 				case CHANNEL_STATE_IDLE: {
-					request_voice(voice_info, VOICE_DATA_WELCOM_NEXT_VISIT);
+					//request_voice(voice_info, VOICE_DATA_WELCOM_NEXT_VISIT);
 				}
 				break;
 
@@ -256,6 +256,8 @@ int init_channels_notify_voice(channels_info_t *channels_info)
 	channels_notify_voice_ctx->channels_notify_callback_item.fn_ctx = channels_info;
 	OS_ASSERT(register_callback(channels_info->channels_notify_chain, &channels_notify_voice_ctx->channels_notify_callback_item) == 0);
 
+	request_voice(voice_info, VOICE_DATA_WELCOM);
+	osDelay(500);
 	request_voice(voice_info, VOICE_DATA_WELCOM);
 
 	ret = 0;

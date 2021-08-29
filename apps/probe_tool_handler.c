@@ -6,7 +6,7 @@
  *   文件名称：probe_tool_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年03月20日 星期五 12时48分07秒
- *   修改日期：2021年08月24日 星期二 10时14分57秒
+ *   修改日期：2021年08月29日 星期日 16时18分16秒
  *   描    述：
  *
  *================================================================*/
@@ -372,15 +372,13 @@ static void fn11(request_t *request)
 	net_client_info_t *net_client_info = get_net_client_info();
 	mechine_info_t *buffer = (mechine_info_t *)os_alloc(sizeof(mechine_info_t));
 
-	if(net_client_info == NULL) {
-		return;
-	}
-
 	if(buffer == NULL) {
 		return;
 	}
 
-	set_client_state(net_client_info, CLIENT_SUSPEND);
+	if(net_client_info == NULL) {
+		set_client_state(net_client_info, CLIENT_SUSPEND);
+	}
 
 	ret = sscanf(content, "%d %s %s %n", &fn, buffer->device_id, buffer->uri, &catched);
 
@@ -394,7 +392,9 @@ static void fn11(request_t *request)
 
 	debug("device id:\'%s\', server uri:\'%s\'!", app_info->mechine_info.device_id, app_info->mechine_info.uri);
 
-	set_client_state(net_client_info, CLIENT_REINIT);
+	if(net_client_info == NULL) {
+		set_client_state(net_client_info, CLIENT_REINIT);
+	}
 }
 
 //12 10.42.0.1 2121 /user.mk anonymous

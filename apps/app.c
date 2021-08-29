@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年08月22日 星期日 16时11分36秒
+ *   修改日期：2021年08月29日 星期日 16时18分48秒
  *   描    述：
  *
  *================================================================*/
@@ -195,7 +195,7 @@ void app(void const *argument)
 
 	ret = app_load_config();
 
-	ret = -1;
+	//ret = -1;
 
 	if(ret == 0) {
 		debug("app_load_config successful!");
@@ -226,9 +226,9 @@ void app(void const *argument)
 	probe_broadcast_add_poll_loop(poll_loop);
 	probe_server_add_poll_loop(poll_loop);
 
-	//while(is_log_server_valid() == 0) {
-	//	osDelay(1);
-	//}
+	while(is_log_server_valid() == 0) {
+		osDelay(1);
+	}
 
 	add_log_handler((log_fn_t)log_udp_data);
 	add_log_handler((log_fn_t)log_file_data);
@@ -241,10 +241,6 @@ void app(void const *argument)
 
 	channels_info = start_channels();
 	OS_ASSERT(channels_info != NULL);
-
-	if(init_channels_notify_voice(channels_info) != 0) {
-		debug("");
-	}
 
 	//net_client_add_poll_loop(poll_loop);
 	//ftp_client_add_poll_loop(poll_loop);
@@ -259,6 +255,10 @@ void app(void const *argument)
 	app_info->display_data_changed_callback_item.fn = app_mechine_info_changed;
 	app_info->display_data_changed_callback_item.fn_ctx = app_info;
 	OS_ASSERT(register_callback(display_info->modbus_slave_info->data_changed_chain, &app_info->display_data_changed_callback_item) == 0);
+
+	if(init_channels_notify_voice(channels_info) != 0) {
+		debug("");
+	}
 
 	while(1) {
 		uint32_t event;
