@@ -6,7 +6,7 @@
  *   文件名称：display_cache.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分40秒
- *   修改日期：2021年08月29日 星期日 17时48分20秒
+ *   修改日期：2021年08月30日 星期一 10时43分33秒
  *   描    述：
  *
  *================================================================*/
@@ -469,6 +469,7 @@ void sync_channel_display_cache(channel_info_t *channel_info)
 			break;
 		}
 
+		update_energy_meter_type(channel_info);
 		channel_info->channel_settings_invalid = 1;
 	}
 }
