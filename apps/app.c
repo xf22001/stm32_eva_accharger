@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年08月29日 星期日 16时18分48秒
+ *   修改日期：2021年08月31日 星期二 09时20分13秒
  *   描    述：
  *
  *================================================================*/
@@ -217,6 +217,10 @@ void app(void const *argument)
 
 	sal_init();
 	wiz_init();
+
+	//at_device_init();//数据结构
+	//sim76xx_device_class_register();//驱动
+	//sim76xx_device_register();//数据
 
 	poll_loop = get_or_alloc_poll_loop(0);
 	OS_ASSERT(poll_loop != NULL);
