@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2021年08月26日 星期四 10时38分33秒
+ *   修改日期：2021年09月01日 星期三 13时51分24秒
  *   描    述：
  *
  *================================================================*/
@@ -48,8 +48,8 @@ char *get_channel_config_charger_type(channel_charger_type_t type)
 	switch(type) {
 			add_des_case(CHANNEL_CHARGER_TYPE_BMS_NONE);
 			add_des_case(CHANNEL_CHARGER_TYPE_BMS_GB);
+			add_des_case(CHANNEL_CHARGER_TYPE_BMS_GB_PROXY_REMOTE);
 			add_des_case(CHANNEL_CHARGER_TYPE_BMS_AC);
-			add_des_case(CHANNEL_CHARGER_TYPE_BMS_PROXY);
 
 		default: {
 		}
