@@ -6,7 +6,7 @@
  *   文件名称：display_cache.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分40秒
- *   修改日期：2021年09月04日 星期六 20时12分27秒
+ *   修改日期：2021年09月04日 星期六 23时37分30秒
  *   描    述：
  *
  *================================================================*/
@@ -424,7 +424,7 @@ void sync_channel_display_cache(channel_info_t *channel_info)
 				}
 				break;
 			}
-		} else {
+		} else {//关机
 			channel_info->channel_event_stop.stop_reason = CHANNEL_RECORD_ITEM_STOP_REASON_MANUAL;
 			type = CHANNEL_EVENT_TYPE_STOP_CHANNEL;
 		}

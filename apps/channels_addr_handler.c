@@ -6,7 +6,7 @@
  *   文件名称：channels_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月16日 星期五 14时03分28秒
- *   修改日期：2021年09月04日 星期六 18时21分42秒
+ *   修改日期：2021年09月04日 星期六 23时47分07秒
  *   描    述：
  *
  *================================================================*/
@@ -157,8 +157,9 @@ static void card_reader_cb_fn(void *fn_ctx, void *chain_ctx)
 			net_client_net_client_ctrl_cmd(net_client_info, NET_CLIENT_CTRL_CMD_QUERY_ACCOUNT, &account_request_info);
 		} else {
 			//无后台刷卡
-			//channel_info->display_cache_channel.account_balance = 0;
-			//channel_info->display_cache_channel.charger_start_sync = 1;
+			channel_info->display_cache_channel.charger_start_sync = 1;
+			channel_info->display_cache_channel.start_reason = CHANNEL_RECORD_ITEM_START_REASON_MANUAL;
+			channel_info->display_cache_channel.charge_mode = CHANNEL_RECORD_CHARGE_MODE_UNLIMIT;
 		}
 	}
 }
@@ -496,8 +497,8 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 							card_reader_info_t *card_reader_info = (card_reader_info_t *)channels_info->card_reader_info;
 							card_reader_cb_t card_reader_cb;
 
-							debug("----------------start get card!");
 							channel_info->display_cache_channel.start_reason = CHANNEL_RECORD_ITEM_START_REASON_CARD;
+							channel_info->display_cache_channel.charge_mode = CHANNEL_RECORD_CHARGE_MODE_AMOUNT;
 
 							card_reader_cb.fn = card_reader_cb_fn;
 							card_reader_cb.fn_ctx = channel_info;
@@ -534,8 +535,6 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 			//	net_client_net_client_ctrl_cmd(net_client_info, NET_CLIENT_CTRL_CMD_QUERY_ACCOUNT, &account_request_info);
 			//} else {
 			//	//无后台刷卡
-			//	//channel_info->display_cache_channel.account_balance = 0;
-			//	//channel_info->display_cache_channel.charger_start_sync = 1;
 			//}
 		}
 		break;
@@ -754,11 +753,14 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 			channels_info->display_cache_channels.current_channel = 0;
 
 			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
-				if(channels_settings->authorize == 0) {
+				if(channel_info->display_cache_channel.onoff == 0) {
 					channel_info->display_cache_channel.charger_start_sync = 1;
-					channel_info->display_cache_channel.start_reason = CHANNEL_RECORD_ITEM_START_REASON_MANUAL;
 				} else {
-					//todo
+					if(channels_settings->authorize == 0) {
+						channel_info->display_cache_channel.charger_start_sync = 1;
+						channel_info->display_cache_channel.start_reason = CHANNEL_RECORD_ITEM_START_REASON_MANUAL;
+						channel_info->display_cache_channel.charge_mode = CHANNEL_RECORD_CHARGE_MODE_UNLIMIT;
+					}
 				}
 			}
 		}
