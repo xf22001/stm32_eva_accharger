@@ -6,7 +6,7 @@
  *   文件名称：channels_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月16日 星期五 14时03分28秒
- *   修改日期：2021年09月04日 星期六 16时27分08秒
+ *   修改日期：2021年09月04日 星期六 18时21分42秒
  *   描    述：
  *
  *================================================================*/
@@ -148,7 +148,7 @@ static void card_reader_cb_fn(void *fn_ctx, void *chain_ctx)
 		//todo request password
 		//channels_info->display_cache_channels.display_request;
 
-		if(net_client_info == NULL) {
+		if(net_client_info != NULL) {
 			account_request_info.account_type = ACCOUNT_TYPE_CARD;
 			account_request_info.card_id = card_reader_data->id;
 			account_request_info.password = "123456";
@@ -485,8 +485,34 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		break;
 
 		case 317: {//屏下发消息
-			//todo
+			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
+
 			modbus_data_value_rw(modbus_data_ctx, channels_info->display_cache_channels.display_message);
+
+			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
+				switch(channels_info->display_cache_channels.display_message == 1) {
+					case 1: {
+						if(channels_settings->authorize != 0) {
+							card_reader_info_t *card_reader_info = (card_reader_info_t *)channels_info->card_reader_info;
+							card_reader_cb_t card_reader_cb;
+
+							debug("----------------start get card!");
+							channel_info->display_cache_channel.start_reason = CHANNEL_RECORD_ITEM_START_REASON_CARD;
+
+							card_reader_cb.fn = card_reader_cb_fn;
+							card_reader_cb.fn_ctx = channel_info;
+							card_reader_cb.timeout = 5000;
+
+							start_card_reader_cb(card_reader_info, &card_reader_cb);
+						}
+					}
+					break;
+
+					default: {
+					}
+					break;
+				}
+			}
 		}
 		break;
 
@@ -732,16 +758,7 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 					channel_info->display_cache_channel.charger_start_sync = 1;
 					channel_info->display_cache_channel.start_reason = CHANNEL_RECORD_ITEM_START_REASON_MANUAL;
 				} else {
-					card_reader_info_t *card_reader_info = (card_reader_info_t *)channels_info->card_reader_info;
-					card_reader_cb_t card_reader_cb;
-
-					channel_info->display_cache_channel.start_reason = CHANNEL_RECORD_ITEM_START_REASON_CARD;
-
-					card_reader_cb.fn = card_reader_cb_fn;
-					card_reader_cb.fn_ctx = channel_info;
-					card_reader_cb.timeout = 5000;
-
-					start_card_reader_cb(card_reader_info, &card_reader_cb);
+					//todo
 				}
 			}
 		}
@@ -821,7 +838,6 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		case 607: {//CP电压
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
 			uint16_t value = channel_info->cp_ad_voltage;
-			debug("channel %d cp voltage:%d", channel_info->channel_id, value);
 			modbus_data_value_r(modbus_data_ctx, value);
 		}
 		break;

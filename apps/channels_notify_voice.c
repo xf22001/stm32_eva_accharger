@@ -6,7 +6,7 @@
  *   文件名称：channels_notify_voice.c
  *   创 建 者：肖飞
  *   创建日期：2021年08月03日 星期二 11时23分04秒
- *   修改日期：2021年08月29日 星期日 15时42分00秒
+ *   修改日期：2021年09月04日 星期六 17时26分32秒
  *   描    述：
  *
  *================================================================*/
@@ -193,6 +193,11 @@ static void channels_notify_voice(void *fn_ctx, void *chain_ctx)
 						}
 						break;
 					}
+				}
+				break;
+
+				case CHARGER_STATE_EVENT_CHARGER_CONNECTOR_READY: {
+					request_voice(voice_info, VOICE_DATA_SELECT_CHARGE_TYPE);
 				}
 				break;
 
