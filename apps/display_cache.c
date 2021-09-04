@@ -6,7 +6,7 @@
  *   文件名称：display_cache.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分40秒
- *   修改日期：2021年09月04日 星期六 15时01分20秒
+ *   修改日期：2021年09月04日 星期六 20时12分27秒
  *   描    述：
  *
  *================================================================*/
@@ -18,6 +18,7 @@
 #include "channels.h"
 #include "channel.h"
 #include "log.h"
+#include "energy_meter.h"
 
 typedef enum {
 	DISPLAY_CHARGER_STOP_NONE = 0,//未关机
