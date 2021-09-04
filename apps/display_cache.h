@@ -6,7 +6,7 @@
  *   文件名称：display_cache.h
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分47秒
- *   修改日期：2021年08月29日 星期日 17时04分08秒
+ *   修改日期：2021年09月04日 星期六 16时24分02秒
  *   描    述：
  *
  *================================================================*/
@@ -39,15 +39,25 @@ typedef struct {
 	uint16_t price;
 } price_item_cache_t;
 
+//typedef struct {
+//	uint16_t sec;
+//	uint16_t min;
+//	uint16_t hour;
+//	uint16_t day;
+//	uint16_t mon;
+//	uint16_t year;
+//	uint16_t wday;
+//} datetime_cache_t;
 typedef struct {
-	uint16_t sec;
-	uint16_t min;
-	uint16_t hour;
-	uint16_t day;
-	uint16_t mon;
-	uint16_t year;
-	uint16_t wday;
+	uint16_t year_mon;
+	uint16_t day_hour;
+	uint16_t min_sec;
 } datetime_cache_t;
+
+typedef struct {
+	uint16_t mark1;
+	uint16_t mark2;
+} datetime_mark_cache_t;
 
 typedef struct {
 	uint16_t year;
@@ -80,6 +90,7 @@ typedef struct {
 
 	uint8_t datetime_sync;
 	datetime_cache_t datetime_cache;
+	datetime_mark_cache_t datetime_mark_cache;
 
 	uint8_t record_sync;
 	record_dt_cache_t record_dt_cache;

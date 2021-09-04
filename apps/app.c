@@ -6,7 +6,7 @@
  *   文件名称：app.c
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时54分03秒
- *   修改日期：2021年08月31日 星期二 09时20分13秒
+ *   修改日期：2021年09月04日 星期六 15时08分28秒
  *   描    述：
  *
  *================================================================*/
@@ -221,11 +221,11 @@ void app(void const *argument)
 	//at_device_init();//数据结构
 	//sim76xx_device_class_register();//驱动
 	//sim76xx_device_register();//数据
+	
+	update_network_ip_config(app_info);
 
 	poll_loop = get_or_alloc_poll_loop(0);
 	OS_ASSERT(poll_loop != NULL);
-
-	update_network_ip_config(app_info);
 
 	probe_broadcast_add_poll_loop(poll_loop);
 	probe_server_add_poll_loop(poll_loop);
@@ -246,7 +246,7 @@ void app(void const *argument)
 	channels_info = start_channels();
 	OS_ASSERT(channels_info != NULL);
 
-	//net_client_add_poll_loop(poll_loop);
+	net_client_add_poll_loop(poll_loop);
 	//ftp_client_add_poll_loop(poll_loop);
 
 	display_info = (display_info_t *)channels_info->display_info;
@@ -348,4 +348,26 @@ void idle(void const *argument)
 		update_work_led();
 		osDelay(10);
 	}
+}
+
+int force_bootloader(void)
+{
+	int ret = -1;
+	u_uint8_bits_t u_uint8_bits;
+	u_uint8_bits.v = 0;
+
+	HAL_Init();
+	MX_GPIO_Init();
+
+	//u_uint8_bits.s.bit0 = (HAL_GPIO_ReadPin(d1_GPIO_Port, d1_Pin) == GPIO_PIN_SET) ? 1 : 0;
+	//u_uint8_bits.s.bit1 = (HAL_GPIO_ReadPin(d2_GPIO_Port, d2_Pin) == GPIO_PIN_SET) ? 1 : 0;
+	//u_uint8_bits.s.bit2 = (HAL_GPIO_ReadPin(d3_GPIO_Port, d3_Pin) == GPIO_PIN_SET) ? 1 : 0;
+
+	if(u_uint8_bits.v == 0x07) {
+		ret = 0;
+	}
+
+	HAL_DeInit();
+
+	return ret;
 }

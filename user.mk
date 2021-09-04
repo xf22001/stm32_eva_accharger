@@ -153,7 +153,7 @@ USER_C_SOURCES += apps/modules/os/object_class.c
 USER_C_SOURCES += apps/modules/os/soft_timer.c
 USER_C_SOURCES += apps/modules/tests/test_serial.c
 USER_C_SOURCES += apps/modules/tests/test_event.c
-
+USER_C_SOURCES += apps/modules/tests/test_storage.c
 USER_C_SOURCES += Middlewares/Third_Party/LwIP/src/core/def.c
 USER_C_SOURCES += Middlewares/Third_Party/LwIP/src/core/ipv4/ip4_addr.c
 USER_C_SOURCES += Src/net_sockets.c
@@ -165,6 +165,12 @@ USER_CFLAGS += -DtraceTASK_SWITCHED_IN=StartIdleMonitor -DtraceTASK_SWITCHED_OUT
 USER_CFLAGS += -DSAL_HOOK
 USER_CFLAGS += -DLOG_CONFIG_FILE=\"log_config.h\"
 USER_CFLAGS += -DCJSON_API_VISIBILITY -DCJSON_EXPORT_SYMBOLS -DENABLE_LOCALES -Dcjson_EXPORTS
+
+
+ifdef CONFIG_DEVICE_TYPE
+USER_CFLAGS += -D$(CONFIG_DEVICE_TYPE)
+endif
+
 ifdef CONFIG_STORAGE_25LC1024
 USER_CFLAGS += -D$(CONFIG_STORAGE_25LC1024)
 endif

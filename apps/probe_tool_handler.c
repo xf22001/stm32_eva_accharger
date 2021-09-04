@@ -6,7 +6,7 @@
  *   文件名称：probe_tool_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年03月20日 星期五 12时48分07秒
- *   修改日期：2021年08月29日 星期日 16时18分16秒
+ *   修改日期：2021年09月04日 星期六 13时09分34秒
  *   描    述：
  *
  *================================================================*/
@@ -35,9 +35,10 @@ static void fn1(request_t *request)
 	probe_server_chunk_sendto(request->payload.fn, (void *)0x8000000, 512);
 }
 
+#include "test_event.h"
 static void fn2(request_t *request)
 {
-	probe_server_chunk_sendto(request->payload.fn, (void *)0x8000000, 512);
+	try_get_test_event();
 }
 
 static void fn3(request_t *request)
@@ -49,28 +50,17 @@ static void fn3(request_t *request)
 	uint32_t total_size = request->header.total_size;
 	uint32_t stage = request->payload.stage;
 	uint8_t *data = (uint8_t *)(request + 1);
-	uint8_t start_app = 0;
-
-	if(is_app() == 1) {
-		if(set_app_valid(0) == 0) {
-			_printf("in app, reset for upgrade!\n");
-			HAL_NVIC_SystemReset();
-		} else {
-			_printf("invalid app failed!\n");
-		}
-
-		return;
-	}
+	uint8_t start_upgrade_app = 0;
 
 	if(stage == 0) {
-		flash_erase_sector(FLASH_SECTOR_6, 2);//擦除第6和7扇区
+		flash_erase_sector(IAP_CONST_FW_ADDRESS_START_SECTOR, IAP_CONST_FW_ADDRESS_SECTOR_NUMBER);
 	} else if(stage == 1) {
 		if(data_size == 4) {
 			uint32_t *p = (uint32_t *)data;
 			file_crc32 = *p;
 		}
 	} else if(stage == 2) {
-		flash_write(USER_FLASH_FIRST_PAGE_ADDRESS + data_offset, data, data_size);
+		flash_write(IAP_CONST_FW_ADDRESS + data_offset, data, data_size);
 
 		if(data_offset + data_size == total_size) {
 			uint32_t read_offset = 0;
@@ -80,7 +70,7 @@ static void fn3(request_t *request)
 				uint32_t i;
 				uint32_t left = total_size - read_offset;
 				uint32_t read_size = (left > 32) ? 32 : left;
-				uint8_t *read_buffer = (uint8_t *)(USER_FLASH_FIRST_PAGE_ADDRESS + read_offset);
+				uint8_t *read_buffer = (uint8_t *)(IAP_CONST_FW_ADDRESS + read_offset);
 
 				for(i = 0; i < read_size; i++) {
 					crc32 += read_buffer[i];
@@ -92,21 +82,25 @@ static void fn3(request_t *request)
 			_printf("crc32:%x, file_crc32:%x\n", crc32, file_crc32);
 
 			if(crc32 == file_crc32) {
-				start_app = 1;
+				start_upgrade_app = 1;
 			}
 		}
 	}
 
 	loopback(request);
 
-	if(start_app) {
-		_printf("start app!\n");
+	if(start_upgrade_app != 0) {
+		_printf("start upgrade app!\n");
 
-		if(set_app_valid(1) == 0) {
-			HAL_NVIC_SystemReset();
-		} else {
-			_printf("valid app failed!\n");
+		if(set_firmware_size(total_size) != 0) {
+			debug("");
 		}
+
+		if(set_firmware_valid(1) != 0) {
+			debug("");
+		}
+
+		HAL_NVIC_SystemReset();
 	}
 }
 
@@ -291,47 +285,46 @@ static void fn6(request_t *request)
 	set_client_state(net_client_info, CLIENT_REINIT);
 }
 
-//#include "eeprom.h"
-//#include "main.h"
-//extern SPI_HandleTypeDef hspi3;
+#include "test_storage.h"
 static void fn7(request_t *request)
 {
-	//uint8_t id;
-	////char *buffer = (char *)os_alloc(1024);
-	////int ret;
-	////bms_data_settings_t *settings = (bms_data_settings_t *)0;
+	char *content = (char *)(request + 1);
+	int fn;
+	int op;
+	int start;
+	int size;
+	int catched;
+	int ret;
 
-	////if(buffer == NULL) {
-	////	return;
-	////}
+	ret = sscanf(content, "%d %d %d %d%n", &fn, &op, &start, &size, &catched);
 
-	//eeprom_info_t *eeprom_info = get_or_alloc_eeprom_info(get_or_alloc_spi_info(&hspi3), spi3_cs_GPIO_Port, spi3_cs_Pin, spi3_wp_GPIO_Port, spi3_wp_Pin);
+	if(ret == 4) {
+		app_info_t *app_info = get_app_info();
 
-	//if(eeprom_info == NULL) {
-	//	return;
-	//}
+		OS_ASSERT(app_info->storage_info != NULL);
 
-	//id = eeprom_id(eeprom_info);
-	//_printf("eeprom id:0x%x\n", id);
-	////_printf("test ...\n");
+		switch(op) {
+			case 0: {
+				test_storage_check(app_info->storage_info, start, size);
+			}
+			break;
 
-	////memset(buffer, 0, 1024);
+			case 1: {
+				test_storage_read(app_info->storage_info, start, size);
+			}
+			break;
 
-	////eeprom_write(eeprom_info, 5 * 1024 + 1, (uint8_t *)0x8000000, 1024);
-	////eeprom_read(eeprom_info, 5 * 1024 + 1, (uint8_t *)buffer, 1024);
+			case 2: {
+				test_storage_write(app_info->storage_info, start, size);
+			}
+			break;
 
-	////ret = memcmp(buffer, (const void *)0x8000000, 1024);
+			default: {
+			}
+			break;
+		}
 
-	////if(ret == 0) {
-	////	_printf("read write successful!\n");
-	////} else {
-	////	_printf("read write failed!\n");
-	////}
-
-	////os_free(buffer);
-	////_printf("bms_data_settings_t size:%d\n", sizeof(bms_data_settings_t));
-
-	////_printf("settings->cem_data.u1 offset:%d\n", (void *)&settings->cem_data.u1 - (void *)settings);
+	}
 }
 
 static void fn8(request_t *request)
@@ -434,6 +427,7 @@ static void fn13(request_t *request)
 	int catched;
 	int ret;
 	struct tm tm;
+	time_t ts;
 
 	ret = sscanf(content, "%d %04d%02d%02d%02d%02d%02d %n",
 	             &fn,
@@ -447,14 +441,25 @@ static void fn13(request_t *request)
 	debug("ret:%d", ret);
 	tm.tm_year -= 1900;
 	tm.tm_mon -= 1;
+	ts = mktime(&tm);
 
 	if(ret == 7) {
-		if(rtc_set_datetime(&tm) == 0) {
+		if(set_time(ts) == 0) {
 			debug("set time successful!");
 		} else {
 			debug("set time failed!");
 		}
 	}
+
+	ts = get_time();
+	tm = *localtime(&ts);
+	debug("tm %04d-%02d-%02d %02d:%02d:%02d",
+	      tm.tm_year + 1900,
+	      tm.tm_mon + 1,
+	      tm.tm_mday,
+	      tm.tm_hour,
+	      tm.tm_min,
+	      tm.tm_sec);
 }
 
 static void fn14(request_t *request)

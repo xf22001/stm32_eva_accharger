@@ -6,7 +6,7 @@
  *   文件名称：display_cache.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分40秒
- *   修改日期：2021年08月30日 星期一 10时43分33秒
+ *   修改日期：2021年09月04日 星期六 15时01分20秒
  *   描    述：
  *
  *================================================================*/
@@ -302,13 +302,15 @@ void sync_channels_display_cache(channels_info_t *channels_info)
 
 		channels_info->display_cache_channels.datetime_sync = 0;
 
-		tm.tm_year = channels_info->display_cache_channels.datetime_cache.year - 1900;
-		tm.tm_mon = channels_info->display_cache_channels.datetime_cache.mon - 1;
-		tm.tm_mday = channels_info->display_cache_channels.datetime_cache.day;
-		tm.tm_hour = channels_info->display_cache_channels.datetime_cache.hour;
-		tm.tm_min = channels_info->display_cache_channels.datetime_cache.min;
-		tm.tm_sec = channels_info->display_cache_channels.datetime_cache.sec;
-		tm.tm_wday = channels_info->display_cache_channels.datetime_cache.wday;
+		debug("channels_info->display_cache_channels.datetime_cache.year_mon:%x", channels_info->display_cache_channels.datetime_cache.year_mon);
+		debug("channels_info->display_cache_channels.datetime_cache.day_hour:%x", channels_info->display_cache_channels.datetime_cache.day_hour);
+		debug("channels_info->display_cache_channels.datetime_cache.min_sec:%x", channels_info->display_cache_channels.datetime_cache.min_sec);
+		tm.tm_year = get_u8_h_from_u16(channels_info->display_cache_channels.datetime_cache.year_mon) + 2000 - 1900;
+		tm.tm_mon = get_u8_l_from_u16(channels_info->display_cache_channels.datetime_cache.year_mon) - 1;
+		tm.tm_mday = get_u8_h_from_u16(channels_info->display_cache_channels.datetime_cache.day_hour);
+		tm.tm_hour = get_u8_l_from_u16(channels_info->display_cache_channels.datetime_cache.day_hour);
+		tm.tm_min = get_u8_h_from_u16(channels_info->display_cache_channels.datetime_cache.min_sec);
+		tm.tm_sec = get_u8_l_from_u16(channels_info->display_cache_channels.datetime_cache.min_sec);
 
 		set_time(mktime(&tm));
 	}
@@ -502,13 +504,31 @@ void channel_record_item_page_item_refresh(channel_record_item_t *channel_record
 	memcpy(record_item_cache->account, channel_record_item->account, 32);
 	ts = channel_record_item->start_time;
 	tm = localtime(&ts);
-	hour = get_bcd_from_u8(tm->tm_hour);
-	min = get_bcd_from_u8(tm->tm_min);
+	debug("record %d offset %d start tm %04d-%02d-%02d %02d:%02d:%02d",
+	      id,
+	      offset,
+	      tm->tm_year + 1900,
+	      tm->tm_mon + 1,
+	      tm->tm_mday,
+	      tm->tm_hour,
+	      tm->tm_min,
+	      tm->tm_sec);
+	hour = tm->tm_hour;
+	min = tm->tm_min;
 	record_item_cache->start_hour_min = get_u16_from_u8_lh(min, hour);
 	ts = channel_record_item->stop_time;
 	tm = localtime(&ts);
-	hour = get_bcd_from_u8(tm->tm_hour);
-	min = get_bcd_from_u8(tm->tm_min);
+	debug("record %d offset %d stop tm %04d-%02d-%02d %02d:%02d:%02d",
+	      id,
+	      offset,
+	      tm->tm_year + 1900,
+	      tm->tm_mon + 1,
+	      tm->tm_mday,
+	      tm->tm_hour,
+	      tm->tm_min,
+	      tm->tm_sec);
+	hour = tm->tm_hour;
+	min = tm->tm_min;
 	record_item_cache->stop_hour_min = get_u16_from_u8_lh(min, hour);
 	record_item_cache->energy_h = get_u16_1_from_u32(channel_record_item->energy);
 	record_item_cache->energy_l = get_u16_0_from_u32(channel_record_item->energy);

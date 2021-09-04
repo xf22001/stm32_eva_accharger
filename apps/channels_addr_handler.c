@@ -6,7 +6,7 @@
  *   文件名称：channels_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月16日 星期五 14时03分28秒
- *   修改日期：2021年08月29日 星期日 17时49分17秒
+ *   修改日期：2021年09月04日 星期六 16时27分08秒
  *   描    述：
  *
  *================================================================*/
@@ -363,16 +363,12 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_GET) {
 				time_t ts = get_time();
 				struct tm *tm = localtime(&ts);
-				channels_info->display_cache_channels.datetime_cache.year = tm->tm_year + 1900;
-				channels_info->display_cache_channels.datetime_cache.mon = tm->tm_mon + 1;
-				channels_info->display_cache_channels.datetime_cache.day = tm->tm_mday;
-				channels_info->display_cache_channels.datetime_cache.hour = tm->tm_hour;
-				channels_info->display_cache_channels.datetime_cache.min = tm->tm_min;
-				channels_info->display_cache_channels.datetime_cache.sec = tm->tm_sec;
-				channels_info->display_cache_channels.datetime_cache.wday = tm->tm_wday;
+				channels_info->display_cache_channels.datetime_cache.year_mon = get_u16_from_u8_lh(tm->tm_mon + 1, tm->tm_year + 1900 - 2000);
+				channels_info->display_cache_channels.datetime_cache.day_hour = get_u16_from_u8_lh(tm->tm_hour, tm->tm_mday);
+				channels_info->display_cache_channels.datetime_cache.min_sec = get_u16_from_u8_lh(tm->tm_sec, tm->tm_min);
 			}
 
-			modbus_data_buffer_rw(modbus_data_ctx, &channels_info->display_cache_channels.datetime_cache, 7 * 2, modbus_data_ctx->addr - 301);
+			modbus_data_buffer_rw(modbus_data_ctx, &channels_info->display_cache_channels.datetime_cache, 3 * 2, modbus_data_ctx->addr - 301);
 
 			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
 				channels_info->display_cache_channels.datetime_sync = 1;
@@ -548,11 +544,30 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		}
 		break;
 
-		case 370: {//时间校正标记
+		case 370 ... 371: {//时间校正标记
+			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_GET) {
+				channels_info->display_cache_channels.datetime_mark_cache.mark1 = 0x5a;
+				channels_info->display_cache_channels.datetime_mark_cache.mark2 = 0x5aa5;
+			}
+
+			modbus_data_buffer_rw(modbus_data_ctx, &channels_info->display_cache_channels.datetime_mark_cache, 2 * 2, modbus_data_ctx->addr - 370);
 		}
 		break;
 
-		case 371 ... 499: {//预留
+		case 372 ... 374: {//时间校正标记
+			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_GET) {
+				time_t ts = get_time();
+				struct tm *tm = localtime(&ts);
+				channels_info->display_cache_channels.datetime_cache.year_mon = get_u16_from_u8_lh(tm->tm_mon + 1, tm->tm_year + 1900 - 2000);
+				channels_info->display_cache_channels.datetime_cache.day_hour = get_u16_from_u8_lh(tm->tm_hour, tm->tm_mday);
+				channels_info->display_cache_channels.datetime_cache.min_sec = get_u16_from_u8_lh(tm->tm_sec, tm->tm_min);
+			}
+
+			modbus_data_buffer_rw(modbus_data_ctx, &channels_info->display_cache_channels.datetime_cache, 3 * 2, modbus_data_ctx->addr - 372);
+		}
+		break;
+
+		case 375 ... 499: {//预留
 		}
 		break;
 
@@ -806,6 +821,7 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		case 607: {//CP电压
 			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 0;
 			uint16_t value = channel_info->cp_ad_voltage;
+			debug("channel %d cp voltage:%d", channel_info->channel_id, value);
 			modbus_data_value_r(modbus_data_ctx, value);
 		}
 		break;
