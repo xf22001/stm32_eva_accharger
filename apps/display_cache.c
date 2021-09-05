@@ -6,7 +6,7 @@
  *   文件名称：display_cache.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分40秒
- *   修改日期：2021年09月04日 星期六 23时37分30秒
+ *   修改日期：2021年09月05日 星期日 11时42分48秒
  *   描    述：
  *
  *================================================================*/
@@ -390,22 +390,33 @@ void sync_channel_display_cache(channel_info_t *channel_info)
 				break;
 
 				case CHANNEL_RECORD_CHARGE_MODE_DURATION: {
-					int hour;
-					int min;
-					struct tm tm = {0};
+					struct tm tm;
+					time_t start_ts;
+					time_t stop_ts;
 
-					hour = get_u8_from_bcd(channel_info->display_cache_channel.start_hour);
-					min = get_u8_from_bcd(channel_info->display_cache_channel.start_min);
-					tm.tm_hour = hour;
-					tm.tm_min = min;
+					start_ts = get_time();
+					stop_ts = get_time();
+
+					tm = *localtime(&start_ts);
 					channel_info->channel_event_start_display.start_time = mktime(&tm);
+					tm.tm_hour = get_u8_from_bcd(channel_info->display_cache_channel.start_hour);
+					tm.tm_min = get_u8_from_bcd(channel_info->display_cache_channel.start_min);
+					tm.tm_sec = 0;
+					start_ts = mktime(&tm);
 
-					hour = get_u8_from_bcd(channel_info->display_cache_channel.stop_hour);
-					min = get_u8_from_bcd(channel_info->display_cache_channel.stop_min);
-					tm.tm_hour = hour;
-					tm.tm_min = min;
+					channel_info->channel_event_start_display.start_time = start_ts;
 
-					channel_info->channel_event_start_display.charge_duration = mktime(&tm) - channel_info->channel_event_start_display.start_time;
+					tm = *localtime(&stop_ts);
+					tm.tm_hour = get_u8_from_bcd(channel_info->display_cache_channel.stop_hour);
+					tm.tm_min = get_u8_from_bcd(channel_info->display_cache_channel.stop_min);
+					tm.tm_sec = 0;
+					stop_ts = mktime(&tm);
+
+					if(start_ts > stop_ts) {
+						stop_ts += 86400;
+					}
+
+					channel_info->channel_event_start_display.charge_duration = stop_ts - start_ts;
 				}
 				break;
 
