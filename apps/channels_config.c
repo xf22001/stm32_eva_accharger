@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2021年09月01日 星期三 13时51分24秒
+ *   修改日期：2021年09月11日 星期六 15时46分43秒
  *   描    述：
  *
  *================================================================*/
@@ -130,7 +130,7 @@ static channel_config_t channel1_config = {
 		.rey4_pin = rey4_Pin,
 	},
 	.energy_meter_config = {
-		.energy_meter_type = ENERGY_METER_TYPE_AC_HLW8032,
+		.energy_meter_type = ENERGY_METER_TYPE_AC_SDM_220,
 		.huart = &huart6,
 		.con_gpio = con1_485_GPIO_Port,
 		.con_pin = con1_485_Pin,
@@ -146,7 +146,7 @@ static channel_config_t channel1_config = {
 
 static channel_config_t *channel_config_sz[] = {
 	&channel0_config,
-	&channel1_config,
+	//&channel1_config,
 };
 
 static channels_config_t channels_config_0 = {

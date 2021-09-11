@@ -6,7 +6,7 @@
  *   文件名称：display_cache.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分40秒
- *   修改日期：2021年09月05日 星期日 11时42分48秒
+ *   修改日期：2021年09月11日 星期六 15时24分58秒
  *   描    述：
  *
  *================================================================*/
@@ -458,33 +458,37 @@ void sync_channel_display_cache(channel_info_t *channel_info)
 	}
 
 	if(channel_info->display_cache_channel.energy_meter_type_sync == 1) {
+		uint8_t type = ENERGY_METER_TYPE_NONE;
+
 		channel_info->display_cache_channel.energy_meter_type_sync = 0;
 
 		switch(channel_info->display_cache_channel.energy_meter_type) {
 			case 0: {
-				channel_info->channel_settings.energy_meter_settings.type = ENERGY_METER_TYPE_AC_HLW8032;
+				type = ENERGY_METER_TYPE_AC_HLW8032;
 			}
 			break;
 
 			case 1: {
-				channel_info->channel_settings.energy_meter_settings.type = ENERGY_METER_TYPE_AC;
+				type = ENERGY_METER_TYPE_AC;
 			}
 			break;
 
 			case 3: {
-				debug("");
-				channel_info->channel_settings.energy_meter_settings.type = ENERGY_METER_TYPE_AC_SDM_220;
+				type = ENERGY_METER_TYPE_AC_SDM_220;
 			}
 			break;
 
 			default: {
-				channel_info->channel_settings.energy_meter_settings.type = ENERGY_METER_TYPE_NONE;
+				type = ENERGY_METER_TYPE_NONE;
 			}
 			break;
 		}
 
-		update_energy_meter_type(channel_info);
-		channel_info->channel_settings_invalid = 1;
+		if(channel_info->channel_settings.energy_meter_settings.type != type) {
+			channel_info->channel_settings.energy_meter_settings.type = type;
+			update_energy_meter_type(channel_info);
+			channel_info->channel_settings_invalid = 1;
+		}
 	}
 }
 

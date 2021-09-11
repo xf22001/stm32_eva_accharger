@@ -6,7 +6,7 @@
  *   文件名称：probe_tool_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年03月20日 星期五 12时48分07秒
- *   修改日期：2021年09月04日 星期六 13时09分34秒
+ *   修改日期：2021年09月11日 星期六 17时55分45秒
  *   描    述：
  *
  *================================================================*/
@@ -555,6 +555,33 @@ static void fn16(request_t *request)
 	}
 }
 
+static void fn17(request_t *request)
+{
+	char *content = (char *)(request + 1);
+	int fn;
+	int onoff;
+	int catched;
+	int ret;
+
+	ret = sscanf(content, "%d %d %n",
+	             &fn,
+	             &onoff,
+	             &catched);
+	debug("ret:%d", ret);
+
+	if(ret == 2) {
+		if(onoff == 1) {
+			HAL_GPIO_WritePin(kl1_GPIO_Port, kl1_Pin, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(kn1_GPIO_Port, kn1_Pin, GPIO_PIN_SET);
+		} else {
+			HAL_GPIO_WritePin(kl1_GPIO_Port, kl1_Pin, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(kn1_GPIO_Port, kn1_Pin, GPIO_PIN_RESET);
+		}
+	} else {
+		debug("");
+	}
+}
+
 static server_item_t server_map[] = {
 	{1, fn1},
 	{2, fn2},
@@ -572,6 +599,7 @@ static server_item_t server_map[] = {
 	{14, fn14},
 	{15, fn15},
 	{16, fn16},
+	{17, fn17},
 };
 
 server_map_info_t server_map_info = {
