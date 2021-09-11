@@ -6,7 +6,7 @@
  *   文件名称：channels_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月16日 星期五 14时03分28秒
- *   修改日期：2021年09月04日 星期六 23时47分07秒
+ *   修改日期：2021年09月12日 星期日 00时37分54秒
  *   描    述：
  *
  *================================================================*/
@@ -287,7 +287,11 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		break;
 
 		case 102: {//刷卡板类型	0:626 1:628 3：ZLG
-			modbus_data_value_rw(modbus_data_ctx, channels_info->channels_settings.card_reader_settings.type);
+			modbus_data_value_rw(modbus_data_ctx, channels_info->display_cache_channels.card_reader_type);
+
+			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
+				channels_info->display_cache_channels.card_reader_type_sync = 1;
+			}
 		}
 		break;
 

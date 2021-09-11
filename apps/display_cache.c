@@ -6,7 +6,7 @@
  *   文件名称：display_cache.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分40秒
- *   修改日期：2021年09月11日 星期六 15时24分58秒
+ *   修改日期：2021年09月12日 星期日 00时51分27秒
  *   描    述：
  *
  *================================================================*/
@@ -19,6 +19,7 @@
 #include "channel.h"
 #include "log.h"
 #include "energy_meter.h"
+#include "card_reader.h"
 
 typedef enum {
 	DISPLAY_CHARGER_STOP_NONE = 0,//未关机
@@ -252,6 +253,28 @@ void load_channels_display_cache(channels_info_t *channels_info)
 
 	channels_info->display_cache_channels.withholding_l = get_u16_0_from_u32(channels_info->channels_settings.withholding);
 	channels_info->display_cache_channels.withholding_h = get_u16_0_from_u32(channels_info->channels_settings.withholding);
+
+	switch(channels_info->channels_settings.card_reader_settings.type) {
+		case CARD_READER_TYPE_MT_318_626: {
+			channels_info->display_cache_channels.card_reader_type = 0;
+		}
+		break;
+
+		case CARD_READER_TYPE_MT_318_628: {
+			channels_info->display_cache_channels.card_reader_type = 1;
+		}
+		break;
+
+		case CARD_READER_TYPE_ZLG: {
+			channels_info->display_cache_channels.card_reader_type = 3;
+		}
+		break;
+
+		default: {
+			channels_info->display_cache_channels.card_reader_type = 2;
+		}
+		break;
+	}
 }
 
 void sync_channels_display_cache(channels_info_t *channels_info)
@@ -335,7 +358,38 @@ void sync_channels_display_cache(channels_info_t *channels_info)
 		} else {
 			channel_record_item_page_load_current(channel_record_task_info);
 		}
+	}
 
+	if(channels_info->display_cache_channels.card_reader_type_sync == 1) {
+		uint8_t type = CARD_READER_TYPE_MT_NONE;
+		channels_info->display_cache_channels.card_reader_type_sync = 0;
+
+		switch(channels_info->display_cache_channels.card_reader_type) {
+			case 0: {
+				type = CARD_READER_TYPE_MT_318_626;
+			}
+			break;
+
+			case 1: {
+				type = CARD_READER_TYPE_MT_318_628;
+			}
+			break;
+
+			case 3: {
+				type = CARD_READER_TYPE_ZLG;
+			}
+			break;
+
+			default: {
+			}
+			break;
+		}
+
+		if(channels_info->channels_settings.card_reader_settings.type != type) {
+			channels_info->channels_settings.card_reader_settings.type = type;
+			update_card_reader_type(channels_info);
+			channels_info->channels_settings_invalid = 1;
+		}
 	}
 }
 

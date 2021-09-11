@@ -6,7 +6,7 @@
  *   文件名称：display_cache.h
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分47秒
- *   修改日期：2021年09月04日 星期六 16时24分02秒
+ *   修改日期：2021年09月12日 星期日 00时36分25秒
  *   描    述：
  *
  *================================================================*/
@@ -102,6 +102,9 @@ typedef struct {
 	uint16_t display_message;
 
 	uint8_t current_channel;
+
+	uint8_t card_reader_type_sync;
+	uint8_t card_reader_type;
 } display_cache_channels_t;
 
 typedef struct {
