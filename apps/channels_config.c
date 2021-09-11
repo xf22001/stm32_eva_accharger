@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2021年09月11日 星期六 15时46分43秒
+ *   修改日期：2021年09月11日 星期六 23时39分58秒
  *   描    述：
  *
  *================================================================*/
@@ -80,6 +80,23 @@ char *get_channel_config_energy_meter_type(energy_meter_type_t type)
 	return des;
 }
 
+static energy_meter_config_item_t energy_meter_config_item_0_0 = {
+	.type = ENERGY_METER_TYPE_AC_SDM_220,
+	.huart = &huart1,
+	.con_gpio = con1_485_GPIO_Port,
+	.con_pin = con1_485_Pin,
+};
+
+static energy_meter_config_item_t energy_meter_config_item_0_1 = {
+	.type = ENERGY_METER_TYPE_AC_HLW8032,
+	.huart = &huart3,
+};
+
+static energy_meter_config_item_t *energy_meter_config_item_0_sz[] = {
+	&energy_meter_config_item_0_0,
+	&energy_meter_config_item_0_1,
+};
+
 static channel_config_t channel0_config = {
 	.channel_type = CHANNEL_TYPE_NATIVE,
 	.charger_config = {
@@ -97,12 +114,9 @@ static channel_config_t channel0_config = {
 		.rey4_pin = rey4_Pin,
 	},
 	.energy_meter_config = {
-		//.energy_meter_type = ENERGY_METER_TYPE_AC_HLW8032,
-		//.huart = &huart3,
-		.energy_meter_type = ENERGY_METER_TYPE_AC_SDM_220,
-		.huart = &huart1,
-		.con_gpio = con1_485_GPIO_Port,
-		.con_pin = con1_485_Pin,
+		.default_type = ENERGY_METER_TYPE_AC_SDM_220,
+		.size = ARRAY_SIZE(energy_meter_config_item_0_sz),
+		.items = energy_meter_config_item_0_sz,
 	},
 	.hcan_channel_comm = &hcan1,
 	.charger_temperature_adc = &hadc1,
@@ -130,10 +144,8 @@ static channel_config_t channel1_config = {
 		.rey4_pin = rey4_Pin,
 	},
 	.energy_meter_config = {
-		.energy_meter_type = ENERGY_METER_TYPE_AC_SDM_220,
-		.huart = &huart6,
-		.con_gpio = con1_485_GPIO_Port,
-		.con_pin = con1_485_Pin,
+		.items = NULL,
+		.size = 0,
 	},
 	.hcan_channel_comm = &hcan1,
 	.charger_temperature_adc = &hadc1,
@@ -147,6 +159,15 @@ static channel_config_t channel1_config = {
 static channel_config_t *channel_config_sz[] = {
 	&channel0_config,
 	//&channel1_config,
+};
+
+static card_reader_config_item_t card_reader_config_item_0 = {
+	.type = CARD_READER_TYPE_MT_318_626,
+	.huart = &huart4,
+};
+
+static card_reader_config_item_t *card_reader_config_item_sz[] = {
+	&card_reader_config_item_0,
 };
 
 static channels_config_t channels_config_0 = {
@@ -167,8 +188,8 @@ static channels_config_t channels_config_0 = {
 		.clk_pin = voi_clk_Pin,
 	},
 	.card_reader_config = {
-		.card_reader_type = CARD_READER_TYPE_MT_318_626,
-		.huart_card_reader = &huart4,
+		.size = ARRAY_SIZE(card_reader_config_item_sz),
+		.items = card_reader_config_item_sz,
 	},
 	.display_config = {
 		.huart = &huart2,
@@ -202,4 +223,40 @@ channels_config_t *get_channels_config(uint8_t id)
 	}
 
 	return channels_config;
+}
+
+energy_meter_config_item_t *get_energy_meter_config_item(channel_config_t *channel_config, energy_meter_type_t type)
+{
+	int i;
+	energy_meter_config_t *energy_meter_config = &channel_config->energy_meter_config;
+	energy_meter_config_item_t *energy_meter_config_item = NULL;
+
+	for(i = 0; i < energy_meter_config->size; i++) {
+		energy_meter_config_item_t *_energy_meter_config_item = energy_meter_config->items[i];
+
+		if(_energy_meter_config_item->type == type) {
+			energy_meter_config_item = _energy_meter_config_item;
+			break;
+		}
+	}
+
+	return energy_meter_config_item;
+}
+
+card_reader_config_item_t *get_card_reader_config_item(channels_config_t *channels_config, card_reader_type_t type)
+{
+	int i;
+	card_reader_config_t *card_reader_config = &channels_config->card_reader_config;
+	card_reader_config_item_t *card_reader_config_item = NULL;
+
+	for(i = 0; i < card_reader_config->size; i++) {
+		card_reader_config_item_t *_card_reader_config_item = card_reader_config->items[i];
+
+		if(_card_reader_config_item->type == type) {
+			card_reader_config_item = _card_reader_config_item;
+			break;
+		}
+	}
+
+	return card_reader_config_item;
 }

@@ -6,7 +6,7 @@
  *   文件名称：uart_debug_handler.c
  *   创 建 者：肖飞
  *   创建日期：2020年05月13日 星期三 13时18分00秒
- *   修改日期：2021年08月05日 星期四 14时17分49秒
+ *   修改日期：2021年09月11日 星期六 23时34分06秒
  *   描    述：
  *
  *================================================================*/
@@ -25,13 +25,6 @@ static void fn1(char *arguments)
 
 static void fn2(char *arguments)
 {
-	if(is_app() == 1) {
-		app_info_t *app_info = get_app_info();
-		app_info->mechine_info.upgrade_enable = 1;
-		app_save_config();
-		_printf("enable upgrade! resetting...\n");
-		HAL_NVIC_SystemReset();
-	}
 }
 
 uint16_t osGetCPUUsage(void);
