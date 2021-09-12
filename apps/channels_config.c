@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2021年09月11日 星期六 23时39分58秒
+ *   修改日期：2021年09月12日 星期日 10时03分00秒
  *   描    述：
  *
  *================================================================*/
@@ -25,7 +25,7 @@ extern UART_HandleTypeDef huart6;
 extern TIM_HandleTypeDef htim3;
 extern SPI_HandleTypeDef hspi2;
 
-char *get_channel_config_channel_type(channel_type_t type)
+char *get_channel_config_channel_type_des(channel_type_t type)
 {
 	char *des = "unknow";
 
@@ -41,7 +41,7 @@ char *get_channel_config_channel_type(channel_type_t type)
 	return des;
 }
 
-char *get_channel_config_charger_type(channel_charger_type_t type)
+char *get_channel_config_charger_type_des(channel_charger_type_t type)
 {
 	char *des = "unknow";
 
@@ -59,7 +59,7 @@ char *get_channel_config_charger_type(channel_charger_type_t type)
 	return des;
 }
 
-char *get_channel_config_energy_meter_type(energy_meter_type_t type)
+char *get_channel_config_energy_meter_type_des(energy_meter_type_t type)
 {
 	char *des = "unknow";
 
@@ -71,6 +71,24 @@ char *get_channel_config_energy_meter_type(energy_meter_type_t type)
 			add_des_case(ENERGY_METER_TYPE_AC_SDM_220);
 			add_des_case(ENERGY_METER_TYPE_AC_SDM_630);
 			add_des_case(ENERGY_METER_TYPE_PROXY);
+
+		default: {
+		}
+		break;
+	}
+
+	return des;
+}
+
+char *get_card_reader_type_des(card_reader_type_t type)
+{
+	char *des = "unknow";
+
+	switch(type) {
+			add_des_case(CARD_READER_TYPE_MT_NONE);
+			add_des_case(CARD_READER_TYPE_MT_318_626);
+			add_des_case(CARD_READER_TYPE_MT_318_628);
+			add_des_case(CARD_READER_TYPE_ZLG);
 
 		default: {
 		}
