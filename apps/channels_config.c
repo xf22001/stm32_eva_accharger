@@ -6,7 +6,7 @@
  *   文件名称：channels_config.c
  *   创 建 者：肖飞
  *   创建日期：2021年01月18日 星期一 09时26分44秒
- *   修改日期：2021年09月12日 星期日 12时25分26秒
+ *   修改日期：2021年09月13日 星期一 10时19分13秒
  *   描    述：
  *
  *================================================================*/
@@ -130,6 +130,13 @@ static channel_config_t channel0_config = {
 		.rey3_pin = rey3_Pin,
 		.rey4_gpio = rey4_GPIO_Port,
 		.rey4_pin = rey4_Pin,
+
+		.led_r_gpio = ledR1_GPIO_Port,
+		.led_r_pin = ledR1_Pin,
+		.led_g_gpio = ledG1_GPIO_Port,
+		.led_g_pin = ledG1_Pin,
+		.led_b_gpio = ledB1_GPIO_Port,
+		.led_b_pin = ledB1_Pin,
 	},
 	.energy_meter_config = {
 		.default_type = ENERGY_METER_TYPE_AC_SDM_220,
@@ -160,6 +167,13 @@ static channel_config_t channel1_config = {
 		.rey3_pin = rey3_Pin,
 		.rey4_gpio = rey4_GPIO_Port,
 		.rey4_pin = rey4_Pin,
+
+		.led_r_gpio = ledR2_GPIO_Port,
+		.led_r_pin = ledR2_Pin,
+		.led_g_gpio = ledG2_GPIO_Port,
+		.led_g_pin = ledG2_Pin,
+		.led_b_gpio = ledB2_GPIO_Port,
+		.led_b_pin = ledB2_Pin,
 	},
 	.energy_meter_config = {
 		.items = NULL,
