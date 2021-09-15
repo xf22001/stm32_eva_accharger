@@ -6,7 +6,7 @@
 #   文件名称：user.mk
 #   创 建 者：肖飞
 #   创建日期：2019年10月25日 星期五 13时04分38秒
-#   修改日期：2021年08月10日 星期二 16时09分00秒
+#   修改日期：2021年09月15日 星期三 10时30分39秒
 #   描    述：
 #
 #================================================================
@@ -25,6 +25,7 @@ USER_C_INCLUDES += -Iapps/modules/app/power_modules
 USER_C_INCLUDES += -Iapps/modules/app/vfs_disk
 USER_C_INCLUDES += -Iapps/modules/app/net_client
 USER_C_INCLUDES += -Iapps/modules/tests
+USER_C_INCLUDES += -IcJSON
 
 USER_C_INCLUDES += -IMiddlewares/Third_Party/LwIP/src/include
 USER_C_INCLUDES += -IMiddlewares/Third_Party/LwIP/system
@@ -157,7 +158,7 @@ USER_C_SOURCES += apps/modules/tests/test_storage.c
 USER_C_SOURCES += Middlewares/Third_Party/LwIP/src/core/def.c
 USER_C_SOURCES += Middlewares/Third_Party/LwIP/src/core/ipv4/ip4_addr.c
 USER_C_SOURCES += Src/net_sockets.c
-USER_C_SOURCES += apps/cJSON.c
+USER_C_SOURCES += cJSON/cJSON.c
 
 C_SOURCES += $(USER_C_SOURCES)
 
