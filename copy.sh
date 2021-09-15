@@ -6,13 +6,13 @@
 #   文件名称：copy.sh
 #   创 建 者：肖飞
 #   创建日期：2021年08月02日 星期一 15时31分26秒
-#   修改日期：2021年09月15日 星期三 10时27分24秒
+#   修改日期：2021年09月15日 星期三 10时46分11秒
 #   描    述：
 #
 #================================================================
 function main() {
 	cat cscope/cscope.files | while read line; do
-		echo rsync -aR $line ./src | grep "stm32_apps/\|eva/\|/sal/\|/cJSON/" | sed 's:"::g' | sed 's:eva/:eva/./:g' | sed 's:stm32_apps/:stm32_apps/./:g' | sed 's:/sal/:/./sal/:g' | sed 's:/cJSON/:/./cJSON/:g'
+		echo rsync -aR $line ./src | grep "/eva/\|/stm32_apps/\|/sal/\|/cJSON/" | sed 's:"::g' | sed 's:/eva/:/eva/./:g' | sed 's:/stm32_apps/:/stm32_apps/./:g' | sed 's:/sal/:/./sal/:g' | sed 's:/cJSON/:/./cJSON/:g'
 	done
 }
 
