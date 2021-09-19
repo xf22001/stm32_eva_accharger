@@ -6,7 +6,7 @@
  *   文件名称：channels_addr_handler.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月16日 星期五 14时03分28秒
- *   修改日期：2021年09月12日 星期日 00时37分54秒
+ *   修改日期：2021年09月19日 星期日 17时22分01秒
  *   描    述：
  *
  *================================================================*/
@@ -191,7 +191,11 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		break;
 
 		case 7: {//后台设置	0:无 1：SSE 2:OCPP
-			modbus_data_value_rw(modbus_data_ctx, channels_settings->request_type);
+			modbus_data_value_rw(modbus_data_ctx, app_info->display_cache_app.request_type);
+
+			if(modbus_data_ctx->action == MODBUS_DATA_ACTION_SET) {
+				app_info->display_cache_app.request_type_sync = 1;
+			}
 		}
 		break;
 
@@ -276,9 +280,9 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		break;
 
 		case 100: {//B枪额定电流 1a
-			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 1;
-			modbus_data_value_rw(modbus_data_ctx, channel_info->channel_settings.ac_current_limit);
-			debug("channel %d ac_current_limit %d", channel_info->channel_id, channel_info->channel_settings.ac_current_limit);
+			//channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 1;
+			//modbus_data_value_rw(modbus_data_ctx, channel_info->channel_settings.ac_current_limit);
+			//debug("channel %d ac_current_limit %d", channel_info->channel_id, channel_info->channel_settings.ac_current_limit);
 		}
 		break;
 
@@ -394,12 +398,12 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 			}
 
 			if(fault == DISPLAY_FAULT_OK) {
-				channel_info_t *channel_info;
-				channel_info = (channel_info_t *)channels_info->channel_info + 1;
+				//channel_info_t *channel_info;
+				//channel_info = (channel_info_t *)channels_info->channel_info + 1;
 
-				if(get_fault(channel_info->faults, CHANNEL_FAULT_ENERGYMETER) == 1) {
-					fault = DISPLAY_FAULT_TELEMETER_B;
-				}
+				//if(get_fault(channel_info->faults, CHANNEL_FAULT_ENERGYMETER) == 1) {
+				//	fault = DISPLAY_FAULT_TELEMETER_B;
+				//}
 			}
 
 			if(fault == DISPLAY_FAULT_OK) {
@@ -716,14 +720,14 @@ void channels_modbus_data_action(void *fn_ctx, void *chain_ctx)
 		break;
 
 		case 528: {//充电电压                   0.1V
-			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 1;
-			modbus_data_value_r(modbus_data_ctx, channel_info->voltage);
+			//channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 1;
+			//modbus_data_value_r(modbus_data_ctx, channel_info->voltage);
 		}
 		break;
 
 		case 529: {//充电电流                   0.1A
-			channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 1;
-			modbus_data_value_r(modbus_data_ctx, channel_info->current);
+			//channel_info_t *channel_info = (channel_info_t *)channels_info->channel_info + 1;
+			//modbus_data_value_r(modbus_data_ctx, channel_info->current);
 		}
 		break;
 

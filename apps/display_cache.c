@@ -6,7 +6,7 @@
  *   文件名称：display_cache.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分40秒
- *   修改日期：2021年09月12日 星期日 00时51分27秒
+ *   修改日期：2021年09月19日 星期日 16时21分53秒
  *   描    述：
  *
  *================================================================*/
@@ -20,6 +20,7 @@
 #include "log.h"
 #include "energy_meter.h"
 #include "card_reader.h"
+#include "net_client.h"
 
 typedef enum {
 	DISPLAY_CHARGER_STOP_NONE = 0,//未关机
@@ -196,6 +197,28 @@ void load_app_display_cache(app_info_t *app_info)
 	}
 
 	load_device_id((uint16_t *)app_info->mechine_info.device_id, (uint16_t *)app_info->display_cache_app.device_id, 16);
+
+	switch(app_info->mechine_info.request_type) {
+		case REQUEST_TYPE_NONE: {
+			app_info->display_cache_app.request_type = 0;
+		}
+		break;
+
+		case REQUEST_TYPE_SSE: {
+			app_info->display_cache_app.request_type = 1;
+		}
+		break;
+
+		case REQUEST_TYPE_OCPP_1_6: {
+			app_info->display_cache_app.request_type = 2;
+		}
+		break;
+
+		default: {
+			app_info->display_cache_app.request_type = 0;
+		}
+		break;
+	}
 }
 
 void sync_app_display_cache(app_info_t *app_info)
@@ -217,6 +240,40 @@ void sync_app_display_cache(app_info_t *app_info)
 		set_device_id((uint16_t *)app_info->mechine_info.device_id, (uint16_t *)app_info->display_cache_app.device_id, 16);
 
 		app_info->mechine_info_invalid = 1;
+	}
+
+	if(app_info->display_cache_app.request_type_sync != 0) {
+		net_client_info_t *net_client_info = get_net_client_info();
+		app_info->display_cache_app.request_type_sync = 0;
+		debug("app_info->display_cache_app.request_type:%d", app_info->display_cache_app.request_type);
+
+		switch(app_info->display_cache_app.request_type) {
+			case 0: {
+				app_info->mechine_info.request_type = REQUEST_TYPE_NONE;
+			}
+			break;
+
+			case 1: {
+				app_info->mechine_info.request_type = REQUEST_TYPE_SSE;
+			}
+			break;
+
+			case 2: {
+				app_info->mechine_info.request_type = REQUEST_TYPE_OCPP_1_6;
+			}
+			break;
+
+			default: {
+				app_info->mechine_info.request_type = REQUEST_TYPE_NONE;
+			}
+			break;
+		}
+
+		app_info->mechine_info_invalid = 1;
+
+		if(net_client_info != NULL) {
+			set_client_state(net_client_info, CLIENT_REINIT);
+		}
 	}
 }
 
