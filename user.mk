@@ -6,7 +6,7 @@
 #   文件名称：user.mk
 #   创 建 者：肖飞
 #   创建日期：2019年10月25日 星期五 13时04分38秒
-#   修改日期：2021年09月16日 星期四 14时51分34秒
+#   修改日期：2021年09月19日 星期日 19时42分04秒
 #   描    述：
 #
 #================================================================
@@ -116,6 +116,7 @@ USER_C_SOURCES += apps/modules/app/charger/energy_meter_handler_ac_sdm_220.c
 USER_C_SOURCES += apps/modules/app/charger/energy_meter_handler_ac_sdm_630.c
 USER_C_SOURCES += apps/modules/app/charger/channel_record.c
 USER_C_SOURCES += apps/modules/app/charger/card_reader.c
+USER_C_SOURCES += apps/modules/app/charger/card_reader_handler_pseudo.c
 USER_C_SOURCES += apps/modules/app/charger/card_reader_handler_zlg.c
 USER_C_SOURCES += apps/modules/app/charger/card_reader_handler_mt_318_626.c
 USER_C_SOURCES += apps/modules/app/charger/card_reader_handler_mt_318_628.c

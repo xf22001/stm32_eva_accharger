@@ -6,7 +6,7 @@
  *   文件名称：display_cache.c
  *   创 建 者：肖飞
  *   创建日期：2021年07月17日 星期六 09时42分40秒
- *   修改日期：2021年09月19日 星期日 16时21分53秒
+ *   修改日期：2021年09月19日 星期日 19时46分56秒
  *   描    述：
  *
  *================================================================*/
@@ -418,7 +418,7 @@ void sync_channels_display_cache(channels_info_t *channels_info)
 	}
 
 	if(channels_info->display_cache_channels.card_reader_type_sync == 1) {
-		uint8_t type = CARD_READER_TYPE_MT_NONE;
+		uint8_t type = CARD_READER_TYPE_PSEUDO;
 		channels_info->display_cache_channels.card_reader_type_sync = 0;
 
 		switch(channels_info->display_cache_channels.card_reader_type) {
