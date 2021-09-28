@@ -32,6 +32,8 @@ char *get_channel_config_channel_type_des(channel_type_t type)
 	switch(type) {
 			add_des_case(CHANNEL_TYPE_NONE);
 			add_des_case(CHANNEL_TYPE_NATIVE);
+			add_des_case(CHANNEL_TYPE_PROXY_REMOTE);
+			add_des_case(CHANNEL_TYPE_PROXY_LOCAL);
 
 		default: {
 		}
@@ -291,4 +293,52 @@ card_reader_config_item_t *get_card_reader_config_item(channels_config_t *channe
 	}
 
 	return card_reader_config_item;
+}
+
+proxy_channel_item_t *get_proxy_channel_item_by_proxy_channel_index(proxy_channel_info_t *proxy_channel_info, uint8_t proxy_channel_index)
+{
+	proxy_channel_item_t *item = NULL;
+	int i;
+
+	if(proxy_channel_info->proxy_channel_number == 0) {
+		return item;
+	}
+
+	if(proxy_channel_info->items == NULL) {
+		return item;
+	}
+
+	for(i = 0; i < proxy_channel_info->proxy_channel_number; i++) {
+		proxy_channel_item_t *_item = proxy_channel_info->items + i;
+		if(_item->proxy_channel_index == proxy_channel_index) {
+			item = _item;
+			break;
+		}
+	}
+
+	return item;
+}
+
+proxy_channel_item_t *get_proxy_channel_item_by_channel_id(proxy_channel_info_t *proxy_channel_info, uint8_t channel_id)
+{
+	proxy_channel_item_t *item = NULL;
+	int i;
+
+	if(proxy_channel_info->proxy_channel_number == 0) {
+		return item;
+	}
+
+	if(proxy_channel_info->items == NULL) {
+		return item;
+	}
+
+	for(i = 0; i < proxy_channel_info->proxy_channel_number; i++) {
+		proxy_channel_item_t *_item = proxy_channel_info->items + i;
+		if(_item->channel_id == channel_id) {
+			item = _item;
+			break;
+		}
+	}
+
+	return item;
 }

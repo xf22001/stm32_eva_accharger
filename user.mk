@@ -102,6 +102,9 @@ USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_zte.c
 USER_C_SOURCES += apps/modules/app/charger/channels.c
 USER_C_SOURCES += apps/modules/app/charger/channel.c
 USER_C_SOURCES += apps/modules/app/charger/channel_handler_native.c
+USER_C_SOURCES += apps/modules/app/charger/channel_handler_proxy_remote.c
+USER_C_SOURCES += apps/modules/app/charger/channel_handler_proxy_local.c
+USER_C_SOURCES += apps/modules/app/charger/channels_comm_proxy.c
 USER_C_SOURCES += apps/modules/app/charger/charger.c
 USER_C_SOURCES += apps/modules/app/charger/charger_bms.c
 USER_C_SOURCES += apps/modules/app/charger/charger_bms_gb.c
@@ -121,6 +124,7 @@ USER_C_SOURCES += apps/modules/app/charger/card_reader_handler_zlg.c
 USER_C_SOURCES += apps/modules/app/charger/card_reader_handler_mt_318_626.c
 USER_C_SOURCES += apps/modules/app/charger/card_reader_handler_mt_318_628.c
 USER_C_SOURCES += apps/modules/app/charger/channels_comm_proxy_remote.c
+#USER_C_SOURCES += apps/modules/app/charger/channels_comm_proxy_local.c
 USER_C_SOURCES += apps/modules/hardware/flash.c
 USER_C_SOURCES += apps/modules/hardware/dlt_645_master_txrx.c
 USER_C_SOURCES += apps/modules/hardware/hw_rtc.c
@@ -246,3 +250,6 @@ cscope: all
 clean: clean-cscope
 clean-cscope:
 	rm cscope e_cs -rf
+
+firmware:
+	python apps/modules/fw.py -f build/eva.bin
