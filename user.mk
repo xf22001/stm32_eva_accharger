@@ -6,13 +6,16 @@
 #   文件名称：user.mk
 #   创 建 者：肖飞
 #   创建日期：2019年10月25日 星期五 13时04分38秒
-#   修改日期：2021年09月19日 星期日 19时42分04秒
+#   修改日期：2021年10月10日 星期日 18时10分26秒
 #   描    述：
 #
 #================================================================
 
 include sal/sal.mk
 include config.mk
+
+ifndef_any_of = $(filter undefined,$(foreach v,$(1),$(origin $(v))))
+ifdef_any_of = $(filter-out undefined,$(foreach v,$(1),$(origin $(v))))
 
 USER_C_INCLUDES += -Iapps
 USER_C_INCLUDES += -Iapps/modules
@@ -62,20 +65,32 @@ USER_C_SOURCES += apps/channels_notify_voice.c
 
 USER_C_SOURCES += apps/modules/app/config_utils.c
 USER_C_SOURCES += apps/modules/app/poll_loop.c
+USER_C_SOURCES += apps/modules/app/request.c
 USER_C_SOURCES += apps/modules/app/probe_tool.c
 USER_C_SOURCES += apps/modules/app/uart_debug.c
 USER_C_SOURCES += apps/modules/app/file_log.c
-USER_C_SOURCES += apps/modules/app/net_client/request.c
 USER_C_SOURCES += apps/modules/app/net_client/net_client.c
+ifdef CONFIG_NET_CLIENT_PROTOCOL_UDP
 USER_C_SOURCES += apps/modules/app/net_client/net_protocol_udp.c
+endif
+ifdef CONFIG_NET_CLIENT_PROTOCOL_TCP
 USER_C_SOURCES += apps/modules/app/net_client/net_protocol_tcp.c
+endif
+ifdef CONFIG_NET_CLIENT_PROTOCOL_TLS
 USER_C_SOURCES += apps/modules/app/net_client/net_protocol_tls.c
+endif
+ifdef CONFIG_NET_CLIENT_REQUEST_DEFAULT
 USER_C_SOURCES += apps/modules/app/net_client/request_default.c
+endif
+ifdef CONFIG_NET_CLIENT_REQUEST_SSE
 USER_C_SOURCES += apps/modules/app/net_client/request_sse.c
-USER_C_SOURCES += apps/modules/app/net_client/request_ocpp_1_6.c
+endif
+ifdef CONFIG_NET_CLIENT_REQUEST_OCCP_1_6
+USER_C_SOURCES += apps/modules/app/net_client/test_https.c
 USER_C_SOURCES += apps/modules/app/net_client/https.c
 USER_C_SOURCES += apps/modules/app/net_client/websocket.c
-USER_C_SOURCES += apps/modules/app/net_client/test_https.c
+USER_C_SOURCES += apps/modules/app/net_client/request_ocpp_1_6.c
+endif
 USER_C_SOURCES += apps/modules/app/ftp_client.c
 USER_C_SOURCES += apps/modules/app/vfs_disk/vfs.c
 USER_C_SOURCES += apps/modules/app/mt_file.c
@@ -90,27 +105,30 @@ USER_C_SOURCES += apps/modules/app/usb_upgrade.c
 USER_C_SOURCES += apps/modules/app/ntc_temperature.c
 USER_C_SOURCES += apps/modules/app/display.c
 USER_C_SOURCES += apps/modules/app/voice.c
-USER_C_SOURCES += apps/modules/app/power_modules/power_modules.c
-USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_huawei.c
-USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_increase.c
-USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_infy.c
-USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_pseudo.c
-USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_stategrid.c
-USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_yyln.c
-USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_winline.c
-USER_C_SOURCES += apps/modules/app/power_modules/power_modules_handler_zte.c
 USER_C_SOURCES += apps/modules/app/charger/channels.c
 USER_C_SOURCES += apps/modules/app/charger/channel.c
 USER_C_SOURCES += apps/modules/app/charger/channel_handler_native.c
+ifdef CONFIG_CHARGER_CHANNEL_PROXY_REMOTE
 USER_C_SOURCES += apps/modules/app/charger/channel_handler_proxy_remote.c
+endif
+ifdef CONFIG_CHARGER_CHANNEL_PROXY_LOCAL
 USER_C_SOURCES += apps/modules/app/charger/channel_handler_proxy_local.c
+endif
+ifneq ($(call ifdef_any_of,CONFIG_CHARGER_CHANNEL_PROXY_REMOTE CONFIG_CHARGER_CHANNEL_PROXY_LOCAL),)
 USER_C_SOURCES += apps/modules/app/charger/channels_comm_proxy.c
+endif
 USER_C_SOURCES += apps/modules/app/charger/charger.c
 USER_C_SOURCES += apps/modules/app/charger/charger_bms.c
+ifdef CONFIG_CHARGER_BMS_HANDLER_GB
 USER_C_SOURCES += apps/modules/app/charger/charger_bms_gb.c
+endif
+ifdef CONFIG_CHARGER_BMS_HANDLER_AC
 USER_C_SOURCES += apps/modules/app/charger/charger_bms_ac.c
+endif
 USER_C_SOURCES += apps/modules/app/charger/channels_power_module.c
+ifdef CONFIG_CHANNELS_POWER_MODULES_NATIVE
 USER_C_SOURCES += apps/modules/app/charger/channels_power_module_native.c
+endif
 USER_C_SOURCES += apps/modules/app/charger/energy_meter.c
 USER_C_SOURCES += apps/modules/app/charger/energy_meter_handler_dc.c
 USER_C_SOURCES += apps/modules/app/charger/energy_meter_handler_ac.c
@@ -123,8 +141,12 @@ USER_C_SOURCES += apps/modules/app/charger/card_reader_handler_pseudo.c
 USER_C_SOURCES += apps/modules/app/charger/card_reader_handler_zlg.c
 USER_C_SOURCES += apps/modules/app/charger/card_reader_handler_mt_318_626.c
 USER_C_SOURCES += apps/modules/app/charger/card_reader_handler_mt_318_628.c
+ifdef CONFIG_CHARGER_CHANNEL_PROXY_REMOTE
 USER_C_SOURCES += apps/modules/app/charger/channels_comm_proxy_remote.c
-#USER_C_SOURCES += apps/modules/app/charger/channels_comm_proxy_local.c
+endif
+ifdef CONFIG_CHARGER_CHANNEL_PROXY_LOCAL
+USER_C_SOURCES += apps/modules/app/charger/channels_comm_proxy_local.c
+endif
 USER_C_SOURCES += apps/modules/hardware/flash.c
 USER_C_SOURCES += apps/modules/hardware/dlt_645_master_txrx.c
 USER_C_SOURCES += apps/modules/hardware/hw_rtc.c
@@ -171,28 +193,15 @@ USER_CFLAGS += -DSAL_HOOK
 USER_CFLAGS += -DLOG_CONFIG_FILE=\"log_config.h\"
 USER_CFLAGS += -DCJSON_API_VISIBILITY -DCJSON_EXPORT_SYMBOLS -DENABLE_LOCALES -Dcjson_EXPORTS
 
-
-ifdef CONFIG_DEVICE_TYPE
-USER_CFLAGS += -D$(CONFIG_DEVICE_TYPE)
-endif
-
-ifdef CONFIG_STORAGE_25LC1024
-USER_CFLAGS += -D$(CONFIG_STORAGE_25LC1024)
-endif
-ifdef CONFIG_STORAGE_24LC128
-USER_CFLAGS += -D$(CONFIG_STORAGE_24LC128)
-endif
-ifdef CONFIG_STORAGE_W25Q256
-USER_CFLAGS += -D$(CONFIG_STORAGE_W25Q256)
-endif
-
 #USER_CFLAGS += -DLOG_DISABLE
 #USER_CFLAGS += -DALLOC_TRACE_DISABLE
 
-CFLAGS += $(USER_CFLAGS)
+CFLAGS += $(USER_CFLAGS) $(CONFIG_CFLAGS)
 
 #LDFLAGS += -u _printf_float -Wl,--wrap=srand  -Wl,--wrap=rand
 LDFLAGS += -u _printf_float
+
+default: all
 
 IAP_FILE := apps/modules/os/iap.h
 
@@ -217,14 +226,16 @@ LDSCRIPT = STM32F407VGTx_FLASH.ld
 $(info "build bootloader!")
 endif
 
-default: all
-
-all : $(build-type)
-
 $(build-type) :
 	-rm $(build-type-invalid)
 	$(shell $(update-iap-include))
 	touch $@
+
+
+PHONY += all
+PHONY += default
+
+USER_DEPS := sal/sal.mk config.mk $(build-type)
 
 cscope: all
 	rm cscope e_cs -rf
@@ -253,3 +264,4 @@ clean-cscope:
 
 firmware:
 	python apps/modules/fw.py -f build/eva.bin
+

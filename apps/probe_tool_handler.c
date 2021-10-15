@@ -256,7 +256,7 @@ static void fn6(request_t *request)
 
 	set_client_state(net_client_info, CLIENT_SUSPEND);
 
-	ret = sscanf(content, "%d %10s%n", &fn, protocol, &catched);
+	ret = sscanf(content, "%d %7s%n", &fn, protocol, &catched);
 
 	if(ret == 2) {
 		app_info_t *app_info = get_app_info();
@@ -335,8 +335,8 @@ static void fn9(request_t *request)
 {
 }
 
-#include "test_https.h"
-void set_connect_enable(uint8_t enable);
+//#include "test_https.h"
+//void set_connect_enable(uint8_t enable);
 static void fn10(request_t *request)
 {
 	//char *url = "https://httpbin.org/get";
@@ -347,7 +347,7 @@ static void fn10(request_t *request)
 	//char *url = "wss://ocpp-16-json.dev-plugitcloud.com/SSECHINAEVSE";
 	//char *url = "wss://iot-ebus-ocpp-v16-server-test.azurewebsites.net/ws/test123";
 	//test_https(url);
-	set_connect_enable(1);
+	//set_connect_enable(1);
 }
 
 //http://coolaf.com/tool/chattest
@@ -369,7 +369,7 @@ static void fn11(request_t *request)
 		return;
 	}
 
-	if(net_client_info == NULL) {
+	if(net_client_info != NULL) {
 		set_client_state(net_client_info, CLIENT_SUSPEND);
 	}
 
@@ -385,7 +385,7 @@ static void fn11(request_t *request)
 
 	debug("device id:\'%s\', server uri:\'%s\'!", app_info->mechine_info.device_id, app_info->mechine_info.uri);
 
-	if(net_client_info == NULL) {
+	if(net_client_info != NULL) {
 		set_client_state(net_client_info, CLIENT_REINIT);
 	}
 }

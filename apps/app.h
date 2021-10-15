@@ -6,7 +6,7 @@
  *   文件名称：app.h
  *   创 建 者：肖飞
  *   创建日期：2019年10月11日 星期五 16时56分29秒
- *   修改日期：2021年09月11日 星期六 23时33分13秒
+ *   修改日期：2021年10月08日 星期五 16时49分41秒
  *   描    述：
  *
  *================================================================*/
@@ -47,6 +47,9 @@ typedef struct {
 	uint8_t dhcp_enable;
 
 	uint8_t request_type;
+
+	uint8_t upgrade_enable;
+	uint8_t reset_config;
 } mechine_info_t;
 
 typedef struct {
@@ -73,6 +76,8 @@ void send_app_event(app_event_t event);
 void load_app_display_cache(app_info_t *app_info);
 void sync_app_display_cache(app_info_t *app_info);
 void update_network_ip_config(app_info_t *app_info);
+void app_set_reset_config(void);
+uint8_t app_get_reset_config(void);
 void app(void const *argument);
 void idle(void const *argument);
 

@@ -173,6 +173,19 @@ void update_network_ip_config(app_info_t *app_info)
 	}
 }
 
+static uint8_t reset_config = 0;
+
+void app_set_reset_config(void)
+{
+	OS_ASSERT(app_info != NULL);
+	app_info->mechine_info.reset_config = 1;
+}
+
+uint8_t app_get_reset_config(void)
+{
+	return reset_config;
+}
+
 void app(void const *argument)
 {
 
@@ -195,7 +208,13 @@ void app(void const *argument)
 
 	ret = app_load_config();
 
-	//ret = -1;
+	if(ret == 0) {
+		reset_config = app_info->mechine_info.reset_config;
+
+		if(app_get_reset_config() != 0) {
+			ret = -1;
+		}
+	}
 
 	if(ret == 0) {
 		debug("app_load_config successful!");
